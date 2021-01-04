@@ -1,13 +1,17 @@
 <template>
-    <div>
-        <h1>Hello, world</h1>
+    <div class="d-flex flex-row flex-column-fluid page">
+        <MainMenu />
         <router-view></router-view>
     </div>
 </template>
 
 <script>
+import MainMenu from './components/MainMenu';
+
 export default {
-    
+    components: {
+        MainMenu,
+    },
 }
 </script>
 

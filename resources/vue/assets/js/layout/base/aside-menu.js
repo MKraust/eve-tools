@@ -10,11 +10,15 @@ var KTLayoutAsideMenu = function() {
 		var menuDesktopMode = (KTUtil.attr(_element, 'data-menu-dropdown') === '1' ? 'dropdown' : 'accordion');
         var scroll;
 
-		if (KTUtil.isBreakpointDown('lg') && KTUtil.attr(_element, 'data-menu-scroll') === '1') {
+		if (KTUtil.attr(_element, 'data-menu-scroll') === '1') {
 			scroll = {
 				rememberPosition: true, // remember position on page reload
 				height: function() { // calculate available scrollable area height
 					var height = parseInt(KTUtil.getViewPort().height);
+
+					if (KTUtil.isBreakpointUp('lg')) {
+						height = height - KTLayoutBrand.getHeight();
+					}
 
 					height = height - (parseInt(KTUtil.css(_element, 'marginBottom')) + parseInt(KTUtil.css(_element, 'marginTop')));
 
@@ -34,11 +38,23 @@ var KTLayoutAsideMenu = function() {
 				mobile: 'accordion' // menu set to accordion in mobile mode
 			},
 
-			// Accordion setup
+			// Accordion options
 			accordion: {
 				expandAll: false // allow having multiple expanded accordions in the menu
-			}
+			},
+
+            // Dropdown options
+            dropdown: {
+                timeout: 500 // timeout in milliseconds to show and hide the hoverable submenu dropdown
+            }
 		});
+
+        // Close aside offcanvas panel before page reload On tablet and mobile
+        _menuObject.on('linkClick', function(menu) {
+            if (KTUtil.isBreakpointDown('lg')) { // Tablet and mobile mode
+                KTLayoutAside.getOffcanvas().hide(); // Hide offcanvas after general link click
+            }
+        });
 	}
 
     // Public methods

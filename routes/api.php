@@ -15,7 +15,7 @@ use App\Http\Controllers;
 |
 */
 
-Route::get('/production/modules/search',   [Controllers\Api\ProductionController::class, 'searchModules']);
-Route::get('/production/favorites/list',   [Controllers\Api\ProductionController::class, 'getFavorites']);
-Route::get('/production/favorites/add',    [Controllers\Api\ProductionController::class, 'addFavorite']);
-Route::get('/production/favorites/delete', [Controllers\Api\ProductionController::class, 'deleteFavorite']);
+Route::get('/production/modules/search',    [Controllers\Api\ProductionController::class, 'searchModules']);
+Route::get('/production/favorites/list',    [Controllers\Api\ProductionController::class, 'getFavorites']);
+Route::post('/production/favorites/add',    [Controllers\Api\ProductionController::class, 'addFavorite']);
+Route::post('/production/favorites/delete', [Controllers\Api\ProductionController::class, 'deleteFavorite']);

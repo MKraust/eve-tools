@@ -2,28 +2,24 @@
 
 var KTLayoutHeaderTopbar = function() {
     // Private properties
-	var _offcanvasElement;
-    var _offcanvasObject;
+	var _toggleElement;
+    var _toggleObject;
 
     // Private functions
     var _init = function() {
-		_offcanvasObject = new KTOffcanvas(_offcanvasElement, {
-			overlay: true,
-			baseClass: 'topbar',
-			closeBy: 'kt_header_mobile_topbar_close',
-			toggleBy: {
-				target: 'kt_header_mobile_topbar_toggle',
-				state: 'active'
-			}
+		_toggleObject = new KTToggle(_toggleElement, KTUtil.getBody(), {
+			target: KTUtil.getBody(),
+			targetState: 'topbar-mobile-on',
+			toggleState: 'active',
 		});
     }
 
     // Public methods
 	return {
 		init: function(id) {
-            _offcanvasElement = KTUtil.getById(id);
+            _toggleElement = KTUtil.getById(id);
 
-			if (!_offcanvasElement) {
+			if (!_toggleElement) {
                 return;
             }
 
@@ -31,13 +27,9 @@ var KTLayoutHeaderTopbar = function() {
             _init();
 		},
 
-		getOffcanvasElement: function() {
-			return _offcanvasElement;
-		},
-
-		getOffcanvas: function() {
-			return _offcanvasObject;
-		},
+        getToggleElement: function() {
+            return _toggleElement;
+        }
 	};
 }();
 

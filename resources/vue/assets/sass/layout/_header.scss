@@ -2,83 +2,42 @@
 // Header
 //
 
-
 // Desktop Mode
 @include media-breakpoint-up(lg) {
 	.header {
 		display: flex;
 		justify-content: space-between;
-		transition: height 0.3s ease;
+		height: get($header-config, desktop, default, height);
+		background-color: get($header-config, desktop, default, bg-color);
 		position: relative;
 		z-index: 2;
 
-		// Top
-		.header-top {
-			animation: header-scroll-animation .5s ease 1;
-			height: get($header-config, desktop, height) - get($header-config, desktop, height-bottom);
-			display: flex;
-			align-items: stretch;
-
-			.container,
-			.container-fluid {
-				display: flex;
-				align-items: stretch;
-				justify-content: space-between;
-			}
-		}
-
-		// Bottom
-		.header-bottom {
-			height: get($header-config, desktop, height-bottom);
-			display: flex;
-			align-items: stretch;
-
-			.container,
-			.container-fluid {
-				display: flex;
-				align-items: stretch;
-				flex-direction: column;
-			}
-		}
-
-		// Fixed Header and Scroll Header Modes
-		.header-fixed[data-header-scroll="on"] & {
+		// Fixed Header Mode
+		&.header-fixed {
+			height: get($header-config, desktop, fixed, height);
 			position: fixed;
-			z-index: get($header-config, desktop, scroll-zindex);
 			top: 0;
 			right: 0;
 			left: 0;
-			background-color: get($header-config, desktop, scroll-bg-color);
-			box-shadow: get($header-config, desktop, scroll-shadow);
-			height: get($header-config, desktop, scroll-height);
-			animation: header-scroll-animation .5s ease 1;
+			z-index: get($header-config, desktop, fixed, zindex);
+		}
 
-			.header-top {
-				height: get($header-config, desktop, scroll-height);
-				animation: header-scroll-animation .5s ease 1;
-			}
-
-			.header-bottom {
-				display: none;
+		// Aside Enabled Mode
+		.aside-enabled & {
+			&.header-fixed {
+				left: get($aside-config, base, width);
 			}
 		}
-	}
-}
 
-// Tablet & Mobile Modes
-@include media-breakpoint-down(md) {
-	.header {
-		.header-top,
-		.header-bottom {
-			.container,
-			.container-fluid {
-				padding: 0;
-			}
+		// Fixed Header & Minimized Aside & Minimized Aside Hover Modes
+		.header-fixed.aside-minimize-hover &,
+		.header-fixed.aside-minimize & {
+			left: get($aside-config, base, minimized-width);
+		}
+
+		// Fixed Header & Fixed Subheader Modes
+		.header-fixed.subheader-fixed & {
+			box-shadow: none !important;
 		}
 	}
-}
-
-@keyframes header-scroll-animation {
-    from   { top: -(get($header-config, desktop, height) - get($header-config, desktop, height-bottom)); }
-    to { top: 0; }
 }

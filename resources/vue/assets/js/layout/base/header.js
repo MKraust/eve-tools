@@ -7,18 +7,7 @@ var KTLayoutHeader = function() {
     var _object;
 
 	// Private functions
-	var _init = function() {
-        var options = {
-            offset: {
-                desktop: 200,
-                tabletAndMobile: 200
-            }
-		};
-
-		_object = new KTHeader(_element, options);
-	}
-
-    // Get height
+    // Get Height
     var _getHeight = function() {
         var height = 0;
 
@@ -29,7 +18,7 @@ var KTLayoutHeader = function() {
         return height;
     }
 
-    // Get height
+    // Get Height
     var _getHeightForMobile = function() {
         var height;
 
@@ -38,7 +27,7 @@ var KTLayoutHeader = function() {
         return height;
     }
 
-    // Public methods
+    // Public Methods
 	return {
 		init: function(id, idForMobile) {
             _element = KTUtil.getById(id);
@@ -47,9 +36,6 @@ var KTLayoutHeader = function() {
             if (!_element) {
                 return;
             }
-
-            // Initialize
-            _init();
 		},
 
         isFixed: function() {

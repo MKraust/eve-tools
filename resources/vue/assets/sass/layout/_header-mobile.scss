@@ -2,8 +2,9 @@
 // Header Mobile
 //
 
-// Mobile Offcanvas Panel For Header Bottom
-@include offcanvas-build(header-bottom, tablet-and-mobile, get($header-menu-config, offcanvas-mobile));
+// Variables
+$header-mobile-icon-color: rgba($white, 0.25);
+$header-mobile-icon-color-hover: $white;
 
 // Desktop Mode
 @include media-breakpoint-up(lg) {
@@ -19,53 +20,53 @@
 		justify-content: space-between;
 		align-items: center;
 		padding: 0 get($page-padding, tablet-and-mobile);
-		height: get($header-config, tablet-and-mobile, height);
-		min-height: get($header-config, tablet-and-mobile, height);
+		height: get($header-config, tablet-and-mobile, default, height);
+		min-height: get($header-config, tablet-and-mobile, default, height);
+		background-color: get($brand-config, base, bg-color);
 		position: relative;
-		background-color: get($header-config, tablet-and-mobile, bg-color);
 		z-index: 3;
-		border-bottom: 1px solid transparent;
 
-		// Fixed Header & Scroll Header Modes
-		.header-mobile-fixed[data-header-scroll="on"] & {
+		// Fixed Mobile Header Mode
+		.header-mobile-fixed & {
 			position: fixed;
-			z-index: get($header-config, tablet-and-mobile, scroll-zindex);
 			top: 0;
 			right: 0;
 			left: 0;
-			background-color: get($header-config, tablet-and-mobile, scroll-bg-color);
-			box-shadow: get($header-config, tablet-and-mobile, scroll-shadow);
-			height: get($header-config, tablet-and-mobile, scroll-height);
-			animation: header-mobile-scroll-animation .5s ease 1;
+			z-index: get($header-config, tablet-and-mobile, fixed, zindex);
+			height: get($header-config, tablet-and-mobile, fixed, height);
+			min-height: get($header-config, tablet-and-mobile, fixed, height);
+		}
 
-			.header-bottom {
-				display: none;
-			}
+		// Topbar Shown Mode
+		.topbar-mobile-on & {
+			box-shadow: none !important;
 		}
 
 		// Burger Icon
 		.burger-icon {
-			@include burger-icon-theme($gray-500, $gray-600, $gray-600);
+			@include burger-icon-theme($header-mobile-icon-color, $header-mobile-icon-color-hover, $header-mobile-icon-color-hover);
 		}
 
-		// Customize buttons(see: src\sass\components\mixins\_buttons.scss)
-		// button-custom-variant(
-		//    $background, $border, $color, $icon, $box-shadow,
-		//    $hover-background, $hover-border, $hover-color, $hover-icon, $hover-box-shadow,
-		//    $active-background, $active-border, $active-color, $active-icon, $active-box-shadow)
-		// )
+		// Button
+		.btn {
+			i {
+				color: $header-mobile-icon-color;
+			}
 
-		.btn.btn-icon {
-			@include button-custom-variant(
-				$gray-300, null, $gray-600, $gray-600, null,
-				$gray-400, null, $dark, $dark, null,
-				$gray-400, null, $dark, $dark, null,
-			);
+			.svg-icon {
+				@include svg-icon-color($header-mobile-icon-color);
+			}
+
+			&.active,
+			&:hover {
+				.svg-icon {
+					@include svg-icon-color($header-mobile-icon-color-hover);
+				}
+
+				i {
+					color: $header-mobile-icon-color-hover;
+				}
+			}
 		}
 	}
-}
-
-@keyframes header-mobile-scroll-animation {
-    from   { top: -(get($header-config, tablet-and-mobile, height)); }
-    to { top: 0; }
 }

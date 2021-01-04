@@ -1,5 +1,7 @@
 <template>
-  <router-view></router-view>
+    <div class="d-flex flex-column flex-root">
+        <router-view></router-view>
+    </div>
 </template>
 
 <script>

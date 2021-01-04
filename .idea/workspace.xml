@@ -2,11 +2,122 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ab9d4240-a191-48e0-857a-92dc21ae9cc3" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/app/Models/User.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Services/ProductionRepository.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/database/migrations/2014_10_12_000000_create_users_table.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/database/migrations/2014_10_12_100000_create_password_resets_table.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/database/migrations/2019_08_19_000000_create_failed_jobs_table.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/vue/api.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/vue/assets/js/layout/base/aside-toggle.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/vue/assets/js/layout/base/brand.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/vue/assets/sass/layout/_brand.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/vue/assets/sass/layout/_footer.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/vue/components.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/vue/metronic.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/vue/views/components/Card.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/vue/views/components/Page.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/vue/views/layout/components/MainMenu.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/vue/views/pages/Production/Favorites/components/FavoritesList.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/vue/views/pages/Production/Favorites/components/Module.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/vue/views/pages/Production/Favorites/components/Search.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/vue/views/pages/Production/Root.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.editorconfig" beforeDir="false" afterPath="$PROJECT_DIR$/.editorconfig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jsLinters/jshint.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jsLinters/jshint.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/main.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/mix-manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/public/mix-manifest.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/app.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/app.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vue/App.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/js/components/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vue/assets/js/components/app.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/js/layout/base/aside-menu.js" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vue/assets/js/layout/base/aside-menu.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/js/layout/base/aside.js" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vue/assets/js/layout/base/aside.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/js/layout/base/content.js" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vue/assets/js/layout/base/content.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/js/layout/base/header-menu.js" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vue/assets/js/layout/base/header-menu.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/js/layout/base/header-topbar.js" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vue/assets/js/layout/base/header-topbar.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/js/layout/base/header.js" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vue/assets/js/layout/base/header.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/js/layout/initialize.js" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vue/assets/js/layout/initialize.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/js/pages/custom/login/login-5.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/js/pages/custom/login/login-6.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/js/pages/custom/login/login.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/js/vendors/plugins/jquery-validation.init.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/bg/300.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/bg/350.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/bg/400.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/bg/450.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/bg/bg-6.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/bg/bg-7.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/bg/demo4-bg-footer.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/logos/Logo.png" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vue/assets/media/logos/logo.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/stcok-900x600/1.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/stcok-900x600/10.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/stcok-900x600/11.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/stcok-900x600/12.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/stcok-900x600/13.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/stcok-900x600/14.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/stcok-900x600/15.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/stcok-900x600/16.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/stcok-900x600/17.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/stcok-900x600/18.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/stcok-900x600/19.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/stcok-900x600/2.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/stcok-900x600/20.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/stcok-900x600/21.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/stcok-900x600/22.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/stcok-900x600/23.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/stcok-900x600/24.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/stcok-900x600/25.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/stcok-900x600/26.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/stcok-900x600/27.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/stcok-900x600/28.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/stcok-900x600/29.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/stcok-900x600/3.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/stcok-900x600/30.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/stcok-900x600/31.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/stcok-900x600/32.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/stcok-900x600/33.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/stcok-900x600/34.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/stcok-900x600/35.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/stcok-900x600/36.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/stcok-900x600/37.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/stcok-900x600/38.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/stcok-900x600/39.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/stcok-900x600/4.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/stcok-900x600/5.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/stcok-900x600/6.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/stcok-900x600/7.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/stcok-900x600/8.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/stcok-900x600/9.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/svg/humans/image_2020-05-11_20-44-57.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/svg/humans/image_2020-05-11_20-45-09.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/svg/humans/login-visual-1.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/svg/humans/login-visual-2.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/svg/humans/login-visual-3.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/media/svg/illustrations/login-visual-6.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/sass/base/functions/_unitless.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/sass/components/_variables.demo.scss" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vue/assets/sass/components/_variables.demo.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/sass/components/mixins/_burger-menu.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/sass/layout/_aside.scss" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vue/assets/sass/layout/_aside.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/sass/layout/_base.scss" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vue/assets/sass/layout/_base.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/sass/layout/_content.scss" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vue/assets/sass/layout/_content.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/sass/layout/_header-menu.scss" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vue/assets/sass/layout/_header-menu.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/sass/layout/_header-mobile.scss" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vue/assets/sass/layout/_header-mobile.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/sass/layout/_header-topbar.scss" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vue/assets/sass/layout/_header-topbar.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/sass/layout/_header.scss" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vue/assets/sass/layout/_header.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/sass/layout/_init.scss" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vue/assets/sass/layout/_init.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/sass/layout/_main.scss" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vue/assets/sass/layout/_main.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/sass/layout/_subheader.scss" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vue/assets/sass/layout/_subheader.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/sass/layout/_variables.scss" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vue/assets/sass/layout/_variables.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/sass/pages/login/login-5.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/sass/pages/login/login-6.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/sass/pages/users/login-1.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/sass/pages/users/login-2.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/sass/pages/users/login-3.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/sass/pages/users/login-4.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/sass/pages/users/login-5.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/assets/sass/pages/users/login-6.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vue/main.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/router.js" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vue/router.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/views/layout/Layout.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vue/views/layout/Layout.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/views/pages/Production/Favorites/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vue/views/pages/Production/Favorites/App.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/api.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/api.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,8 +128,22 @@
     <pharConfigPath>$PROJECT_DIR$/composer.json</pharConfigPath>
     <execution />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+        <option value="Vue Single File Component" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="JsFlowSettings">
+    <service-enabled>true</service-enabled>
+    <exe-path />
+    <other-services-enabled>true</other-services-enabled>
+    <auto-save>true</auto-save>
   </component>
   <component name="PhpWorkspaceProjectConfiguration">
     <include_path>
@@ -145,16 +270,21 @@
     <property name="DatabaseDriversLRU" value="mysql" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/resources/vue" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
+    <property name="settings.editor.selected.configurable" value="Settings.JavaScript" />
+    <property name="ts.external.directory.path" value="$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/jsLanguageServicesImpl/external" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/resources/vue" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/app/Models/SDE" />
     </key>
@@ -173,29 +303,67 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1609743408277</updated>
-      <workItem from="1609743409594" duration="5306000" />
+      <workItem from="1609743409594" duration="20150000" />
     </task>
+    <task id="LOCAL-00001" summary="Favorites API">
+      <created>1609749331179</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1609749331179</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="CHECK_NEW_TODO" value="false" />
+    <MESSAGE value="Favorites API" />
+    <option name="LAST_COMMIT_MESSAGE" value="Favorites API" />
+  </component>
   <component name="WindowStateProjectService">
+    <state x="354" y="132" key="#Inspections" timestamp="1609768390831">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="354" y="132" key="#Inspections/0.0.1440.900@0.0.1440.900" timestamp="1609768390831" />
+    <state x="304" y="77" key="#JSHint" timestamp="1609768389314">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="304" y="77" key="#JSHint/0.0.1440.900@0.0.1440.900" timestamp="1609768389314" />
     <state x="320" y="112" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1609748901681">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state x="320" y="112" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1440.900@0.0.1440.900" timestamp="1609748901681" />
+    <state x="0" y="0" width="1440" height="900" key="CommitChangelistDialog2" timestamp="1609749326168">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="0" y="0" width="1440" height="900" key="CommitChangelistDialog2/0.0.1440.900@0.0.1440.900" timestamp="1609749326168" />
     <state x="429" y="160" key="NewPhpClassDialog" timestamp="1609747585764">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state x="429" y="160" key="NewPhpClassDialog/0.0.1440.900@0.0.1440.900" timestamp="1609747585764" />
+    <state x="229" y="86" key="SettingsEditor" timestamp="1609768380827">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="229" y="86" key="SettingsEditor/0.0.1440.900@0.0.1440.900" timestamp="1609768380827" />
     <state x="553" y="247" width="545" height="577" key="com.intellij.database.view.ui.AbstractDbRefactoringDialog" timestamp="1609746543351">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state x="553" y="247" width="545" height="577" key="com.intellij.database.view.ui.AbstractDbRefactoringDialog/0.0.1440.900@0.0.1440.900" timestamp="1609746543351" />
-    <state x="385" y="196" width="670" height="676" key="search.everywhere.popup" timestamp="1609747666045">
+    <state x="515" y="106" key="com.intellij.openapi.vcs.changes.SpecificFilesViewDialog" timestamp="1609749290781">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state x="385" y="196" width="670" height="676" key="search.everywhere.popup/0.0.1440.900@0.0.1440.900" timestamp="1609747666045" />
+    <state x="515" y="106" key="com.intellij.openapi.vcs.changes.SpecificFilesViewDialog/0.0.1440.900@0.0.1440.900" timestamp="1609749290781" />
+    <state x="102" y="0" width="1262" height="900" key="find.popup" timestamp="1609776746400">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="102" y="0" width="1262" height="900" key="find.popup/0.0.1440.900@0.0.1440.900" timestamp="1609776746400" />
+    <state x="385" y="196" width="670" height="676" key="search.everywhere.popup" timestamp="1609782170805">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="385" y="196" width="670" height="676" key="search.everywhere.popup/0.0.1440.900@0.0.1440.900" timestamp="1609782170805" />
   </component>
 </project>

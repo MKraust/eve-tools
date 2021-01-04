@@ -9,12 +9,10 @@
     <script>
         const BASE_URL = '/';
     </script>
-{{--    <link rel="stylesheet" href="{{ mix('/css/app.css') }}">--}}
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700">
 </head>
-<body>
-    <div id="app">
-        <app></app>
-    </div>
+<body id="kt_body" class="header-fixed header-mobile-fixed aside-enabled aside-fixed">
+    <div id="app"></div>
 
     <script src="{{ mix('/js/main.js') }}"></script>
 </body>
