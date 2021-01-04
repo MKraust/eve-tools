@@ -20,7 +20,7 @@
 
     <div v-if="!hasSearchResults" class="text-center text-muted py-10">No search results</div>
 
-    <div v-for="(module, idx) in searchResults" :key="module.id" :class="{ 'mb-5': idx + 1 !== searchResults.length }">
+    <div v-for="(module, idx) in sortedSearchResults" :key="module.id" :class="{ 'mb-5': idx + 1 !== searchResults.length }">
       <Module
         :item="module"
         :favorite="isFavorite(module)"
@@ -56,7 +56,7 @@ export default {
       return this.searchResults.length > 0;
     },
     sortedSearchResults() {
-      return this.$lodash.sortBy(this.searchResults, ['name']);
+      return this.$lodash.sortBy(this.searchResults, i => i.name);
     },
   },
   methods: {

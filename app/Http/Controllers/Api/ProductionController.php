@@ -31,16 +31,20 @@ class ProductionController extends Controller
                     'name' => $rig->typeName,
                     'icon' => $rig->icon,
                 ];
-            });
+            })
+            ->values();
     }
 
     public function getFavorites() {
         $favorites = $this->_productionRepository->getFavorites();
         $types = $this->_sdeRepository->getTypesByIds($favorites->map->type_id->toArray());
 
-        return $types->sortBy('typeName')->map(function ($type) {
-            return $this->_convertTypeToApi($type);
-        });
+        return $types
+            ->sortBy('typeName')
+            ->map(function ($type) {
+                return $this->_convertTypeToApi($type);
+            })
+            ->values();
     }
 
     public function addFavorite(Request $request) {
