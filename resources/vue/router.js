@@ -4,6 +4,7 @@ import Router from 'vue-router';
 import Layout from '@/views/layout/Layout';
 import ProductionRoot from '@/views/pages/Production/Root';
 import ProductionFavorites from '@/views/pages/Production/Favorites/App';
+import ProductionTracking from '@/views/pages/Production/Tracking/App';
 
 Vue.use(Router);
 
@@ -34,7 +35,7 @@ export default new Router({
             {
               name: 'production_tracking',
               path: 'tracking',
-              component: ProductionFavorites,
+              component: ProductionTracking,
             },
           ]
         }

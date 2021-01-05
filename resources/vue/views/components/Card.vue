@@ -7,6 +7,11 @@
         </span>
         <h3 class="card-label">{{ title }}</h3>
       </div>
+      <div v-if="hasActions" class="card-toolbar">
+        <button v-for="(action, idx) in actions" :key="idx" class="btn btn-icon btn-sm btn-hover-light-primary" @click="action.handler">
+          <i :class="action.icon"></i>
+        </button>
+      </div>
     </div>
     <div class="card-body">
       <slot />
@@ -36,10 +41,21 @@ export default {
         return false;
       },
     },
+    actions: {
+      type: Array,
+      default() {
+        return [];
+      },
+    },
   },
   data: () => ({
 
   }),
+  computed: {
+    hasActions() {
+      return this.actions.length > 0;
+    },
+  },
   watch: {
     loading(val) {
       if (val) {

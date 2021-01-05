@@ -17,6 +17,7 @@ export default {
     @import "~socicon/css/socicon.css";
     @import "~@fortawesome/fontawesome-free/css/all.css";
     @import "~line-awesome/dist/line-awesome/css/line-awesome.css";
+    @import "~sweetalert2/src/sweetalert2.scss";
     @import "assets/plugins/flaticon/flaticon.css";
     @import "assets/plugins/flaticon2/flaticon.css";
     @import "assets/plugins/keenthemes-icons/font/ki.css";

@@ -1,14 +1,14 @@
 <template>
-    <div class="container">
-      <div class="row">
-        <div class="col-md-6">
-          <Search :favorites="favorites" @toggle-favorite="toggleFavorite" />
-        </div>
-        <div class="col-md-6">
-          <FavoritesList :favorites="favorites" :loading="isLoadingFavorites" @toggle-favorite="toggleFavorite" />
-        </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <Search :favorites="favorites" @toggle-favorite="toggleFavorite" />
+      </div>
+      <div class="col-md-6">
+        <FavoritesList :favorites="favorites" :loading="isLoadingFavorites" @toggle-favorite="toggleFavorite" />
       </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -16,6 +16,7 @@ import Search from './components/Search';
 import FavoritesList from './components/FavoritesList';
 
 export default {
+  name: 'Favorites',
   components: {
     Search,
     FavoritesList,
@@ -35,14 +36,15 @@ export default {
 
       this.isLoadingFavorites = false;
     },
-    async toggleFavorite(id) {
-      const isAlreadyFavorite = Boolean(this.favorites.find(f => f.id === id));
+    async toggleFavorite(typeId) {
+      const isAlreadyFavorite = Boolean(this.favorites.find(f => f.type_id === typeId));
 
       if (isAlreadyFavorite) {
-        await this.$api.deleteFavorite(id);
-        this.favorites = this.favorites.filter(f => f.id !== id);
+        await this.$api.deleteFavorite(typeId);
+        this.favorites = this.favorites.filter(f => f.type_id !== typeId);
       } else {
-        const favorite = await this.$api.addFavorite(id);
+        console.log(typeId);
+        const favorite = await this.$api.addFavorite(typeId);
         this.favorites.push(favorite);
       }
     },

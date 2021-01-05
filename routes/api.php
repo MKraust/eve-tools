@@ -14,8 +14,21 @@ use App\Http\Controllers;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::prefix('production')->group(function () {
+    Route::get('/modules/search',    [Controllers\Api\ProductionController::class, 'searchModules']);
 
-Route::get('/production/modules/search',    [Controllers\Api\ProductionController::class, 'searchModules']);
-Route::get('/production/favorites/list',    [Controllers\Api\ProductionController::class, 'getFavorites']);
-Route::post('/production/favorites/add',    [Controllers\Api\ProductionController::class, 'addFavorite']);
-Route::post('/production/favorites/delete', [Controllers\Api\ProductionController::class, 'deleteFavorite']);
+    Route::prefix('favorites')->group(function () {
+        Route::get('/list',    [Controllers\Api\ProductionController::class, 'getFavorites']);
+        Route::post('/add',    [Controllers\Api\ProductionController::class, 'addFavorite']);
+        Route::post('/delete', [Controllers\Api\ProductionController::class, 'deleteFavorite']);
+    });
+
+    Route::prefix('tracked')->group(function () {
+        Route::get('/list',                [Controllers\Api\ProductionController::class, 'getTrackedTypes']);
+        Route::post('/add',                [Controllers\Api\ProductionController::class, 'addTrackedType']);
+        Route::post('/edit',               [Controllers\Api\ProductionController::class, 'editTrackedType']);
+        Route::post('/delete',             [Controllers\Api\ProductionController::class, 'deleteTrackedType']);
+        Route::post('/update-done-counts', [Controllers\Api\ProductionController::class, 'updateTrackedTypeDoneCounts']);
+        Route::get('/shopping-list',       [Controllers\Api\ProductionController::class, 'getShoppingList']);
+    });
+});

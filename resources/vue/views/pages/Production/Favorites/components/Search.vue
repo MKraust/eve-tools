@@ -7,8 +7,7 @@
           type="text"
           class="form-control"
           placeholder="Find rigs..."
-          @keyup.enter="$event.target.blur()"
-          @blur="search"
+          @keyup.enter="search"
         />
         <div class="input-group-append">
           <button class="btn btn-primary btn-icon" @click="search">
@@ -20,11 +19,11 @@
 
     <div v-if="!hasSearchResults" class="text-center text-muted py-10">No search results</div>
 
-    <div v-for="(module, idx) in sortedSearchResults" :key="module.id" :class="{ 'mb-5': idx + 1 !== searchResults.length }">
+    <div v-for="(module, idx) in sortedSearchResults" :key="module.type_id" :class="{ 'mb-5': idx + 1 !== searchResults.length }">
       <Module
         :item="module"
         :favorite="isFavorite(module)"
-        @toggle-favorite="toggleFavorite(module.id)"
+        @toggle-favorite="toggleFavorite(module.type_id)"
       />
     </div>
   </mk-card>
@@ -72,10 +71,11 @@ export default {
       this.isSearching = false;
     },
     isFavorite(module) {
-      return Boolean(this.favorites.find(f => f.id === module.id));
+      return Boolean(this.favorites.find(f => f.type_id === module.type_id));
     },
-    toggleFavorite(id) {
-      this.$emit('toggle-favorite', id);
+    toggleFavorite(typeId) {
+      console.log(typeId);
+      this.$emit('toggle-favorite', typeId);
     },
   },
 }
