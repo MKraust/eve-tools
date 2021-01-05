@@ -64,7 +64,7 @@ export default {
   }),
   computed: {
     sortedTrackedTypes() {
-      return this.$lodash.sortBy(this.trackedTypes, i => i.type.name);
+      return this.$lodash.sortBy(this.trackedTypes, i => `${i.type.tech_level}_${i.type.name}`);
     },
     trackingLists() {
       const groupedTrackedTypes = this.$lodash.groupBy(this.sortedTrackedTypes, i => i.date);
