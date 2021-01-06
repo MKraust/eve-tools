@@ -2,7 +2,7 @@
   <div class="container">
     <div class="row">
       <div class="col-3">
-        <mk-card title="Tracking lists" icon="fas fa-list" :loading="isLoading" :actions="cardActions">
+        <mk-card title="Tracking lists" icon="fas fa-list" :loading="isLoading">
           <div v-if="hasTrackingLists" class="timeline timeline-2">
             <div class="timeline-bar"></div>
             <div v-for="trackingList in trackingLists" :key="trackingList.date" class="timeline-item">
