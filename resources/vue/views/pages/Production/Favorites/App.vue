@@ -32,7 +32,7 @@ export default {
     async loadFavorites() {
       this.isLoadingFavorites = true;
 
-      this.favorites = await this.$api.loadFavorites();
+      this.favorites = await this.$api.loadProductionFavorites();
 
       this.isLoadingFavorites = false;
     },
@@ -40,11 +40,11 @@ export default {
       const isAlreadyFavorite = Boolean(this.favorites.find(f => f.type_id === typeId));
 
       if (isAlreadyFavorite) {
-        await this.$api.deleteFavorite(typeId);
+        await this.$api.deleteProductionFavorite(typeId);
         this.favorites = this.favorites.filter(f => f.type_id !== typeId);
       } else {
         console.log(typeId);
-        const favorite = await this.$api.addFavorite(typeId);
+        const favorite = await this.$api.addProductionFavorite(typeId);
         this.favorites.push(favorite);
       }
     },

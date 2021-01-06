@@ -29,7 +29,7 @@ class Type extends Model
     }
 
     public function getTechLevelAttribute(): ?int {
-        return $this->techLevelAttribute->valueFloat;
+        return $this->techLevelAttribute ? $this->techLevelAttribute->valueFloat : null;
     }
 
     public function getIconAttribute() {

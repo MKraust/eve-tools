@@ -7,20 +7,20 @@ function api(route) {
 }
 
 export default {
-  async searchModules(query) {
+  async searchRigs(query) {
     const params = { search_query: query };
 
     return (await axios.get(api('/production/modules/search'), { params })).data;
   },
-  async loadFavorites() {
+  async loadProductionFavorites() {
     return (await axios.get(api('/production/favorites/list'))).data;
   },
-  async addFavorite(typeId) {
+  async addProductionFavorite(typeId) {
     const params = { type_id: typeId };
 
     return (await axios.post(api('/production/favorites/add'), params)).data
   },
-  async deleteFavorite(typeId) {
+  async deleteProductionFavorite(typeId) {
     const params = { type_id: typeId };
 
     await axios.post(api('/production/favorites/delete'), params);
@@ -51,5 +51,25 @@ export default {
     const params = { tracked_type_ids: trackedTypeIds };
 
     return (await axios.get(api('/production/tracked/shopping-list'), { params })).data;
+  },
+
+
+  async searchTypes(query) {
+    const params = { search_query: query };
+
+    return (await axios.get(api('/trading/modules/search'), { params })).data;
+  },
+  async loadTradingFavorites() {
+    return (await axios.get(api('/trading/favorites/list'))).data.map(i => Object.assign(i, { quantity: 0 }));
+  },
+  async addTradingFavorite(typeId) {
+    const params = { type_id: typeId };
+
+    return (await axios.post(api('/trading/favorites/add'), params)).data
+  },
+  async deleteTradingFavorite(typeId) {
+    const params = { type_id: typeId };
+
+    await axios.post(api('/trading/favorites/delete'), params);
   },
 }

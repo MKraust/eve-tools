@@ -66,7 +66,7 @@ export default {
 
       this.isSearching = true;
 
-      this.searchResults = await this.$api.searchModules(this.query);
+      this.searchResults = await this.$api.searchRigs(this.query);
 
       this.isSearching = false;
     },

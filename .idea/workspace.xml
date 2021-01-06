@@ -5,23 +5,26 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ab9d4240-a191-48e0-857a-92dc21ae9cc3" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/resources/vue/views/pages/Production/Tracking/App.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/vue/views/pages/Production/Tracking/components/TrackedModule.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/Api/TradingController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Services/TradingRepository.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/vue/views/pages/Trading/Favorites/App.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/vue/views/pages/Trading/Favorites/components/FavoritesList.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/vue/views/pages/Trading/Favorites/components/Module.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/vue/views/pages/Trading/Favorites/components/Search.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/vue/views/pages/Trading/Root.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/dataSources/e9dd185d-f8f4-4570-9f5c-20fc0d8e40e0.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/e9dd185d-f8f4-4570-9f5c-20fc0d8e40e0.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/eve-tools.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/eve-tools.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Api/ProductionController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Api/ProductionController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Models/SDE/Inventory/Type.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/SDE/Inventory/Type.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Services/ProductionRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Services/ProductionRepository.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/app.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/app.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Services/SdeRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Services/SdeRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/js/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/main.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/mix-manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/public/mix-manifest.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/vue/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vue/App.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/vue/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vue/api.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/vue/router.js" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vue/router.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/vue/views/components/Card.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vue/views/components/Card.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/vue/views/layout/components/MainMenu.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vue/views/layout/components/MainMenu.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/vue/views/pages/Production/Favorites/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vue/views/pages/Production/Favorites/App.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/vue/views/pages/Production/Favorites/components/FavoritesList.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vue/views/pages/Production/Favorites/components/FavoritesList.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/vue/views/pages/Production/Favorites/components/Module.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vue/views/pages/Production/Favorites/components/Module.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/vue/views/pages/Production/Favorites/components/Search.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/vue/views/pages/Production/Favorites/components/Search.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/api.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/api.php" afterDir="false" />
     </list>
@@ -30,7 +33,7 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ComposerSettings" synchronizationState="SYNCHRONIZE">
+  <component name="ComposerSettings" doNotAsk="true" synchronizationState="SYNCHRONIZE">
     <pharConfigPath>$PROJECT_DIR$/composer.json</pharConfigPath>
     <execution />
   </component>
@@ -176,7 +179,7 @@
     <property name="DatabaseDriversLRU" value="mysql" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/resources/vue" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/app/Services" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
@@ -188,12 +191,16 @@
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/resources/vue" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/resources/vue/views/pages/Production/Tracking/components" />
       <recent name="$PROJECT_DIR$/app/Models/SDE" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="\\wsl$\Ubuntu-20.04\home\kraust\projects\eve-tools\app\Services" />
+      <recent name="\\wsl$\Ubuntu-20.04\home\kraust\projects\eve-tools\app\Http\Controllers\Api" />
+      <recent name="\\wsl$\Ubuntu-20.04\home\kraust\projects\eve-tools\resources\vue\views\pages\Trading" />
+      <recent name="\\wsl$\Ubuntu-20.04\home\kraust\projects\eve-tools\resources\vue\views\pages\Trading\Favorites" />
+      <recent name="$PROJECT_DIR$/resources/vue" />
     </key>
   </component>
   <component name="RunManager">
@@ -211,6 +218,7 @@
       <option name="presentableId" value="Default" />
       <updated>1609743408277</updated>
       <workItem from="1609743409594" duration="54627000" />
+      <workItem from="1609940689912" duration="3670000" />
     </task>
     <task id="LOCAL-00001" summary="Favorites API">
       <created>1609749331179</created>
@@ -256,10 +264,11 @@
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state x="304" y="77" key="#JSHint/0.0.1440.900@0.0.1440.900" timestamp="1609768389314" />
-    <state x="320" y="112" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1609748901681">
-      <screen x="0" y="0" width="1440" height="900" />
+    <state x="427" y="129" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1609944192618">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="320" y="112" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1440.900@0.0.1440.900" timestamp="1609748901681" />
+    <state x="427" y="129" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040/-1920.87.1920.1040@0.0.1920.1040" timestamp="1609944192618" />
     <state x="500" y="130" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1609791648725">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
@@ -296,9 +305,14 @@
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state x="102" y="0" width="1262" height="900" key="find.popup/0.0.1440.900@0.0.1440.900" timestamp="1609776746400" />
-    <state x="385" y="196" width="670" height="676" key="search.everywhere.popup" timestamp="1609865352790">
-      <screen x="0" y="0" width="1440" height="900" />
+    <state x="624" y="254" key="run.anything.popup" timestamp="1609940881513">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="624" y="254" key="run.anything.popup/0.0.1920.1040/-1920.87.1920.1040@0.0.1920.1040" timestamp="1609940881513" />
+    <state x="513" y="226" width="894" height="782" key="search.everywhere.popup" timestamp="1609941201671">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="385" y="196" width="670" height="676" key="search.everywhere.popup/0.0.1440.900@0.0.1440.900" timestamp="1609865352790" />
+    <state x="513" y="226" width="894" height="782" key="search.everywhere.popup/0.0.1920.1040/-1920.87.1920.1040@0.0.1920.1040" timestamp="1609941201671" />
   </component>
 </project>

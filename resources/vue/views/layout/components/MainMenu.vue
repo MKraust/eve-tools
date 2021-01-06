@@ -3,12 +3,12 @@
         <div class="aside-menu-wrapper flex-column-fluid" id="kt_aside_menu_wrapper">
             <div id="kt_aside_menu" class="aside-menu my-4 scroll ps ps--active-y" data-menu-vertical="1" data-menu-scroll="1" data-menu-dropdown-timeout="500" style="height: 245px; overflow: hidden;">
                 <ul class="menu-nav">
-                    <li class="menu-item menu-item-active">
-                        <router-link to="/production/favorites" class="menu-link">
-                            <i class="menu-icon fas fa-industry"></i>
-                            <span class="menu-text">Production</span>
-                        </router-link>
-                    </li>
+                  <li v-for="(menuItem, idx) in menuItems" :key="idx" class="menu-item" :class="{ 'menu-item-active': $route.name.startsWith(menuItem.routeGroup) }">
+                    <router-link :to="menuItem.route" class="menu-link">
+                      <i class="menu-icon" :class="menuItem.icon"></i>
+                      <span class="menu-text">{{ menuItem.name }}</span>
+                    </router-link>
+                  </li>
                 </ul>
             </div>
         </div>
@@ -17,7 +17,13 @@
 
 <script>
 export default {
-    name: "Header"
+  name: "Header",
+  data: () => ({
+    menuItems: [
+      { name: 'Production', routeGroup: 'production', route: '/production/favorites', icon: 'fas fa-industry' },
+      { name: 'Trading', routeGroup: 'trading', route: '/trading/favorites', icon: 'fas fa-chart-line' },
+    ]
+  }),
 }
 </script>
 
