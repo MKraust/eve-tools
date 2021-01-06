@@ -24,7 +24,7 @@ class ProductionController extends Controller
         ]);
 
         return $this->_sdeRepository
-            ->searchModules($request->search_query)
+            ->searchRigs($request->search_query)
             ->map(function ($type) {
                 return $this->_convertTypeToApi($type);
             })

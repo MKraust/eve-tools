@@ -13,7 +13,7 @@
         <div class="input-group mr-1">
           <div class="input-group-prepend">
               <span class="input-group-text">
-                <i class="fas fa-industry"></i>
+                <i class="fas fas fa-shopping-cart"></i>
               </span>
           </div>
           <input

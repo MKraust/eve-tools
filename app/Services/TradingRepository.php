@@ -2,16 +2,16 @@
 
 namespace App\Services;
 
-use App\Models\Production;
+use App\Models\Trading;
 
 class TradingRepository {
 
     public function getFavorites() {
-        return Production\Favorite::all();
+        return Trading\Favorite::all();
     }
 
     public function getFavoriteById(int $typeId) {
-        return Production\Favorite::find($typeId);
+        return Trading\Favorite::find($typeId);
     }
 
     public function addFavorite(int $typeId) {
@@ -20,12 +20,12 @@ class TradingRepository {
             throw new \Exception('Already exists');
         }
 
-        Production\Favorite::create([
+        Trading\Favorite::create([
             'type_id' => $typeId,
         ]);
     }
 
     public function deleteFavorite(int $typeId) {
-        Production\Favorite::destroy($typeId);
+        Trading\Favorite::destroy($typeId);
     }
 }
