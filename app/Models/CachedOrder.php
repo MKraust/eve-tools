@@ -9,6 +9,8 @@ class CachedOrder extends Model
 {
     use HasFactory;
 
+    protected $connection = 'mysql';
+
     protected $fillable = [
         'duration',
         'is_buy_order',
@@ -22,6 +24,10 @@ class CachedOrder extends Model
         'type_id',
         'volume_remain',
         'volume_total',
+    ];
+
+    protected $casts = [
+        'price' => 'double',
     ];
 
     public function scopeJita($query) {

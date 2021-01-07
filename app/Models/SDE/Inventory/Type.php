@@ -18,6 +18,10 @@ class Type extends Model
         'techLevelAttribute',
     ];
 
+    protected $casts = [
+        'volume' => 'double',
+    ];
+
     public function blueprint() {
         return $this->hasOneThrough(self::class, Models\SDE\Industry\ActivityProduct::class, 'productTypeID', 'typeID', 'typeID', 'typeID')
                     ->where('activityID', 1);
@@ -33,7 +37,17 @@ class Type extends Model
     }
 
     public function getIconAttribute() {
-        return $this->iconID !== null ? "https://images.evetech.net/types/{$this->typeID}/icon" : null;
+        return "https://imageserver.eveonline.com/Type/{$this->typeID}_64.png";
+    }
+
+    public function getJitaPriceAttribute() {
+        $orders = $this->_getJitaOrders();
+        return $orders->count() > 0 ? $orders->first()->price : null;
+    }
+
+    public function getDichstarPriceAttribute() {
+        $orders = $this->_getDichstarOrders();
+        return $orders->count() > 0 ? $orders->first()->price : null;
     }
 
     public function productionMaterials() {
@@ -51,7 +65,19 @@ class Type extends Model
                     ->where('attributeID', 422);
     }
 
+    public function orders() {
+        return $this->hasMany(Models\CachedOrder::class, 'type_id', 'typeID');
+    }
+
     public function scopeRigs($query) {
         return $query->whereIn('groupID', [773, 774, 775, 776, 777, 778, 779, 781, 782, 786, 896, 904, 1232, 1233, 1234, 1308]);
+    }
+
+    public function _getJitaOrders() {
+        return $this->orders->where('location_id', 60003760)->sortBy('price');
+    }
+
+    public function _getDichstarOrders() {
+        return $this->orders->where('location_id', 1031787606461)->sortBy('price');
     }
 }

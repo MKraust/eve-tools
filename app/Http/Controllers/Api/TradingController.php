@@ -37,7 +37,9 @@ class TradingController extends Controller
     }
 
     public function getMarketOrders() {
-        \App\Jobs\RefreshMarketOrders::dispatch()->afterResponse();
+        \App\Jobs\RefreshMarketOrders::dispatch();
+
+        return 'done';
     }
 
     public function getFavorites() {
@@ -79,11 +81,24 @@ class TradingController extends Controller
     }
 
     private function _convertTypeToApi($type) {
+        $jitaPrice = $type->jitaPrice;
+        $dichstarPrice = $type->dichstarPrice;
+        $totalCost = $jitaPrice !== null ? $jitaPrice + $type->volume * 1500 : null;
+        $margin = $dichstarPrice !== null && $totalCost !== null ? $dichstarPrice * 0.9575 - $totalCost : null;
+
         return [
             'type_id'    => $type->typeID,
             'name'       => $type->typeName,
             'icon'       => $type->icon,
             'tech_level' => $type->tech_level,
+            'volume'     => $type->volume, // TODO: use volume for ships from invVolumes
+            'prices'     => [
+                'jita'           => $jitaPrice !== null ? (string)$jitaPrice : null,
+                'dichstar'       => $dichstarPrice !== null ? (string)$dichstarPrice : null,
+                'total_cost'     => (string)$totalCost,
+                'margin'         => (string)$margin,
+                'margin_percent' => (string)($totalCost > 0 ? $margin / $totalCost * 100 : 0),
+            ],
         ];
     }
 }

@@ -49,7 +49,17 @@ class RefreshMarketOrders implements ShouldQueue
     }
 
     private function _refreshDichstarOrders() {
+        $page = 1;
+        do {
+            $orders = $this->_esi->getStructureOrders(1031787606461, $page);
+            $jitaOrdersCollection = collect($orders->getArrayCopy())->filter(function ($order) {
+                return !$order->is_buy_order;
+            });
 
+            $this->_storeOrders($jitaOrdersCollection->toArray());
+
+            $page++;
+        } while ($page <= $orders->pages);
     }
 
     private function _storeOrders($orders) {

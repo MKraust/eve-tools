@@ -138,6 +138,8 @@ export default {
 .module-icon {
   width: 44px;
   height: 44px;
+
+  border-radius: 0.42rem;
 }
 
 .count-form {

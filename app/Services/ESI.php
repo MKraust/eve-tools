@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Seat\Eseye\Containers\EsiAuthentication;
 use Seat\Eseye\Eseye;
 
 class ESI {
@@ -10,12 +11,17 @@ class ESI {
     private $_client;
 
     public function __construct() {
-        $this->_client = new Eseye();
+        $authentication = new EsiAuthentication([
+            'client_id'     => env('ESI_CLIENT_ID'),
+            'secret'        => env('ESI_SECRET_KEY'),
+            'refresh_token' => env('ESI_CHARACTER_REFRESH_TOKEN'),
+        ]);
+
+        $this->_client = new Eseye($authentication);
     }
 
     public function getMarketOrders(int $regionId, string $orderType = 'all', int $page = 1, int $typeId = null) {
         $params = [
-            'region_id'  => $regionId,
             'order_type' => $orderType,
             'page'       => $page,
         ];
@@ -24,6 +30,12 @@ class ESI {
             $params['type_id'] = $typeId;
         }
 
-        return $this->_client->invoke('get', '/markets/{region_id}/orders/', $params);
+        return $this->_client->setQueryString($params)->invoke('get', '/markets/{region_id}/orders/', ['region_id'  => $regionId]);
+    }
+
+    public function getStructureOrders(int $structureId, int $page = 1) {
+        return $this->_client
+            ->setQueryString(['page' => $page])
+            ->invoke('get', '/markets/structures/{structure_id}/', ['structure_id' => $structureId]);
     }
 }
