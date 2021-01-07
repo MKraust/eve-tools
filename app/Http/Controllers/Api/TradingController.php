@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\CachedOrder;
 use App\Services;
+use Illuminate\Filesystem\Cache;
 use Illuminate\Http\Request;
 
 class TradingController extends Controller
@@ -13,9 +15,12 @@ class TradingController extends Controller
 
     private $_tradingRepository;
 
+    private $_esi;
+
     public function __construct() {
         $this->_sdeRepository = new Services\SdeRepository;
         $this->_tradingRepository = new Services\TradingRepository;
+        $this->_esi = new Services\ESI;
     }
 
     public function searchModules(Request $request) {
@@ -29,6 +34,10 @@ class TradingController extends Controller
                 return $this->_convertTypeToApi($type);
             })
             ->values();
+    }
+
+    public function getMarketOrders() {
+        \App\Jobs\RefreshMarketOrders::dispatch()->afterResponse();
     }
 
     public function getFavorites() {
