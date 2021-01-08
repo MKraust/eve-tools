@@ -26,8 +26,8 @@ class RefreshMarketOrders implements ShouldQueue
     {
         $this->_clearCachedOrders();
 
-        $this->_refreshJitaOrders();
         $this->_refreshDichstarOrders();
+        $this->_refreshJitaOrders();
     }
 
     private function _clearCachedOrders() {
