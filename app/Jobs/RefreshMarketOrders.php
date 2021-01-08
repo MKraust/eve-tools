@@ -82,30 +82,43 @@ class RefreshMarketOrders implements ShouldQueue
     private function _refreshJitaOrders() {
         $page = 1;
         do {
-            $orders = $this->_esi->getMarketOrders(10000002, 'sell', $page);
-            $jitaOrdersCollection = collect($orders->getArrayCopy())->filter(function ($order) {
+            $orders = $this->_retry(function () use ($page) {
+               return $this->_esi->getMarketOrders(10000002, 'sell', $page);
+            }, 4);
+            Log::info('Request succeeded');
+
+            $ordersCollection = collect($orders->getArrayCopy())->filter(function ($order) {
                 return $order->location_id === 60003760;
             });
 
-            $this->_storeOrders($jitaOrdersCollection->toArray());
+            Log::info('Start saving orders');
+            $this->_storeOrders($ordersCollection->toArray());
+            Log::info('FInish saving orders');
 
             $this->_settings['progress']['jita']['total_pages'] = $orders->pages;
             $this->_settings['progress']['jita']['processed_pages'] = $page;
             $this->_saveSettings();
             Log::info("Processed Jita page {$page}");
             $page++;
+            sleep(1);
         } while ($page <= $orders->pages);
     }
 
     private function _refreshDichstarOrders() {
         $page = 1;
         do {
-            $orders = $this->_esi->getStructureOrders(1031787606461, $page);
-            $jitaOrdersCollection = collect($orders->getArrayCopy())->filter(function ($order) {
+            $orders = $this->_retry(function () use ($page) {
+                return $this->_esi->getStructureOrders(1031787606461, $page);
+            }, 4);
+            Log::info('Request succeeded');
+
+            $ordersCollection = collect($orders->getArrayCopy())->filter(function ($order) {
                 return !$order->is_buy_order;
             });
 
-            $this->_storeOrders($jitaOrdersCollection->toArray());
+            Log::info('Start saving orders');
+            $this->_storeOrders($ordersCollection->toArray());
+            Log::info('FInish saving orders');
 
             $this->_settings['progress']['dichstar']['total_pages'] = $orders->pages;
             $this->_settings['progress']['dichstar']['processed_pages'] = $page;
@@ -128,5 +141,21 @@ class RefreshMarketOrders implements ShouldQueue
 
     private function _saveSettings() {
         setting(['market_orders_update' => json_encode($this->_settings)])->save();
+    }
+
+    private function _retry($callback, int $times = 1) {
+        for ($i = 1; $i <= $times; $i++) {
+            try {
+                Log::info('Start making request');
+                return $callback();
+            } catch (\Throwable $t) {
+                Log::error('Request failed');
+                sleep(1);
+                continue;
+            }
+        }
+
+        Log::error('Exhausted retries count');
+        throw new \Exception('Exhausted retries count');
     }
 }
