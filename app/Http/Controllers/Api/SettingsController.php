@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class SettingsController extends Controller
 {
@@ -12,7 +13,13 @@ class SettingsController extends Controller
     }
 
     public function refreshMarketOrders() {
-        \App\Jobs\RefreshMarketOrders::dispatchAfterResponse();
+        register_shutdown_function(function () {
+            try {
+                \App\Jobs\RefreshMarketOrders::dispatchSync();
+            } catch (\Throwable $t) {
+                Log::error($t->getMessage());
+            }
+        });
 
         return ['status' => 'success'];
     }
