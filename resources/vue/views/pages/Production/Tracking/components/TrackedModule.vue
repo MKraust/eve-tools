@@ -39,9 +39,12 @@
             </span>
             <span class="input-group-text">{{ item.invention_count }}</span>
           </div>
-          <input v-model="invented" type="number" class="form-control form-control-sm" placeholder="0" @keyup.enter="updateDoneCounts">
+          <input v-if="!isInventionFinished" v-model="invented" type="number" class="form-control form-control-sm" placeholder="0" @keyup.enter="updateDoneCounts">
           <div class="input-group-append">
-            <span class="input-group-text">{{ item.invention_count - item.invented }}</span>
+            <span class="input-group-text" :class="{ 'bg-light-success': isInventionFinished }">
+              <span v-if="!isInventionFinished">{{ item.invention_count - item.invented }}</span>
+              <i v-else class="fas fa-check"></i>
+            </span>
           </div>
         </div>
       </div>
@@ -53,9 +56,12 @@
             </span>
             <span class="input-group-text">{{ item.production_count }}</span>
           </div>
-          <input v-model="produced" type="number" class="form-control form-control-sm" placeholder="0" @keyup.enter="updateDoneCounts">
+          <input v-if="!isProductionFinished" v-model="produced" type="number" class="form-control form-control-sm" placeholder="0" @keyup.enter="updateDoneCounts">
           <div class="input-group-append">
-            <span class="input-group-text">{{ item.production_count - item.produced }}</span>
+            <span class="input-group-text" :class="{ 'bg-light-success': isProductionFinished }">
+              <span v-if="!isProductionFinished">{{ item.production_count - item.produced }}</span>
+              <i v-else class="fas fa-check text-success"></i>
+            </span>
           </div>
         </div>
       </div>
@@ -85,6 +91,14 @@ export default {
     produced: 0,
     invented: 0,
   }),
+  computed: {
+    isInventionFinished() {
+      return this.item.invention_count <= this.item.invented;
+    },
+    isProductionFinished() {
+      return this.item.production_count <= this.item.produced;
+    },
+  },
   watch: {
     item: {
       deep: true,
