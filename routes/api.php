@@ -14,6 +14,12 @@ use App\Http\Controllers;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+Route::prefix('settings')->group(function () {
+    Route::get('/market-orders-update-info', [Controllers\Api\SettingsController::class, 'getMarketOrdersUpdateInfo']);
+    Route::post('/refresh-market-orders',     [Controllers\Api\SettingsController::class, 'refreshMarketOrders']);
+});
+
 Route::prefix('production')->group(function () {
     Route::get('/modules/search',    [Controllers\Api\ProductionController::class, 'searchModules']);
 
@@ -35,7 +41,6 @@ Route::prefix('production')->group(function () {
 
 Route::prefix('trading')->group(function () {
     Route::get('/modules/search',    [Controllers\Api\TradingController::class, 'searchModules']);
-    Route::get('/market/orders',     [Controllers\Api\TradingController::class, 'getMarketOrders']);
 
     Route::prefix('favorites')->group(function () {
         Route::get('/list',    [Controllers\Api\TradingController::class, 'getFavorites']);

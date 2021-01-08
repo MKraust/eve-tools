@@ -36,12 +36,6 @@ class TradingController extends Controller
             ->values();
     }
 
-    public function getMarketOrders() {
-        \App\Jobs\RefreshMarketOrders::dispatch();
-
-        return 'done';
-    }
-
     public function getFavorites() {
         $favorites = $this->_tradingRepository->getFavorites();
         $types = $this->_sdeRepository->getTypesByIds($favorites->map->type_id->toArray());

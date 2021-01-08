@@ -10,6 +10,7 @@ use Illuminate\Queue\SerializesModels;
 use App\Services;
 use App\Models\CachedOrder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class RefreshMarketOrders implements ShouldQueue
 {
@@ -17,19 +18,24 @@ class RefreshMarketOrders implements ShouldQueue
 
     private $_esi;
 
+    private $_settings;
+
     public function __construct()
     {
         $this->_esi = new Services\ESI;
+
+        $settings = setting('market_orders_update');
+        $this->_settings = $settings !== null ? json_decode($settings, true) : null;
     }
 
     public function handle()
     {
-        $status = setting('market_orders_update.status');
-        if ($status === 'in_progress') {
+        $status = $this->_settings !== null && $this->_settings['status'] === 'in_progress';
+        if ($status) {
             return;
         }
 
-        setting()->set('market_orders_update', [
+        $this->_settings = [
             'start_date' => (new \DateTime)->format('Y-m-d H:i:s'),
             'end_date'   => null,
             'status'     => 'in_progress',
@@ -44,7 +50,8 @@ class RefreshMarketOrders implements ShouldQueue
                     'processed_pages' => 0,
                 ],
             ],
-        ])->save();
+        ];
+        $this->_saveSettings();
 
         try {
             $this->_clearCachedOrders();
@@ -52,32 +59,40 @@ class RefreshMarketOrders implements ShouldQueue
             $this->_refreshDichstarOrders();
             $this->_refreshJitaOrders();
         } catch (\Throwable $t) {
-            setting()->set('market_orders_update.status', 'error')->save();
+            $this->_settings['status'] = 'error';
+            $this->_saveSettings();
+
+            Log::info($t->getMessage());
+
             throw $t;
         }
 
-        setting()->set('market_orders_update.status', 'finished')
-                 ->set('market_orders_update.end_date', (new \DateTime)->format('Y-m-d H:i:s'))
-                 ->save();
+        $this->_settings['status'] = 'finished';
+        $this->_settings['end_date'] = (new \DateTime)->format('Y-m-d H:i:s');
+        $this->_saveSettings();
     }
 
     private function _clearCachedOrders() {
         DB::table('cached_orders')->truncate();
-        setting()->set('market_orders_update.progress.is_table_cleared', true)->save();
+
+        $this->_settings['progress']['is_table_cleared'] = true;
+        $this->_saveSettings();
     }
 
     private function _refreshJitaOrders() {
         $page = 1;
         do {
             $orders = $this->_esi->getMarketOrders(10000002, 'sell', $page);
-            setting()->set('market_orders_update.progress.jita.total_pages', $orders->pages)->save();
             $jitaOrdersCollection = collect($orders->getArrayCopy())->filter(function ($order) {
                 return $order->location_id === 60003760;
             });
 
             $this->_storeOrders($jitaOrdersCollection->toArray());
 
-            setting()->set('market_orders_update.progress.jita.processed_pages', $page)->save();
+            $this->_settings['progress']['jita']['total_pages'] = $orders->pages;
+            $this->_settings['progress']['jita']['processed_pages'] = $page;
+            $this->_saveSettings();
+            Log::info("Processed Jita page {$page}");
             $page++;
         } while ($page <= $orders->pages);
     }
@@ -86,15 +101,16 @@ class RefreshMarketOrders implements ShouldQueue
         $page = 1;
         do {
             $orders = $this->_esi->getStructureOrders(1031787606461, $page);
-            setting()->set('market_orders_update.progress.dichstar.total_pages', $orders->pages)->save();
             $jitaOrdersCollection = collect($orders->getArrayCopy())->filter(function ($order) {
                 return !$order->is_buy_order;
             });
 
             $this->_storeOrders($jitaOrdersCollection->toArray());
 
-
-            setting()->set('market_orders_update.progress.dichstar.processed_pages', $page)->save();
+            $this->_settings['progress']['dichstar']['total_pages'] = $orders->pages;
+            $this->_settings['progress']['dichstar']['processed_pages'] = $page;
+            $this->_saveSettings();
+            Log::info("Processed Dichstar page {$page}");
             $page++;
         } while ($page <= $orders->pages);
     }
@@ -108,5 +124,9 @@ class RefreshMarketOrders implements ShouldQueue
         }, $orders);
 
         CachedOrder::insert($ordersData);
+    }
+
+    private function _saveSettings() {
+        setting(['market_orders_update' => json_encode($this->_settings)])->save();
     }
 }

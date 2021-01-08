@@ -3,6 +3,8 @@ import Router from 'vue-router';
 
 import Layout from '@/views/layout/Layout';
 
+import Settings from '@/views/pages/Settings/App';
+
 import ProductionRoot from '@/views/pages/Production/Root';
 import ProductionFavorites from '@/views/pages/Production/Favorites/App';
 import ProductionTracking from '@/views/pages/Production/Tracking/App';
@@ -20,6 +22,16 @@ export default new Router({
       component: Layout,
       redirect: { name: 'production_favorites' },
       children: [
+        {
+          name: 'settings',
+          path: 'settings',
+          component: Settings,
+          props: {
+            menuItems: [
+              { name: 'General', route: 'settings' },
+            ]
+          },
+        },
         {
           path: 'production',
           component: ProductionRoot,
@@ -45,7 +57,7 @@ export default new Router({
         },
         {
           path: 'trading',
-          component: ProductionRoot,
+          component: TradingRoot,
           redirect: '/trading/favorites',
           props: {
             menuItems: [

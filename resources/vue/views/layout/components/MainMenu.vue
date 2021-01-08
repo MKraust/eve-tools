@@ -22,6 +22,7 @@ export default {
     menuItems: [
       { name: 'Production', routeGroup: 'production', route: '/production/favorites', icon: 'fas fa-industry' },
       { name: 'Trading', routeGroup: 'trading', route: '/trading/favorites', icon: 'fas fa-chart-line' },
+      { name: 'Settings', routeGroup: 'settings', route: '/settings', icon: 'fas fa-cog' },
     ]
   }),
 }

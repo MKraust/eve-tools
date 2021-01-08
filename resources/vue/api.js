@@ -72,4 +72,10 @@ export default {
 
     await axios.post(api('/trading/favorites/delete'), params);
   },
+  async loadMarketOrdersUpdateSettings() {
+    return (await axios.get(api('/settings/market-orders-update-info'))).data;
+  },
+  async refreshMarketOrders() {
+    return (await axios.post(api('/settings/refresh-market-orders'))).data;
+  }
 }
