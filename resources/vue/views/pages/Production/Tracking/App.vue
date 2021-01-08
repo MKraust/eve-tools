@@ -133,7 +133,7 @@ export default {
         return 'not_started';
       }
 
-      const isProductionFinished = trackingList.types.some(type => type.produced === type.production_count);
+      const isProductionFinished = trackingList.types.every(type => type.produced === type.production_count);
 
       return isProductionFinished ? 'finished' : 'unfinished';
     },
