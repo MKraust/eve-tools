@@ -24,26 +24,60 @@ class RefreshMarketOrders implements ShouldQueue
 
     public function handle()
     {
-        $this->_clearCachedOrders();
+        $status = setting('market_orders_update.status');
+        if ($status === 'in_progress') {
+            return;
+        }
 
-        $this->_refreshDichstarOrders();
-        $this->_refreshJitaOrders();
+        setting()->set('market_orders_update', [
+            'start_date' => (new \DateTime)->format('Y-m-d H:i:s'),
+            'end_date'   => null,
+            'status'     => 'in_progress',
+            'progress'   => [
+                'is_table_cleared' => false,
+                'jita'             => [
+                    'total_pages'     => null,
+                    'processed_pages' => 0,
+                ],
+                'dichstar'         => [
+                    'total_pages'     => null,
+                    'processed_pages' => 0,
+                ],
+            ],
+        ])->save();
+
+        try {
+            $this->_clearCachedOrders();
+
+            $this->_refreshDichstarOrders();
+            $this->_refreshJitaOrders();
+        } catch (\Throwable $t) {
+            setting()->set('market_orders_update.status', 'error')->save();
+            throw $t;
+        }
+
+        setting()->set('market_orders_update.status', 'finished')
+                 ->set('market_orders_update.end_date', (new \DateTime)->format('Y-m-d H:i:s'))
+                 ->save();
     }
 
     private function _clearCachedOrders() {
         DB::table('cached_orders')->truncate();
+        setting()->set('market_orders_update.progress.is_table_cleared', true)->save();
     }
 
     private function _refreshJitaOrders() {
         $page = 1;
         do {
             $orders = $this->_esi->getMarketOrders(10000002, 'sell', $page);
+            setting()->set('market_orders_update.progress.jita.total_pages', $orders->pages)->save();
             $jitaOrdersCollection = collect($orders->getArrayCopy())->filter(function ($order) {
                 return $order->location_id === 60003760;
             });
 
             $this->_storeOrders($jitaOrdersCollection->toArray());
 
+            setting()->set('market_orders_update.progress.jita.processed_pages', $page)->save();
             $page++;
         } while ($page <= $orders->pages);
     }
@@ -52,12 +86,15 @@ class RefreshMarketOrders implements ShouldQueue
         $page = 1;
         do {
             $orders = $this->_esi->getStructureOrders(1031787606461, $page);
+            setting()->set('market_orders_update.progress.dichstar.total_pages', $orders->pages)->save();
             $jitaOrdersCollection = collect($orders->getArrayCopy())->filter(function ($order) {
                 return !$order->is_buy_order;
             });
 
             $this->_storeOrders($jitaOrdersCollection->toArray());
 
+
+            setting()->set('market_orders_update.progress.dichstar.processed_pages', $page)->save();
             $page++;
         } while ($page <= $orders->pages);
     }
