@@ -5,12 +5,30 @@
         <img :src="item.icon" class="module-icon" alt="">
       </span>
     </div>
-    <div class="d-flex flex-column flex-grow-1">
+    <div class="d-flex flex-column flex-grow-1 mr-5">
       <span class="font-size-h6 text-dark-75">{{ item.name }}</span>
+      <div class="prices d-flex mt-2">
+        <div class="d-flex flex-column mr-2">
+          <p class="mb-1">Jita:</p>
+          <p class="mb-0">Dichstar:</p>
+        </div>
+        <div class="d-flex flex-column mr-3" :style="{ width: '102px' }">
+          <p class="font-weight-lighter mb-1">{{ item.prices.jita ? formatMoney(item.prices.jita) : '-' }}</p>
+          <p class="font-weight-lighter mb-0">{{ item.prices.dichstar ? formatMoney(item.prices.dichstar) : '-' }}</p>
+        </div>
+        <div class="d-flex flex-column mr-2">
+          <p class="mb-1">Margin:</p>
+          <p class="mb-0">Margin percent:</p>
+        </div>
+        <div class="d-flex flex-column">
+          <p class="font-weight-lighter mb-1" :class="item.prices.margin_percent > 0 ? 'text-success' : 'text-danger'">{{ item.prices.margin ? formatMoney(item.prices.margin) : '-' }}</p>
+          <p class="font-weight-lighter mb-0" :class="item.prices.margin_percent > 0 ? 'text-success' : 'text-danger'">{{ item.prices.margin_percent ? `${item.prices.margin_percent}%` : '-' }}</p>
+        </div>
+      </div>
     </div>
     <div v-if="trackFormShown" class="tracking-form justify-content-end">
       <div class="form-group mb-0">
-        <div class="input-group mr-1">
+        <div class="input-group input-group-sm mr-1">
           <div class="input-group-prepend">
               <span class="input-group-text">
                 <i class="fas fas fa-shopping-cart"></i>
@@ -78,6 +96,9 @@ export default {
   methods: {
     toggleFavorite() {
       this.$emit('toggle-favorite');
+    },
+    formatMoney(money) {
+      return String(money).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
     },
   },
 }

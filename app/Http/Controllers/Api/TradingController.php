@@ -85,6 +85,7 @@ class TradingController extends Controller
         $dichstarPrice = $type->dichstarPrice;
         $totalCost = $jitaPrice !== null ? $jitaPrice + $type->volume * 1500 : null;
         $margin = $dichstarPrice !== null && $totalCost !== null ? $dichstarPrice * 0.9575 - $totalCost : null;
+        $marginPercent = $totalCost > 0 ? round($margin / $totalCost * 100, 2) : 0;
 
         return [
             'type_id'    => $type->typeID,
@@ -95,9 +96,9 @@ class TradingController extends Controller
             'prices'     => [
                 'jita'           => $jitaPrice !== null ? (string)$jitaPrice : null,
                 'dichstar'       => $dichstarPrice !== null ? (string)$dichstarPrice : null,
-                'total_cost'     => (string)$totalCost,
-                'margin'         => (string)$margin,
-                'margin_percent' => (string)($totalCost > 0 ? $margin / $totalCost * 100 : 0),
+                'total_cost'     => $totalCost !== null ? (string)$totalCost : null,
+                'margin'         => $margin !== null ? (string)$margin : null,
+                'margin_percent' => $marginPercent,
             ],
         ];
     }
