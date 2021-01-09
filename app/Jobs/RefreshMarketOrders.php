@@ -101,7 +101,6 @@ class RefreshMarketOrders implements ShouldQueue
             $this->_saveSettings();
             Log::info("Processed Jita page {$page}");
             $page++;
-            sleep(1);
         } while ($page <= $orders->pages);
     }
 
