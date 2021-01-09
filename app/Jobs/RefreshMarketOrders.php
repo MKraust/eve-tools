@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\Setting;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -24,7 +25,7 @@ class RefreshMarketOrders implements ShouldQueue
     {
         $this->_esi = new Services\ESI;
 
-        $settings = setting('market_orders_update');
+        $settings = Setting::getData('market_orders_update');
         $this->_settings = $settings !== null ? json_decode($settings, true) : null;
     }
 
@@ -101,7 +102,7 @@ class RefreshMarketOrders implements ShouldQueue
             Log::info("Processed Jita page {$page}");
             $page++;
             sleep(1);
-        } while ($page <= $orders->pages);
+        } while ($page <= 10);
     }
 
     private function _refreshDichstarOrders() {
@@ -140,7 +141,7 @@ class RefreshMarketOrders implements ShouldQueue
     }
 
     private function _saveSettings() {
-        setting(['market_orders_update' => json_encode($this->_settings)])->save();
+        Setting::setData('market_orders_update', json_encode($this->_settings));
     }
 
     private function _retry($callback, int $times = 1) {
