@@ -3,13 +3,16 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class SettingsController extends Controller
 {
     public function getMarketOrdersUpdateInfo() {
-        return setting('market_orders_update') ?: 'null';
+        $info = Setting::getData('market_orders_update');
+
+        return $info !== null ? json_encode($info->value) : 'null';
     }
 
     public function refreshMarketOrders() {

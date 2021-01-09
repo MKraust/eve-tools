@@ -83,6 +83,8 @@ class RefreshMarketOrders implements ShouldQueue
     private function _refreshJitaOrders() {
         $page = 1;
         do {
+            $this->_logMemoryUsage();
+
             $orders = $this->_retry(function () use ($page) {
                return $this->_esi->getMarketOrders(10000002, 'sell', $page);
             }, 4);
@@ -107,6 +109,8 @@ class RefreshMarketOrders implements ShouldQueue
     private function _refreshDichstarOrders() {
         $page = 1;
         do {
+            $this->_logMemoryUsage();
+
             $orders = $this->_retry(function () use ($page) {
                 return $this->_esi->getStructureOrders(1031787606461, $page);
             }, 4);
@@ -159,5 +163,11 @@ class RefreshMarketOrders implements ShouldQueue
 
         Log::error('Exhausted retries count');
         throw new \Exception('Exhausted retries count');
+    }
+
+    private function _logMemoryUsage() {
+        $size = memory_get_usage();
+        $unit=array('b','kb','mb','gb','tb','pb');
+        Log::info(@round($size/pow(1024,($i=floor(log($size,1024)))),2).' '.$unit[$i]);
     }
 }
