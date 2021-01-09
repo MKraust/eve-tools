@@ -15,6 +15,10 @@ class SettingsController extends Controller
     public function refreshMarketOrders() {
         register_shutdown_function(function () {
             try {
+                if (php_sapi_name() === 'fpm-fcgi') {
+                    fastcgi_finish_request();
+                }
+
                 \App\Jobs\RefreshMarketOrders::dispatchSync();
             } catch (\Throwable $t) {
                 Log::error($t->getMessage());
