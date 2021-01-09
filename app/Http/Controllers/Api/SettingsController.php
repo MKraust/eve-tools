@@ -22,6 +22,8 @@ class SettingsController extends Controller
                 \App\Jobs\RefreshMarketOrders::dispatchSync();
             } catch (\Throwable $t) {
                 Log::error($t->getMessage());
+                Log::error($t->getTraceAsString());
+                throw $t;
             }
         });
 
