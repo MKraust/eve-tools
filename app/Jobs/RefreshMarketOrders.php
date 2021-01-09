@@ -26,7 +26,7 @@ class RefreshMarketOrders implements ShouldQueue
         $this->_esi = new Services\ESI;
 
         $settings = Setting::getData('market_orders_update');
-        $this->_settings = $settings !== null ? json_decode($settings, true) : null;
+        $this->_settings = $settings !== null ? json_decode($settings->value, true) : null;
     }
 
     public function handle()
