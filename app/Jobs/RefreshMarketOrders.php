@@ -133,12 +133,14 @@ class RefreshMarketOrders implements ShouldQueue
     }
 
     private function _storeOrders($orders) {
+        Log::info('Start formatting orders');
         $ordersData = array_map(function ($order) {
             $o = json_decode(json_encode($order), true);
             $o['issued'] = (new \DateTime($o['issued']))->format('Y-m-d H:i:s');
 
             return $o;
         }, $orders);
+        Log::info('Finish formatting orders');
 
         CachedOrder::insert($ordersData);
     }
