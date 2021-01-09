@@ -102,7 +102,7 @@ class RefreshMarketOrders implements ShouldQueue
             Log::info("Processed Jita page {$page}");
             $page++;
             sleep(1);
-        } while ($page <= 10);
+        } while ($page <= $orders->pages);
     }
 
     private function _refreshDichstarOrders() {
