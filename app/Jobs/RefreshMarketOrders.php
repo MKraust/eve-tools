@@ -142,7 +142,11 @@ class RefreshMarketOrders implements ShouldQueue
         }, $orders);
         Log::info('Finish formatting orders');
 
-        CachedOrder::insert($ordersData);
+        $chunks = array_chunk($ordersData, 250);
+
+        foreach ($chunks as $chunk) {
+            CachedOrder::insert($chunk);
+        }
     }
 
     private function _saveSettings() {
