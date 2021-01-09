@@ -90,7 +90,7 @@ export default {
       this.isWatchingMarketOrdersUpdate = true;
       this.runAsyncInterval(async () => {
         await this.loadSettings();
-      }, 2000);
+      }, 500);
     },
     stopWatchingMarketOrdersUpdate() {
       if (this.isWatchingMarketOrdersUpdate) {
