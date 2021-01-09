@@ -169,7 +169,11 @@ class RefreshMarketOrders implements ShouldQueue
 
     private function _logMemoryUsage() {
         $size = memory_get_usage();
+        $peakSize = memory_get_peak_usage();
+
         $unit=array('b','kb','mb','gb','tb','pb');
+
         Log::info(@round($size/pow(1024,($i=floor(log($size,1024)))),2).' '.$unit[$i]);
+        Log::info(@round($peakSize/pow(1024,($i=floor(log($peakSize,1024)))),2).' '.$unit[$i]);
     }
 }
