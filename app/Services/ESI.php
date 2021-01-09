@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use Seat\Eseye\Configuration;
+use Seat\Eseye\Containers\EsiConfiguration;
 use Seat\Eseye\Containers\EsiAuthentication;
 use Seat\Eseye\Eseye;
 
@@ -11,6 +13,12 @@ class ESI {
     private $_client;
 
     public function __construct() {
+        $config = Configuration::getInstance();
+        $config->setConfiguration(new EsiConfiguration([
+            'logfile_location' => storage_path() . '/logs',
+            'file_cache_location' => storage_path() . '/esi',
+        ]));
+
         $authentication = new EsiAuthentication([
             'client_id'     => env('ESI_CLIENT_ID'),
             'secret'        => env('ESI_SECRET_KEY'),

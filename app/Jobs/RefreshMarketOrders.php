@@ -151,6 +151,7 @@ class RefreshMarketOrders implements ShouldQueue
             } catch (\Throwable $t) {
                 Log::error('Request failed');
                 Log::error($t->getMessage());
+                Log::error($t->getTraceAsString());
                 sleep(1);
                 continue;
             }
