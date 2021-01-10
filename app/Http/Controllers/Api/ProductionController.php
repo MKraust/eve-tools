@@ -13,9 +13,12 @@ class ProductionController extends Controller
 
     private $_productionRepository;
 
+    private $_productionService;
+
     public function __construct() {
         $this->_sdeRepository = new Services\SdeRepository;
         $this->_productionRepository = new Services\ProductionRepository;
+        $this->_productionService = new Services\ProductionService;
     }
 
     public function searchModules(Request $request) {
@@ -33,7 +36,11 @@ class ProductionController extends Controller
 
     public function getFavorites() {
         $favorites = $this->_productionRepository->getFavorites();
-        $types = $this->_sdeRepository->getTypesByIds($favorites->map->type_id->toArray());
+        $types = $this->_sdeRepository->getTypesByIds($favorites->map->type_id->toArray(), [
+            'techLevelAttribute',
+            'blueprint.productionMaterials',
+            'blueprint.tech1Blueprint.inventionMaterials',
+        ]);
 
         return $types
             ->sortBy('typeName')
@@ -141,32 +148,40 @@ class ProductionController extends Controller
 
         $materialsQuantityByName = [];
         foreach ($trackedTypes as $trackedType) {
-            $productionMaterials = $trackedType->type->blueprint->productionMaterials;
+            $productionMaterials = $trackedType->type->blueprintProductionMaterials;
             foreach ($productionMaterials as $productionMaterial) {
                 $materialTypeName = $productionMaterial->materialType->typeName;
-                $quantity = ($materialsQuantityByName[$materialTypeName] ?? 0) + $productionMaterial->quantity * ($trackedType->production_count - $trackedType->produced);
+                $quantity = ($materialsQuantityByName[$materialTypeName] ?? 0) + $productionMaterial->quantity * (max($trackedType->production_count - $trackedType->produced, 0));
                 $materialsQuantityByName[$materialTypeName] = $quantity;
             }
 
             if ($trackedType->type->tech_level === 2) {
-                $inventionMaterials = $trackedType->type->blueprint->tech1Blueprint->inventionMaterials;
+                $inventionMaterials = $trackedType->type->blueprintInventionMaterials;
                 foreach ($inventionMaterials as $inventionMaterial) {
                     $materialTypeName = $inventionMaterial->materialType->typeName;
-                    $quantity = ($materialsQuantityByName[$materialTypeName] ?? 0) + $inventionMaterial->quantity * ($trackedType->invention_count - $trackedType->invented);
+                    $quantity = ($materialsQuantityByName[$materialTypeName] ?? 0) + $inventionMaterial->quantity * (max($trackedType->invention_count - $trackedType->invented, 0));
                     $materialsQuantityByName[$materialTypeName] = $quantity;
                 }
             }
         }
 
-        return $materialsQuantityByName;
+        return array_filter($materialsQuantityByName);
     }
 
     private function _convertTypeToApi($type) {
+        $productionCost = $this->_productionService->getTypeProductionCost($type);
+        $inventionCost = $type->tech_level === 2 ? $this->_productionService->getTypeInventionCost($type) : null;
+
         return [
             'type_id'    => $type->typeID,
             'name'       => $type->typeName,
             'icon'       => $type->icon,
             'tech_level' => $type->tech_level,
+            'costs'      => [
+                'production' => $productionCost,
+                'invention'  => $inventionCost,
+                'total'      => $productionCost + ($inventionCost ?? 0),
+            ],
         ];
     }
 

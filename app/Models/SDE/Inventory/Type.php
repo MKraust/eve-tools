@@ -15,22 +15,12 @@ class Type extends Model
     protected $primaryKey = 'typeID';
 
     protected $with = [
-        'techLevelAttribute',
+        'price',
     ];
 
     protected $casts = [
         'volume' => 'double',
     ];
-
-    public function blueprint() {
-        return $this->hasOneThrough(self::class, Models\SDE\Industry\ActivityProduct::class, 'productTypeID', 'typeID', 'typeID', 'typeID')
-                    ->where('activityID', 1);
-    }
-
-    public function tech1Blueprint() {
-        return $this->hasOneThrough(self::class, Models\SDE\Industry\ActivityProduct::class, 'productTypeID', 'typeID', 'typeID', 'typeID')
-                    ->where('activityID', 8);
-    }
 
     public function getTechLevelAttribute(): ?int {
         return $this->techLevelAttribute ? $this->techLevelAttribute->valueFloat : null;
@@ -41,13 +31,29 @@ class Type extends Model
     }
 
     public function getJitaPriceAttribute() {
-        $orders = $this->_getJitaOrders();
-        return $orders->count() > 0 ? $orders->first()->price : null;
+        return $this->price->jita ?? null;
     }
 
     public function getDichstarPriceAttribute() {
-        $orders = $this->_getDichstarOrders();
-        return $orders->count() > 0 ? $orders->first()->price : null;
+        return $this->price->dichstar ?? null;
+    }
+
+    public function getBlueprintProductionMaterialsAttribute() {
+        return $this->blueprint->productionMaterials;
+    }
+
+    public function getBlueprintInventionMaterialsAttribute() {
+        return $this->techLevel === 2 ? $this->blueprint->tech1Blueprint->inventionMaterials : [];
+    }
+
+    public function blueprint() {
+        return $this->hasOneThrough(self::class, Models\SDE\Industry\ActivityProduct::class, 'productTypeID', 'typeID', 'typeID', 'typeID')
+                    ->where('activityID', 1);
+    }
+
+    public function tech1Blueprint() {
+        return $this->hasOneThrough(self::class, Models\SDE\Industry\ActivityProduct::class, 'productTypeID', 'typeID', 'typeID', 'typeID')
+                    ->where('activityID', 8);
     }
 
     public function productionMaterials() {
@@ -65,8 +71,8 @@ class Type extends Model
                     ->where('attributeID', 422);
     }
 
-    public function orders() {
-        return $this->hasMany(Models\CachedOrder::class, 'type_id', 'typeID');
+    public function price() {
+        return $this->hasOne(Models\CachedPrice::class, 'type_id', 'typeID');
     }
 
     public function scopeRigs($query) {
@@ -74,10 +80,10 @@ class Type extends Model
     }
 
     public function _getJitaOrders() {
-        return $this->orders->where('location_id', 60003760)->sortBy('price');
+        return $this->jitaOrders->sortBy('price');
     }
 
     public function _getDichstarOrders() {
-        return $this->orders->where('location_id', 1031787606461)->sortBy('price');
+        return $this->dichstarOrders->sortBy('price');
     }
 }

@@ -38,12 +38,18 @@ class ESI {
             $params['type_id'] = $typeId;
         }
 
-        return $this->_client->setQueryString($params)->invoke('get', '/markets/{region_id}/orders/', ['region_id'  => $regionId]);
+        return $this->_client
+            ->setQueryString($params)
+            ->invoke('get', '/markets/{region_id}/orders/', ['region_id'  => $regionId]);
     }
 
     public function getStructureOrders(int $structureId, int $page = 1) {
         return $this->_client
             ->setQueryString(['page' => $page])
             ->invoke('get', '/markets/structures/{structure_id}/', ['structure_id' => $structureId]);
+    }
+
+    public function getIndustrySystems() {
+        return $this->_client->invoke('get', '/industry/systems');
     }
 }

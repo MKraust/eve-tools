@@ -13,11 +13,23 @@ class SdeRepository {
     }
 
     public function searchRigs(string $query) {
-        return SDE\Inventory\Type::rigs()->where('typeName', 'like', "%{$query}%")->get();
+        return SDE\Inventory\Type::rigs()
+            ->where('typeName', 'like', "%{$query}%")
+            ->with([
+                'techLevelAttribute',
+                'blueprint.productionMaterials',
+                'blueprint.tech1Blueprint.inventionMaterials',
+            ])
+            ->get();
     }
 
-    public function getTypesByIds(array $ids) {
-        return SDE\Inventory\Type::whereIn('typeID', $ids)->get();
+    public function getTypesByIds(array $ids, $with = []) {
+        $query = SDE\Inventory\Type::whereIn('typeID', $ids);
+        if (count($with) > 0) {
+            $query = $query->with($with);
+        }
+
+        return $query->get();
     }
 
     public function getTypeById(int $id) {

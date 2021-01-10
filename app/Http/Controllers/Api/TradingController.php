@@ -85,7 +85,6 @@ class TradingController extends Controller
             'type_id'    => $type->typeID,
             'name'       => $type->typeName,
             'icon'       => $type->icon,
-            'tech_level' => $type->tech_level,
             'volume'     => $type->volume, // TODO: use volume for ships from invVolumes
             'prices'     => [
                 'jita'           => $jitaPrice !== null ? (string)$jitaPrice : null,

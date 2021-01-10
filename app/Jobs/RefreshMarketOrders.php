@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\CachedPrice;
 use App\Models\Setting;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -20,6 +21,10 @@ class RefreshMarketOrders implements ShouldQueue
     private $_esi;
 
     private $_settings;
+
+    private $_minJitaPrices = [];
+
+    private $_minDichstarPrices = [];
 
     public function __construct()
     {
@@ -59,6 +64,8 @@ class RefreshMarketOrders implements ShouldQueue
 
             $this->_refreshDichstarOrders();
             $this->_refreshJitaOrders();
+
+            $this->_refreshPrices();
         } catch (\Throwable $t) {
             $this->_settings['status'] = 'error';
             $this->_saveSettings();
@@ -71,6 +78,22 @@ class RefreshMarketOrders implements ShouldQueue
         $this->_settings['status'] = 'finished';
         $this->_settings['end_date'] = (new \DateTime)->format('Y-m-d H:i:s');
         $this->_saveSettings();
+    }
+
+    private function _refreshPrices() {
+        $pricesData = [];
+        foreach ($this->_minJitaPrices as $typeId => $price) {
+            $pricesData[$typeId] = ['type_id' => $typeId, 'jita' => $price, 'dichstar' => null];
+        }
+
+        foreach ($this->_minDichstarPrices as $typeId => $price) {
+            $priceData = $pricesData[$typeId] ?? ['type_id' => $typeId, 'jita' => null, 'dichstar' => null];
+            $priceData['dichstar'] = $price;
+            $pricesData[$typeId] = $priceData;
+        }
+
+        DB::table('cached_prices')->truncate();
+        CachedPrice::insert(array_values($pricesData));
     }
 
     private function _clearCachedOrders() {
@@ -93,6 +116,12 @@ class RefreshMarketOrders implements ShouldQueue
             $ordersCollection = collect($orders->getArrayCopy())->filter(function ($order) {
                 return $order->location_id === 60003760;
             });
+
+            foreach ($ordersCollection as $order) {
+                $this->_minJitaPrices[$order->type_id] = array_key_exists($order->type_id, $this->_minJitaPrices)
+                    ? min($this->_minJitaPrices[$order->type_id], $order->price)
+                    : $order->price;
+            }
 
             Log::info('Start saving orders');
             $this->_storeOrders($ordersCollection->toArray());
@@ -119,6 +148,12 @@ class RefreshMarketOrders implements ShouldQueue
             $ordersCollection = collect($orders->getArrayCopy())->filter(function ($order) {
                 return !$order->is_buy_order;
             });
+
+            foreach ($ordersCollection as $order) {
+                $this->_minDichstarPrices[$order->type_id] = array_key_exists($order->type_id, $this->_minDichstarPrices)
+                    ? min($this->_minDichstarPrices[$order->type_id], $order->price)
+                    : $order->price;
+            }
 
             Log::info('Start saving orders');
             $this->_storeOrders($ordersCollection->toArray());
