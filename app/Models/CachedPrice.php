@@ -14,6 +14,8 @@ class CachedPrice extends Model
     protected $fillable = [
         'type_id',
         'jita',
-        'dichstar'
+        'dichstar',
+        'average',
+        'adjusted',
     ];
 }

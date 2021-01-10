@@ -50,6 +50,10 @@ class ESI {
     }
 
     public function getIndustrySystems() {
-        return $this->_client->invoke('get', '/industry/systems');
+        return $this->_client->invoke('get', '/industry/systems/');
+    }
+
+    public function getMarketPrices() {
+        return $this->_client->invoke('get', '/markets/prices/');
     }
 }

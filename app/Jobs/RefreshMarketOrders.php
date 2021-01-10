@@ -66,6 +66,7 @@ class RefreshMarketOrders implements ShouldQueue
             $this->_refreshJitaOrders();
 
             $this->_refreshPrices();
+            $this->_refreshSystemIndustryIndices();
         } catch (\Throwable $t) {
             $this->_settings['status'] = 'error';
             $this->_saveSettings();
@@ -80,16 +81,33 @@ class RefreshMarketOrders implements ShouldQueue
         $this->_saveSettings();
     }
 
+    private function _refreshSystemIndustryIndices() {
+        $industrySystems = $this->_esi->getIndustrySystems();
+        $dichstarSystem = collect($industrySystems)->first(function ($system) {
+            return $system->solar_system_id === 30000843;
+        });
+
+        Setting::setData('industry_indices', json_encode($dichstarSystem->cost_indices));
+    }
+
     private function _refreshPrices() {
         $pricesData = [];
         foreach ($this->_minJitaPrices as $typeId => $price) {
-            $pricesData[$typeId] = ['type_id' => $typeId, 'jita' => $price, 'dichstar' => null];
+            $pricesData[$typeId] = ['type_id' => $typeId, 'jita' => $price, 'dichstar' => null, 'average' => null, 'adjusted' => null];
         }
 
         foreach ($this->_minDichstarPrices as $typeId => $price) {
-            $priceData = $pricesData[$typeId] ?? ['type_id' => $typeId, 'jita' => null, 'dichstar' => null];
+            $priceData = $pricesData[$typeId] ?? ['type_id' => $typeId, 'jita' => null, 'dichstar' => null, 'average' => null, 'adjusted' => null];
             $priceData['dichstar'] = $price;
             $pricesData[$typeId] = $priceData;
+        }
+
+        $apiPrices = $this->_esi->getMarketPrices();
+        foreach ($apiPrices as $price) {
+            $priceData = $pricesData[$price->type_id] ?? ['type_id' => $price->type_id, 'jita' => null, 'dichstar' => null, 'average' => null, 'adjusted' => null];
+            $priceData['average'] = $price->average_price ?? null;
+            $priceData['adjusted'] = $price->adjusted_price ?? null;
+            $pricesData[$price->type_id] = $priceData;
         }
 
         DB::table('cached_prices')->truncate();
