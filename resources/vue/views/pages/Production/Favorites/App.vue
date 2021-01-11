@@ -21,7 +21,7 @@ export default {
     Search,
     FavoritesList,
   },
-  created() {
+  mounted() {
     this.loadFavorites();
   },
   data: () => ({
