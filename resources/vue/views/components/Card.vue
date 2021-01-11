@@ -57,18 +57,21 @@ export default {
     },
   },
   watch: {
-    loading(val) {
-      if (val) {
-        KTApp.block(this.$refs.card, {
-          overlayColor: '#ffffff',
-          type: 'loader',
-          state: 'primary',
-          opacity: 0.4,
-          size: 'lg'
-        });
-      } else {
-        KTApp.unblock(this.$refs.card);
-      }
+    loading: {
+      immediate: true,
+      handler(val) {
+        if (val) {
+          KTApp.block(this.$refs.card, {
+            overlayColor: '#ffffff',
+            type: 'loader',
+            state: 'primary',
+            opacity: 0.4,
+            size: 'lg'
+          });
+        } else {
+          KTApp.unblock(this.$refs.card);
+        }
+      },
     },
   },
 }

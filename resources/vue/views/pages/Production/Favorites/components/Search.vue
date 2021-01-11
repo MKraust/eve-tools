@@ -1,6 +1,6 @@
 <template>
   <mk-card title="Rigs search" :loading="isSearching" icon="fas fa-search">
-    <div class="form-group" :class="{ ['mb-' + (hasSearchResults ? '5' : '0')]: true }">
+    <div class="form-group" :class="{ ['mb-' + (hasSearchResults ? '8' : '0')]: true }">
       <div class="input-group">
         <input
           v-model="query"
@@ -19,7 +19,7 @@
 
     <div v-if="!hasSearchResults" class="text-center text-muted py-10">No search results</div>
 
-    <div v-for="(module, idx) in sortedSearchResults" :key="module.type_id" :class="{ 'mb-5': idx + 1 !== searchResults.length }">
+    <div v-for="(module, idx) in sortedSearchResults" :key="module.type_id" :class="{ 'mb-8': idx + 1 !== searchResults.length }">
       <Module
         :item="module"
         :favorite="isFavorite(module)"

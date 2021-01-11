@@ -1,12 +1,38 @@
 <template>
-  <div class="d-flex align-items-center">
+  <div class="d-flex align-items-start">
     <div class="symbol symbol-50 mr-5">
-      <span class="symbol-label">
-        <img :src="item.icon" class="module-icon" :alt="item.name">
+      <span class="symbol-label overflow-hidden">
+        <img :src="item.icon" class="module-icon" alt="">
       </span>
     </div>
-    <div class="d-flex flex-column flex-grow-1">
-      <span class="font-size-h6 text-dark-75">{{ item.name }}</span>
+    <div class="d-flex flex-column flex-grow-1 mr-5">
+      <span class="font-size-h6 font-weight-bold">{{ item.name }}</span>
+
+      <div class="metrics d-flex mt-2">
+        <div
+          v-for="(metricsGroup, metricsGroupIndex) in metrics"
+          :key="`group_${metricsGroupIndex}`"
+          class="d-flex mr-3"
+        >
+          <div class="d-flex flex-column text-muted mr-2">
+            <p v-for="(metric, metricIndex) in metricsGroup" :key="`metric_title_${metricIndex}`" :class="`mb-${metricIndex === metricsGroup.length ? 0 : 1}`">
+              {{ metric.title }}
+            </p>
+          </div>
+          <div class="d-flex flex-column font-weight-bold" :style="{ width: metricsGroupIndex === metrics.length ? 'auto' : '102px' }">
+            <p
+              v-for="(metric, metricIndex) in metricsGroup"
+              :key="`metric_value_${metricIndex}`"
+              :class="[
+                `mb-${metricIndex === metricsGroup.length ? 0 : 1}`,
+                metric.status && `text-${metric.status}`,
+              ]"
+            >
+              {{ metric.value }}
+            </p>
+          </div>
+        </div>
+      </div>
 
       <div v-show="isTrackingFormShown" class="tracking-form justify-content-start mt-2">
         <div class="form-group mb-0">
@@ -48,26 +74,8 @@
           </div>
         </div>
       </div>
-
-      <div class="prices d-flex mt-2">
-        <div class="d-flex flex-column mr-2">
-          <p class="mb-1">Prod. cost:</p>
-          <p class="mb-0">Dichstar:</p>
-        </div>
-        <div class="d-flex flex-column mr-3" :style="{ width: '102px' }">
-          <p class="font-weight-lighter mb-1">{{ item.costs.total ? formatMoney(item.costs.total) : '-' }}</p>
-          <p class="font-weight-lighter mb-0">{{ item.prices.dichstar ? formatMoney(item.prices.dichstar) : '-' }}</p>
-        </div>
-        <div class="d-flex flex-column mr-2">
-          <p class="mb-1">Margin:</p>
-          <p class="mb-0">Margin percent:</p>
-        </div>
-        <div class="d-flex flex-column">
-          <p class="font-weight-lighter mb-1" :class="item.prices.margin_percent > 0 ? 'text-success' : 'text-danger'">{{ item.prices.margin ? formatMoney(item.prices.margin) : '-' }}</p>
-          <p class="font-weight-lighter mb-0" :class="item.prices.margin_percent > 0 ? 'text-success' : 'text-danger'">{{ item.prices.margin_percent ? `${item.prices.margin_percent}%` : '-' }}</p>
-        </div>
-      </div>
     </div>
+
     <div v-if="trackButtonShown" class="btn btn-hover-light-primary btn-sm btn-icon" @click="toggleTrackingForm">
       <i class="text-primary fas" :class="isTrackingFormShown ? 'fa-eye-slash' : 'fa-eye'"></i>
     </div>
@@ -103,6 +111,34 @@ export default {
     productionCount: 0,
     inventionCount: 0,
   }),
+  computed: {
+    metrics() {
+      return [
+        [
+          {
+            title: 'Prod. cost',
+            value: this.item.costs.total ? this.formatMoney(this.item.costs.total) : '-',
+          },
+          {
+            title: 'Dichstar',
+            value: this.item.prices.dichstar ? this.formatMoney(this.item.prices.dichstar) : '-',
+          },
+        ],
+        [
+          {
+            title: 'Margin',
+            value: this.item.prices.margin ? this.formatMoney(this.item.prices.margin) : '-',
+            status: this.item.prices.margin_percent > 0 ? 'success' : 'danger',
+          },
+          {
+            title: 'Margin, %',
+            value: this.item.prices.margin_percent ? `${this.formatMoney(this.item.prices.margin_percent)}%` : '-',
+            status: this.item.prices.margin_percent > 0 ? 'success' : 'danger',
+          },
+        ],
+      ];
+    },
+  },
   methods: {
     toggleFavorite() {
       this.$emit('toggle-favorite');
@@ -126,7 +162,7 @@ export default {
       this.toggleTrackingForm();
     },
     formatMoney(money) {
-      return String(money).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+      return String(money).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
     },
   },
 }
@@ -134,10 +170,8 @@ export default {
 
 <style lang="scss" scoped>
 .module-icon {
-  width: 44px;
-  height: 44px;
-
-  border-radius: 0.42rem;
+  width: 100%;
+  height: 100%;
 }
 
 .tracking-form {
