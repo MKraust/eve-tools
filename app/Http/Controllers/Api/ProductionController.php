@@ -171,6 +171,9 @@ class ProductionController extends Controller
     private function _convertTypeToApi($type) {
         $productionCost = $this->_productionService->getTypeProductionCost($type);
         $inventionCost = $type->tech_level === 2 ? $this->_productionService->getTypeInventionCost($type) : null;
+        $totalCost = $productionCost + ($inventionCost ?? 0);
+        $margin = $type->dichstarPrice !== null ? $type->dichstarPrice * 0.9575 - $totalCost : null;
+        $marginPercent = $totalCost > 0 ? round($margin / $totalCost * 100, 2) : 0;
 
         return [
             'type_id'    => $type->typeID,
@@ -179,9 +182,14 @@ class ProductionController extends Controller
             'tech_level' => $type->tech_level,
             'costs'      => [
                 'production' => $productionCost,
-                'invention'  => $inventionCost,
-                'total'      => $productionCost + ($inventionCost ?? 0),
+                'invention'  => $inventionCost !== null ? (string)$inventionCost : null,
+                'total'      => $totalCost,
             ],
+            'prices'     => [
+                'dichstar'       => $type->dichstarPrice !== null ? (string)$type->dichstarPrice : null,
+                'margin'         => $margin !== null ? (string)$margin : null,
+                'margin_percent' => $marginPercent,
+            ]
         ];
     }
 

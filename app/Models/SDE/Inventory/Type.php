@@ -38,6 +38,10 @@ class Type extends Model
         return $this->price->dichstar ?? null;
     }
 
+    public function getAdjustedPriceAttribute() {
+        return $this->price->adjusted ?? null;
+    }
+
     public function getBlueprintProductionMaterialsAttribute() {
         return $this->blueprint->productionMaterials;
     }
