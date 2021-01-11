@@ -10,7 +10,7 @@
 
       <div v-show="isTrackingFormShown" class="tracking-form justify-content-start mt-2">
         <div class="form-group mb-0">
-          <div class="input-group mr-1">
+          <div class="input-group input-group-sm mr-1">
             <div class="input-group-prepend">
               <span class="input-group-text">
                 <i class="fas fa-industry"></i>
@@ -46,9 +46,25 @@
           <div class="btn btn-hover-light-primary btn-sm btn-icon" @click="trackType">
             <i class="text-primary fas fa-save"></i>
           </div>
-          <div class="btn btn-hover-light-danger btn-sm btn-icon" @click="toggleTrackingForm">
-            <i class="fas fa-times"></i>
-          </div>
+        </div>
+      </div>
+
+      <div class="prices d-flex mt-2">
+        <div class="d-flex flex-column mr-2">
+          <p class="mb-1">Prod. cost:</p>
+          <p class="mb-0">Dichstar:</p>
+        </div>
+        <div class="d-flex flex-column mr-3" :style="{ width: '102px' }">
+          <p class="font-weight-lighter mb-1">{{ item.costs.total ? formatMoney(item.costs.total) : '-' }}</p>
+          <p class="font-weight-lighter mb-0">{{ item.prices.dichstar ? formatMoney(item.prices.dichstar) : '-' }}</p>
+        </div>
+        <div class="d-flex flex-column mr-2">
+          <p class="mb-1">Margin:</p>
+          <p class="mb-0">Margin percent:</p>
+        </div>
+        <div class="d-flex flex-column">
+          <p class="font-weight-lighter mb-1" :class="item.prices.margin_percent > 0 ? 'text-success' : 'text-danger'">{{ item.prices.margin ? formatMoney(item.prices.margin) : '-' }}</p>
+          <p class="font-weight-lighter mb-0" :class="item.prices.margin_percent > 0 ? 'text-success' : 'text-danger'">{{ item.prices.margin_percent ? `${item.prices.margin_percent}%` : '-' }}</p>
         </div>
       </div>
     </div>
@@ -108,6 +124,9 @@ export default {
 
       await this.$api.addTrackedType(this.item.type_id, this.productionCount || 0, this.inventionCount || 0);
       this.toggleTrackingForm();
+    },
+    formatMoney(money) {
+      return String(money).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
     },
   },
 }
