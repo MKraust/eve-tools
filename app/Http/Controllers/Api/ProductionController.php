@@ -186,6 +186,7 @@ class ProductionController extends Controller
                 'total'      => $totalCost,
             ],
             'prices'     => [
+                'jita'           => $type->jitaPrice !== null ? (string)$type->jitaPrice : null,
                 'dichstar'       => $type->dichstarPrice !== null ? (string)$type->dichstarPrice : null,
                 'margin'         => $margin !== null ? (string)$margin : null,
                 'margin_percent' => $marginPercent,
