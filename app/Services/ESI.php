@@ -15,8 +15,8 @@ class ESI {
     public function __construct() {
         $config = Configuration::getInstance();
         $config->setConfiguration(new EsiConfiguration([
-            'logfile_location'    => storage_path() . php_sapi_name() === 'cli' ? '/cli' : '' . '/logs',
-            'file_cache_location' => storage_path() . php_sapi_name() === 'cli' ? '/cli' : '' . '/esi',
+            'logfile_location'    => storage_path() . (php_sapi_name() === 'cli' ? '/cli' : '') . '/logs',
+            'file_cache_location' => storage_path() . (php_sapi_name() === 'cli' ? '/cli' : '') . '/esi',
         ]));
 
         $authentication = new EsiAuthentication([
