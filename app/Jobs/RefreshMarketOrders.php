@@ -111,7 +111,11 @@ class RefreshMarketOrders implements ShouldQueue
         }
 
         DB::table('cached_prices')->truncate();
-        CachedPrice::insert(array_values($pricesData));
+
+        $chunks = array_chunk(array_values($pricesData), 500);
+        foreach ($chunks as $chunk) {
+            CachedPrice::insert($chunk);
+        }
     }
 
     private function _clearCachedOrders() {
