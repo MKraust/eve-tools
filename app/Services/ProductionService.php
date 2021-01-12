@@ -1,13 +1,18 @@
 <?php
 
-
 namespace App\Services;
-
 
 use App\Models\SDE\Inventory\Type;
 use App\Models\Setting;
 
 class ProductionService {
+
+    private const APPROX_INVENTION_CHANCE = 26;
+    private const RUNS_PER_INVENTED_COPY = 10;
+    private const USED_DECRYPTOR_ID = 34203;
+
+    private const MANUFACTURING_JOB_COST_MODIFIER = 0.95;
+    private const INVENTION_JOB_COST_MODIFIER = 0.74;
 
     private $_esi;
 
@@ -17,7 +22,7 @@ class ProductionService {
 
     public function __construct() {
         $this->_esi = new ESI;
-        $this->_decryptor = Type::find(34203);
+        $this->_decryptor = Type::find(self::USED_DECRYPTOR_ID);
 
         $industryIndicesSetting = Setting::getData('industry_indices');
         $industryIndicesJson = $industryIndicesSetting !== null ? $industryIndicesSetting->value : null;
@@ -36,7 +41,7 @@ class ProductionService {
             return $index['activity'] === 'manufacturing';
         });
 
-        $jobInstallCost = $systemIndex !== null ? $EIV * $systemIndex['cost_index'] * 0.95 : 0;
+        $jobInstallCost = $systemIndex !== null ? $EIV * $systemIndex['cost_index'] * self::MANUFACTURING_JOB_COST_MODIFIER : 0;
 
         return ceil($cost + $jobInstallCost);
     }
@@ -53,8 +58,8 @@ class ProductionService {
             return $index['activity'] === 'invention';
         });
 
-        $jobInstallCost = $systemIndex !== null ? $EIV * $systemIndex['cost_index'] * 0.74 : 0;
+        $jobInstallCost = $systemIndex !== null ? $EIV * $systemIndex['cost_index'] * self::INVENTION_JOB_COST_MODIFIER : 0;
 
-        return ceil(($cost + $this->_decryptor->jitaPrice + $jobInstallCost) * 4 / 10);
+        return ceil(($cost + $this->_decryptor->jitaPrice + $jobInstallCost) / (self::APPROX_INVENTION_CHANCE / 100) / self::RUNS_PER_INVENTED_COPY);
     }
 }
