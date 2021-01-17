@@ -87,11 +87,14 @@ class TradingController extends Controller
             'icon'       => $type->icon,
             'volume'     => $type->volume, // TODO: use volume for ships from invVolumes
             'prices'     => [
-                'jita'           => $jitaPrice !== null ? (string)$jitaPrice : null,
-                'dichstar'       => $dichstarPrice !== null ? (string)$dichstarPrice : null,
-                'total_cost'     => $totalCost !== null ? (string)$totalCost : null,
-                'margin'         => $margin !== null ? (string)$margin : null,
-                'margin_percent' => $marginPercent,
+                'jita'                 => $jitaPrice !== null ? (string)$jitaPrice : null,
+                'dichstar'             => $dichstarPrice !== null ? (string)$dichstarPrice : null,
+                'total_cost'           => $totalCost !== null ? (string)$totalCost : null,
+                'margin'               => $margin !== null ? (string)$margin : null,
+                'margin_percent'       => $marginPercent,
+                'monthly_volume'       => $type->monthlyVolume,
+                'weekly_volume'        => $type->weeklyVolume,
+                'average_daily_volume' => $type->averageDailyVolume,
             ],
         ];
     }

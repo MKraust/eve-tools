@@ -42,6 +42,18 @@ class Type extends Model
         return $this->price->adjusted ?? null;
     }
 
+    public function getMonthlyVolumeAttribute() {
+        return $this->price->monthly_volume ?? null;
+    }
+
+    public function getWeeklyVolumeAttribute() {
+        return $this->price->weekly_volume ?? null;
+    }
+
+    public function getAverageDailyVolumeAttribute() {
+        return $this->price->average_daily_volume ?? null;
+    }
+
     public function getBlueprintProductionMaterialsAttribute() {
         return $this->blueprint->productionMaterials;
     }

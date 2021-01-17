@@ -100,8 +100,6 @@ export default {
             title: 'Dichstar',
             value: this.item.prices.dichstar ? this.formatMoney(this.item.prices.dichstar) : '-',
           },
-        ],
-        [
           {
             title: 'Margin',
             value: this.item.prices.margin ? this.formatMoney(this.item.prices.margin) : '-',
@@ -111,6 +109,20 @@ export default {
             title: 'Margin, %',
             value: this.item.prices.margin_percent ? `${this.formatMoney(this.item.prices.margin_percent)}%` : '-',
             status: this.item.prices.margin_percent > 0 ? 'success' : 'danger',
+          },
+        ],
+        [
+          {
+            title: 'Monthly',
+            value: this.item.prices.monthly_volume ? this.item.prices.monthly_volume : '-',
+          },
+          {
+            title: 'Weekly',
+            value: this.item.prices.weekly_volume ? this.item.prices.weekly_volume : '-',
+          },
+          {
+            title: 'Avg. daily',
+            value: this.item.prices.average_daily_volume ? Number(this.item.prices.average_daily_volume).toFixed(2) : '-',
           },
         ],
       ];
