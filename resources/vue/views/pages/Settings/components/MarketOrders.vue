@@ -1,7 +1,7 @@
 <template>
   <mk-card title="Market prices update" :loading="!isInitialSettingsLoadingDone" icon="fas fa-chart-line">
     <div v-if="settings !== null" class="row">
-      <div class="col-3">
+      <div class="col-2">
         <div class="d-flex flex-column">
           <div class="mb-8">
             <div class="font-size-sm text-muted font-weight-bold">Start date</div>
@@ -13,7 +13,37 @@
           </div>
         </div>
       </div>
-      <div class="col-6">
+      <div class="col-2">
+        <div class="d-flex flex-column">
+          <div class="d-flex align-items-center mb-8">
+            <div class="symbol symbol-40 mr-3 flex-shrink-0" :class="`symbol-${pricesUpdateStatusColor}`">
+              <div class="symbol-label">
+                <span class="svg-icon svg-icon-2x" :class="`svg-icon-${pricesUpdateIconStatusColor}`">
+                  <component :is="pricesUpdateIconComponent" />
+                </span>
+              </div>
+            </div>
+            <div>
+              <div class="font-size-sm text-muted font-weight-bold mb-1">Prices update</div>
+              <div class="font-size-h6 text-dark-75 font-weight-bolder">{{ pricesUpdateText }}</div>
+            </div>
+          </div>
+          <div class="d-flex align-items-center">
+            <div class="symbol symbol-40 mr-3 flex-shrink-0" :class="`symbol-${volumesUpdateStatusColor}`">
+              <div class="symbol-label">
+                <span class="svg-icon svg-icon-2x" :class="`svg-icon-${volumesUpdateIconStatusColor}`">
+                  <component :is="volumesUpdateIconComponent" />
+                </span>
+              </div>
+            </div>
+            <div>
+              <div class="font-size-sm text-muted font-weight-bold mb-1">Volumes update</div>
+              <div class="font-size-h6 text-dark-75 font-weight-bolder">{{ volumesUpdateText }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-8">
         <div class="d-flex flex-column">
           <div class="d-flex align-items-center mb-8">
             <div class="symbol symbol-40 mr-3 flex-shrink-0" :class="`symbol-${dichstarOrdersUpdateStatusColor}`">
@@ -45,36 +75,6 @@
             </div>
             <div class="progress flex-grow-1" style="height: 40px;">
               <div class="progress-bar" :class="{ [`bg-${jitaOrdersUpdateIconStatusColor}`]: true, ['progress-bar-striped progress-bar-animated']: isUpdateInProgress && !isJitaOrdersUpdateFinished }" :style="{ width: `${jitaProgress}%` }"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-3">
-        <div class="d-flex flex-column">
-          <div class="d-flex align-items-center mb-8">
-            <div class="symbol symbol-40 mr-3 flex-shrink-0" :class="`symbol-${pricesUpdateStatusColor}`">
-              <div class="symbol-label">
-                <span class="svg-icon svg-icon-2x" :class="`svg-icon-${pricesUpdateIconStatusColor}`">
-                  <component :is="pricesUpdateIconComponent" />
-                </span>
-              </div>
-            </div>
-            <div>
-              <div class="font-size-sm text-muted font-weight-bold mb-1">Prices update</div>
-              <div class="font-size-h6 text-dark-75 font-weight-bolder">{{ pricesUpdateText }}</div>
-            </div>
-          </div>
-          <div class="d-flex align-items-center">
-            <div class="symbol symbol-40 mr-3 flex-shrink-0" :class="`symbol-${volumesUpdateStatusColor}`">
-              <div class="symbol-label">
-                <span class="svg-icon svg-icon-2x" :class="`svg-icon-${volumesUpdateIconStatusColor}`">
-                  <component :is="volumesUpdateIconComponent" />
-                </span>
-              </div>
-            </div>
-            <div>
-              <div class="font-size-sm text-muted font-weight-bold mb-1">Volumes update</div>
-              <div class="font-size-h6 text-dark-75 font-weight-bolder">{{ volumesUpdateText }}</div>
             </div>
           </div>
         </div>
