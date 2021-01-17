@@ -1,11 +1,7 @@
 <template>
   <mk-page :menu-items="menuItems">
     <div class="container">
-      <div class="row">
-        <div class="col-6">
-          <MarketOrders />
-        </div>
-      </div>
+        <MarketOrders />
     </div>
   </mk-page>
 </template>

@@ -12,7 +12,13 @@ class SettingsController extends Controller
     public function getMarketOrdersUpdateInfo() {
         $info = Setting::getData('market_orders_update');
 
-        return $info !== null ? $info->value : 'null';
+        return $info->value ?? 'null';
+    }
+
+    public function getMarketHistoryUpdateInfo() {
+        $info = Setting::getData('market_history_update_data');
+
+        return $info->value ?? 'null';
     }
 
     public function refreshMarketOrders() {
