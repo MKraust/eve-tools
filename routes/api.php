@@ -16,7 +16,8 @@ use App\Http\Controllers;
 */
 
 Route::prefix('settings')->group(function () {
-    Route::get('/market-orders-update-info', [Controllers\Api\SettingsController::class, 'getMarketOrdersUpdateInfo']);
+    Route::get('/market-orders-update-info',  [Controllers\Api\SettingsController::class, 'getMarketOrdersUpdateInfo']);
+    Route::get('/market-history-update-info', [Controllers\Api\SettingsController::class, 'getMarketHistoryUpdateInfo']);
     Route::post('/refresh-market-orders',     [Controllers\Api\SettingsController::class, 'refreshMarketOrders']);
 });
 
