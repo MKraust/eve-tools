@@ -40,7 +40,7 @@
               </div>
             </div>
             <div :style="{ width: '120px' }" class="mr-5">
-              <div class="font-size-sm text-muted font-weight-bold mb-1">Dichstar orders</div>
+              <div class="font-size-sm text-muted font-weight-bold mb-1">Jita orders</div>
               <div class="font-size-h6 text-dark-75 font-weight-bolder">{{ jitaOrdersUpdateText }}</div>
             </div>
             <div class="progress flex-grow-1" style="height: 40px;">
@@ -162,7 +162,7 @@ export default {
       return total ? Math.floor(processed / total * 100) : 0;
     },
     isJitaOrdersUpdateFinished() {
-      return this.dichstarProgress === 100;
+      return this.jitaProgress === 100;
     },
     dichstarProgress() {
       if (!this.settings) {
