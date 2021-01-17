@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\CachedOrdersHistory;
 use App\Models\CachedPrice;
 use App\Models\Setting;
 use Illuminate\Bus\Queueable;
@@ -14,8 +15,14 @@ use App\Models\CachedOrder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class RefreshMarketOrders implements ShouldQueue
+class RefreshMarketData implements ShouldQueue
 {
+    private const THE_FORGE_REGION_ID = 10000002;
+    private const JITA_TRADING_HUB_ID = 60003760;
+    private const DICHSTAR_SOLAR_SYSTEM_ID = 30000843;
+    private const DICHSTAR_STRUCTURE_ID = 1031787606461;
+    private const INSMOTHER_REGION_ID = 10000009;
+
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     private $_esi;
@@ -25,6 +32,8 @@ class RefreshMarketOrders implements ShouldQueue
     private $_minJitaPrices = [];
 
     private $_minDichstarPrices = [];
+
+    private $_pricesData = [];
 
     public function __construct()
     {
@@ -65,6 +74,10 @@ class RefreshMarketOrders implements ShouldQueue
             $this->_refreshDichstarOrders();
             $this->_refreshJitaOrders();
 
+            if ($this->_isNeedToRefreshOrdersHistory()) {
+                $this->_refreshOrdersHistory();
+            }
+
             $this->_refreshPrices();
             $this->_refreshSystemIndustryIndices();
         } catch (\Throwable $t) {
@@ -72,6 +85,7 @@ class RefreshMarketOrders implements ShouldQueue
             $this->_saveSettings();
 
             Log::info($t->getMessage());
+            Log::info($t->getTraceAsString());
 
             throw $t;
         }
@@ -81,41 +95,149 @@ class RefreshMarketOrders implements ShouldQueue
         $this->_saveSettings();
     }
 
+    private function _isNeedToRefreshOrdersHistory() {
+        $marketHistoryLastUpdateDateRaw = Setting::getData('market_history_last_update_date');
+        return $marketHistoryLastUpdateDateRaw !== null
+            ? new \DateTime($marketHistoryLastUpdateDateRaw->value) <= (new \DateTime('now'))->modify('-1 day')
+            : true;
+    }
+
+    private function _refreshOrdersHistory() {
+        $typeIds = array_keys($this->_minDichstarPrices);
+
+        $this->_clearCachedOrdersHistory($typeIds);
+
+        $ordersHistoryData = [];
+        foreach ($typeIds as $typeId) {
+            Log::info("Getting market history for type {$typeId}");
+
+            try {
+                $apiOrdersHistory = $this->_esi->getMarketHistory(self::INSMOTHER_REGION_ID, $typeId);
+            } catch (\Throwable $t) {
+                if ($t->getMessage() === 'Type not found!') {
+                    continue;
+                }
+            }
+
+            foreach ($apiOrdersHistory as $apiOrdersHistoryDatum) {
+                if (new \DateTime($apiOrdersHistoryDatum->date) < now()->modify('-31 day')) {
+                    continue;
+                }
+
+                $ordersHistoryData[] = [
+                    'type_id' => $typeId,
+                    'average' => $apiOrdersHistoryDatum->average,
+                    'date' => $apiOrdersHistoryDatum->date,
+                    'highest' => $apiOrdersHistoryDatum->highest,
+                    'lowest' => $apiOrdersHistoryDatum->lowest,
+                    'order_count' => $apiOrdersHistoryDatum->order_count,
+                    'volume' => $apiOrdersHistoryDatum->volume,
+                ];
+            }
+        }
+
+        $chunks = array_chunk(array_values($ordersHistoryData), 500);
+        foreach ($chunks as $chunk) {
+            CachedOrdersHistory::insert($chunk);
+        }
+
+        Setting::setData('market_history_last_update_date', now()->format('Y-m-d H:i:s'));
+    }
+
+    private function _clearCachedOrdersHistory(array $typeIds) {
+        $chunks = array_chunk($typeIds, 500);
+        foreach ($chunks as $chunk) {
+            CachedOrdersHistory::whereIn('type_id', $chunk)->delete();
+        }
+
+        CachedOrdersHistory::where('date', '<', now()->modify('-31 day')->format('Y-m-d'))->delete();
+    }
+
     private function _refreshSystemIndustryIndices() {
         $industrySystems = $this->_esi->getIndustrySystems();
         $dichstarSystem = collect($industrySystems)->first(function ($system) {
-            return $system->solar_system_id === 30000843;
+            return $system->solar_system_id === self::DICHSTAR_SOLAR_SYSTEM_ID;
         });
 
         Setting::setData('industry_indices', json_encode($dichstarSystem->cost_indices));
     }
 
     private function _refreshPrices() {
-        $pricesData = [];
-        foreach ($this->_minJitaPrices as $typeId => $price) {
-            $pricesData[$typeId] = ['type_id' => $typeId, 'jita' => $price, 'dichstar' => null, 'average' => null, 'adjusted' => null];
-        }
-
-        foreach ($this->_minDichstarPrices as $typeId => $price) {
-            $priceData = $pricesData[$typeId] ?? ['type_id' => $typeId, 'jita' => null, 'dichstar' => null, 'average' => null, 'adjusted' => null];
-            $priceData['dichstar'] = $price;
-            $pricesData[$typeId] = $priceData;
-        }
-
-        $apiPrices = $this->_esi->getMarketPrices();
-        foreach ($apiPrices as $price) {
-            $priceData = $pricesData[$price->type_id] ?? ['type_id' => $price->type_id, 'jita' => null, 'dichstar' => null, 'average' => null, 'adjusted' => null];
-            $priceData['average'] = $price->average_price ?? null;
-            $priceData['adjusted'] = $price->adjusted_price ?? null;
-            $pricesData[$price->type_id] = $priceData;
-        }
+        $this->_aggregateJitaPrices();
+        $this->_aggregateDichstarPrices();
+        $this->_aggregateAverageAndAdjustedPrices();
+        $this->_aggregateVolumes();
 
         DB::table('cached_prices')->truncate();
 
-        $chunks = array_chunk(array_values($pricesData), 500);
+        $chunks = array_chunk(array_values($this->_pricesData), 500);
         foreach ($chunks as $chunk) {
             CachedPrice::insert($chunk);
         }
+    }
+
+    private function _aggregateJitaPrices() {
+        foreach ($this->_minJitaPrices as $typeId => $price) {
+            $priceData = $this->_pricesData[$typeId] ?? $this->_getEmptyPricesData($typeId);
+
+            $priceData['jita'] = $price;
+            $this->_pricesData[$typeId] = $priceData;
+        }
+    }
+
+    private function _aggregateDichstarPrices() {
+        foreach ($this->_minDichstarPrices as $typeId => $price) {
+            $priceData = $this->_pricesData[$typeId] ?? $this->_getEmptyPricesData($typeId);
+            $priceData['dichstar'] = $price;
+
+            $this->_pricesData[$typeId] = $priceData;
+        }
+    }
+
+    private function _aggregateAverageAndAdjustedPrices() {
+        $apiPrices = $this->_esi->getMarketPrices();
+        foreach ($apiPrices as $price) {
+            $priceData = $this->_pricesData[$price->type_id] ?? $this->_getEmptyPricesData($price->type_id);
+            $priceData['average'] = $price->average_price ?? null;
+            $priceData['adjusted'] = $price->adjusted_price ?? null;
+
+            $this->_pricesData[$price->type_id] = $priceData;
+        }
+    }
+
+    private function _aggregateVolumes() {
+        $typeIds = array_keys($this->_minDichstarPrices);
+        $typeIdsChunks = array_chunk($typeIds, 100);
+        foreach ($typeIdsChunks as $typeIdsChunk) {
+            $monthAgo = now()->modify('-30 days')->format('Y-m-d');
+            $ordersHistoryData = CachedOrdersHistory::whereIn('type_id', $typeIdsChunk)->where('date', '>=', $monthAgo)->get();
+
+            foreach ($ordersHistoryData->groupBy('type_id') as $typeId => $typeOrdersHistoryData) {
+                $priceData = $this->_pricesData[$typeId] ?? $this->_getEmptyPricesData($typeId);
+
+                $monthlyVolume = $typeOrdersHistoryData->sum('volume');
+                $priceData['monthly_volume'] = $monthlyVolume;
+                $priceData['weekly_volume'] = $typeOrdersHistoryData->filter(function ($historyDatum) {
+                    return new \DateTime($historyDatum->date) >= now()->modify('-7 days');
+                })->sum->volume;
+                $priceData['average_daily_volume'] = round($monthlyVolume / 30, 2);
+
+                $this->_pricesData[$typeId] = $priceData;
+            }
+        }
+    }
+
+    private function _getEmptyPricesData(int $typeId) {
+        return [
+            'type_id' => $typeId,
+            'jita' => null,
+            'dichstar' => null,
+            'average' => null,
+            'adjusted' => null,
+            'monthly_volume' => null,
+            'weekly_volume' => null,
+            'average_daily_volume' => null,
+        ];
     }
 
     private function _clearCachedOrders() {
@@ -131,12 +253,12 @@ class RefreshMarketOrders implements ShouldQueue
             $this->_logMemoryUsage();
 
             $orders = $this->_retry(function () use ($page) {
-               return $this->_esi->getMarketOrders(10000002, 'sell', $page);
+               return $this->_esi->getMarketOrders(self::THE_FORGE_REGION_ID, 'sell', $page);
             }, 4);
             Log::info('Request succeeded');
 
             $ordersCollection = collect($orders->getArrayCopy())->filter(function ($order) {
-                return $order->location_id === 60003760;
+                return $order->location_id === self::JITA_TRADING_HUB_ID;
             });
 
             foreach ($ordersCollection as $order) {
@@ -163,7 +285,7 @@ class RefreshMarketOrders implements ShouldQueue
             $this->_logMemoryUsage();
 
             $orders = $this->_retry(function () use ($page) {
-                return $this->_esi->getStructureOrders(1031787606461, $page);
+                return $this->_esi->getStructureOrders(self::DICHSTAR_STRUCTURE_ID, $page);
             }, 4);
             Log::info('Request succeeded');
 

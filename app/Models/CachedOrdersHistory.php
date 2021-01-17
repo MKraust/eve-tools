@@ -5,20 +5,23 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class CachedPrice extends Model
+class CachedOrdersHistory extends Model
 {
     use HasFactory;
 
+    protected $table = 'cached_orders_history';
+
     protected $connection = 'mysql';
+
+    public $timestamps = false;
 
     protected $fillable = [
         'type_id',
-        'jita',
-        'dichstar',
         'average',
-        'adjusted',
-        'monthly_volume',
-        'weekly_volume',
-        'average_daily_volume',
+        'date',
+        'highest',
+        'lowest',
+        'order_count',
+        'volume',
     ];
 }

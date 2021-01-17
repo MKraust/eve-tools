@@ -22,7 +22,7 @@ class SettingsController extends Controller
                     fastcgi_finish_request();
                 }
 
-                \App\Jobs\RefreshMarketOrders::dispatchSync();
+                \App\Jobs\RefreshMarketData::dispatchSync();
             } catch (\Throwable $t) {
                 Log::error($t->getMessage());
                 Log::error($t->getTraceAsString());

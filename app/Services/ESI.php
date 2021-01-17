@@ -56,4 +56,10 @@ class ESI {
     public function getMarketPrices() {
         return $this->_client->invoke('get', '/markets/prices/');
     }
+
+    public function getMarketHistory(int $regionId, int $typeId) {
+        return $this->_client
+            ->setQueryString(['type_id' => $typeId])
+            ->invoke('get', '/markets/{region_id}/history', ['region_id' => $regionId]);
+    }
 }
