@@ -80,33 +80,6 @@
         </div>
       </div>
     </div>
-<!--    <div class="d-flex mb-5">-->
-<!--      <button class="btn btn-primary mr-5" :class="{ disabled: isUpdateInProgress }" @click="refreshMarketOrders">Refresh</button>-->
-<!--      <div v-if="settings !== null" class="info d-flex">-->
-<!--        <div class="d-flex flex-column mr-2">-->
-<!--          <p>Start date:</p>-->
-<!--          <p>End date:</p>-->
-<!--        </div>-->
-<!--        <div class="d-flex flex-column mr-3">-->
-<!--          <p>{{ settings.start_date }}</p>-->
-<!--          <p>{{ settings.end_date || '-' }}</p>-->
-<!--        </div>-->
-<!--        <div class="d-flex flex-column mr-2">-->
-<!--          <p>Dichstar:</p>-->
-<!--          <p>Jita:</p>-->
-<!--        </div>-->
-<!--        <div class="d-flex flex-column">-->
-<!--          <p>{{ settings.progress.dichstar.processed_pages || '-' }} / {{ settings.progress.dichstar.total_pages || '-' }}</p>-->
-<!--          <p>{{ settings.progress.jita.processed_pages || '-' }} / {{ settings.progress.jita.total_pages || '-' }}</p>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--    <div class="progress mb-2" style="height: 20px;">-->
-<!--      <div class="progress-bar" :style="{ width: `${dichstarProgress}%` }"></div>-->
-<!--    </div>-->
-<!--    <div class="progress mb-2" style="height: 20px;">-->
-<!--      <div class="progress-bar" :style="{ width: `${jitaProgress}%` }"></div>-->
-<!--    </div>-->
   </mk-card>
 </template>
 

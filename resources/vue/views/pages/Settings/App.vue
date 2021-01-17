@@ -4,7 +4,7 @@
         <div>
           <MarketOrders />
         </div>
-        <div class="mt-15">
+        <div class="mt-8">
           <MarketHistory />
         </div>
     </div>
