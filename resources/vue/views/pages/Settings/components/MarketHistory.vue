@@ -18,7 +18,7 @@
               </span>
             </div>
           </div>
-          <div :style="{ width: '145px' }" class="mr-5">
+          <div :style="{ width: '120px' }" class="mr-5">
             <div class="font-size-sm text-muted font-weight-bold mb-1">Items</div>
             <div class="font-size-h6 text-dark-75 font-weight-bolder">{{ statusText }}</div>
           </div>
