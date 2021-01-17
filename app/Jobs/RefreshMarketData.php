@@ -80,11 +80,6 @@ class RefreshMarketData implements ShouldQueue
 
             $this->_refreshDichstarOrders();
             $this->_refreshJitaOrders();
-
-            if ($this->_isNeedToRefreshOrdersHistory()) {
-                $this->_refreshOrdersHistory();
-            }
-
             $this->_refreshPrices();
             $this->_refreshSystemIndustryIndices();
         } catch (\Throwable $t) {
@@ -100,94 +95,6 @@ class RefreshMarketData implements ShouldQueue
         $this->_settings['status'] = 'finished';
         $this->_settings['end_date'] = (new \DateTime)->format('Y-m-d H:i:s');
         $this->_saveSettings();
-    }
-
-    private function _isNeedToRefreshOrdersHistory() {
-        return $this->_marketHistoryUpdateData !== null
-            ? new \DateTime($this->_marketHistoryUpdateData['end_date']) <= (new \DateTime('now'))->modify('-1 day')
-            : true;
-    }
-
-    private function _refreshOrdersHistory() {
-        $this->_marketHistoryUpdateData = [
-            'status'     => 'in_progress',
-            'start_date' => now()->format('Y-m-d H:i:s'),
-            'end_date'   => null,
-            'progress'   => [
-                'is_old_cache_cleared' => false,
-                'total_types'          => null,
-                'types_processed'      => null,
-            ],
-        ];
-        $this->_saveMarketHistoryUpdateData();
-
-        try {
-            $typeIds = array_keys($this->_minDichstarPrices);
-            $this->_marketHistoryUpdateData['progress']['total_types'] = count($typeIds);
-            $this->_saveMarketHistoryUpdateData();
-
-            $this->_clearCachedOrdersHistory($typeIds);
-            $this->_marketHistoryUpdateData['progress']['is_old_cache_cleared'] = true;
-            $this->_saveMarketHistoryUpdateData();
-
-            $ordersHistoryData = [];
-            foreach ($typeIds as $typeId) {
-                Log::info("Getting market history for type {$typeId}");
-
-                try {
-                    $apiOrdersHistory = $this->_esi->getMarketHistory(self::INSMOTHER_REGION_ID, $typeId);
-                } catch (\Throwable $t) {
-                    if ($t->getMessage() === 'Type not found!') {
-                        $this->_marketHistoryUpdateData['progress']['types_processed'] = ($this->_marketHistoryUpdateData['progress']['types_processed'] ?? 0) + 1;
-                        $this->_saveMarketHistoryUpdateData();
-                        continue;
-                    }
-                }
-
-                foreach ($apiOrdersHistory as $apiOrdersHistoryDatum) {
-                    if (new \DateTime($apiOrdersHistoryDatum->date) < now()->modify('-31 day')) {
-                        continue;
-                    }
-
-                    $ordersHistoryData[] = [
-                        'type_id'     => $typeId,
-                        'average'     => $apiOrdersHistoryDatum->average,
-                        'date'        => $apiOrdersHistoryDatum->date,
-                        'highest'     => $apiOrdersHistoryDatum->highest,
-                        'lowest'      => $apiOrdersHistoryDatum->lowest,
-                        'order_count' => $apiOrdersHistoryDatum->order_count,
-                        'volume'      => $apiOrdersHistoryDatum->volume,
-                    ];
-                }
-
-                $this->_marketHistoryUpdateData['progress']['types_processed'] = ($this->_marketHistoryUpdateData['progress']['types_processed'] ?? 0) + 1;
-                $this->_saveMarketHistoryUpdateData();
-            }
-
-            $chunks = array_chunk(array_values($ordersHistoryData), 500);
-            foreach ($chunks as $chunk) {
-                CachedOrdersHistory::insert($chunk);
-            }
-
-            $this->_marketHistoryUpdateData['status'] = 'finished';
-            $this->_marketHistoryUpdateData['end_date'] = now()->format('Y-m-d H:i:s');
-            $this->_saveMarketHistoryUpdateData();
-        } catch (\Throwable $t) {
-            $this->_marketHistoryUpdateData['status'] = 'error';
-            $this->_marketHistoryUpdateData['end_date'] = now()->format('Y-m-d H:i:s');
-            $this->_saveMarketHistoryUpdateData();
-
-            throw $t;
-        }
-    }
-
-    private function _clearCachedOrdersHistory(array $typeIds) {
-        $chunks = array_chunk($typeIds, 500);
-        foreach ($chunks as $chunk) {
-            CachedOrdersHistory::whereIn('type_id', $chunk)->delete();
-        }
-
-        CachedOrdersHistory::where('date', '<', now()->modify('-31 day')->format('Y-m-d'))->delete();
     }
 
     private function _refreshSystemIndustryIndices() {

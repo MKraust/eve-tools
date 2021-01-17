@@ -26,6 +26,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->job(new Jobs\RefreshMarketData())->everyFifteenMinutes();
+        $schedule->job(new Jobs\RefreshMarketHistory())->dailyAt('14:30');
     }
 
     /**
