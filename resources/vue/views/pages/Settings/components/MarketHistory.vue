@@ -1,15 +1,15 @@
 <template>
   <mk-card title="Market history update" :loading="!isInitialSettingsLoadingDone" icon="fas fa-chart-line">
     <div v-if="settings !== null" class="row">
-      <div class="col-3">
+      <div class="col-2">
         <div class="font-size-sm text-muted font-weight-bold">Start date</div>
         <div class="font-size-h4 font-weight-bolder">{{ startDate }}</div>
       </div>
-      <div class="col-3">
+      <div class="col-2">
         <div class="font-size-sm text-muted font-weight-bold">End date</div>
         <div class="font-size-h4 font-weight-bolder">{{ endDate }}</div>
       </div>
-      <div class="col-6">
+      <div class="col-8">
         <div class="d-flex align-items-center">
           <div class="symbol symbol-40 mr-3 flex-shrink-0" :class="`symbol-${statusColor}`">
             <div class="symbol-label">
@@ -18,7 +18,7 @@
               </span>
             </div>
           </div>
-          <div :style="{ width: '120px' }" class="mr-5">
+          <div :style="{ width: '145px' }" class="mr-5">
             <div class="font-size-sm text-muted font-weight-bold mb-1">Items</div>
             <div class="font-size-h6 text-dark-75 font-weight-bolder">{{ statusText }}</div>
           </div>
@@ -78,7 +78,7 @@ export default {
       return total ? Math.floor(processed / total * 100) : 0;
     },
     statusText() {
-      return `${this.settings.progress.types_processed || '-' } / ${this.settings.progress.total_types || '-' } pages`;
+      return `${this.settings.progress.types_processed || '-' } / ${this.settings.progress.total_types || '-' }`;
     },
     statusIconComponent() {
       if (this.isUpdateFinished) {
