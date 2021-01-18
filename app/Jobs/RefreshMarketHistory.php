@@ -110,7 +110,8 @@ class RefreshMarketHistory implements ShouldQueue
             ->whereNotNull('dichstar')
             ->get()
             ->map
-            ->type_id;
+            ->type_id
+            ->toArray();
     }
 
     private function _clearCachedOrdersHistory(array $typeIds) {
