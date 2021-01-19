@@ -11,6 +11,8 @@ import './metronic';
 // Vue 3rd party plugins
 import lodash from 'lodash';
 import "./plugins/perfect-scrollbar";
+import "./plugins/inline-svg";
+import "./plugins/bootstrap-vue";
 import "@mdi/font/css/materialdesignicons.css";
 
 Vue.prototype.$lodash = lodash;

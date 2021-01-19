@@ -78,7 +78,7 @@ class TradingController extends Controller
         $jitaPrice = $type->jitaPrice;
         $dichstarPrice = $type->dichstarPrice;
         $totalCost = $jitaPrice !== null ? $jitaPrice + $type->volume * 1500 : null;
-        $margin = $dichstarPrice !== null && $totalCost !== null ? $dichstarPrice * 0.9575 - $totalCost : null;
+        $margin = $dichstarPrice !== null && $totalCost !== null ? round($dichstarPrice * 0.9575 - $totalCost, 2) : null;
         $marginPercent = $totalCost > 0 ? round($margin / $totalCost * 100, 2) : 0;
 
         return [
@@ -87,10 +87,10 @@ class TradingController extends Controller
             'icon'       => $type->icon,
             'volume'     => $type->volume, // TODO: use volume for ships from invVolumes
             'prices'     => [
-                'jita'                 => $jitaPrice !== null ? (string)$jitaPrice : null,
-                'dichstar'             => $dichstarPrice !== null ? (string)$dichstarPrice : null,
-                'total_cost'           => $totalCost !== null ? (string)$totalCost : null,
-                'margin'               => $margin !== null ? (string)$margin : null,
+                'jita'                 => $jitaPrice !== null ? (float)$jitaPrice : null,
+                'dichstar'             => $dichstarPrice !== null ? (float)$dichstarPrice : null,
+                'total_cost'           => $totalCost !== null ? (float)$totalCost : null,
+                'margin'               => $margin ?? null,
                 'margin_percent'       => $marginPercent,
                 'monthly_volume'       => $type->monthlyVolume,
                 'weekly_volume'        => $type->weeklyVolume,

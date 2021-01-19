@@ -11,6 +11,7 @@ import ProductionTracking from '@/views/pages/Production/Tracking/App';
 
 import TradingRoot from '@/views/pages/Trading/Root';
 import TradingFavorites from '@/views/pages/Trading/Favorites/App';
+import TradingFavoritesNew from '@/views/pages/Trading/FavoritesNew/App';
 
 Vue.use(Router);
 
@@ -62,6 +63,7 @@ export default new Router({
           props: {
             menuItems: [
               { name: 'Favorites', route: 'trading_favorites' },
+              { name: 'Favorites (new)', route: 'trading_favorites_new' },
             ]
           },
           children: [
@@ -69,6 +71,11 @@ export default new Router({
               name: 'trading_favorites',
               path: 'favorites',
               component: TradingFavorites,
+            },
+            {
+              name: 'trading_favorites_new',
+              path: 'favorites_new',
+              component: TradingFavoritesNew,
             },
           ]
         }

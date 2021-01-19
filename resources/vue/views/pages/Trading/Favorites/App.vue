@@ -48,7 +48,7 @@ export default {
         this.favorites.push(favorite);
       }
     },
-  }
+  },
 }
 </script>
 

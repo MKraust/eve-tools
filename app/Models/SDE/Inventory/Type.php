@@ -30,27 +30,27 @@ class Type extends Model
         return "https://imageserver.eveonline.com/Type/{$this->typeID}_64.png";
     }
 
-    public function getJitaPriceAttribute() {
+    public function getJitaPriceAttribute(): ?float {
         return $this->price->jita ?? null;
     }
 
-    public function getDichstarPriceAttribute() {
+    public function getDichstarPriceAttribute(): ?float {
         return $this->price->dichstar ?? null;
     }
 
-    public function getAdjustedPriceAttribute() {
+    public function getAdjustedPriceAttribute(): ?float {
         return $this->price->adjusted ?? null;
     }
 
-    public function getMonthlyVolumeAttribute() {
+    public function getMonthlyVolumeAttribute(): ?int {
         return $this->price->monthly_volume ?? null;
     }
 
-    public function getWeeklyVolumeAttribute() {
+    public function getWeeklyVolumeAttribute(): ?int {
         return $this->price->weekly_volume ?? null;
     }
 
-    public function getAverageDailyVolumeAttribute() {
+    public function getAverageDailyVolumeAttribute(): ?float {
         return $this->price->average_daily_volume ?? null;
     }
 
