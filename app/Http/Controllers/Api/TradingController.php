@@ -23,6 +23,15 @@ class TradingController extends Controller
         $this->_esi = new Services\ESI;
     }
 
+    public function getProfitableItems() {
+        return $this->_tradingRepository
+            ->getProfitableMarketItems()
+            ->map(function ($type) {
+                return $this->_convertTypeToApi($type);
+            })
+            ->values();
+    }
+
     public function searchModules(Request $request) {
         $request->validate([
             'search_query' => 'required|string|min:4',
@@ -75,11 +84,7 @@ class TradingController extends Controller
     }
 
     private function _convertTypeToApi($type) {
-        $jitaPrice = $type->jitaPrice;
-        $dichstarPrice = $type->dichstarPrice;
-        $totalCost = $jitaPrice !== null ? $jitaPrice + $type->volume * 1500 : null;
-        $margin = $dichstarPrice !== null && $totalCost !== null ? round($dichstarPrice * 0.9575 - $totalCost, 2) : null;
-        $marginPercent = $totalCost > 0 ? round($margin / $totalCost * 100, 2) : 0;
+        $margin = $type->margin;
 
         return [
             'type_id'    => $type->typeID,
@@ -87,14 +92,15 @@ class TradingController extends Controller
             'icon'       => $type->icon,
             'volume'     => $type->volume, // TODO: use volume for ships from invVolumes
             'prices'     => [
-                'jita'                 => $jitaPrice !== null ? (float)$jitaPrice : null,
-                'dichstar'             => $dichstarPrice !== null ? (float)$dichstarPrice : null,
-                'total_cost'           => $totalCost !== null ? (float)$totalCost : null,
-                'margin'               => $margin ?? null,
-                'margin_percent'       => $marginPercent,
-                'monthly_volume'       => $type->monthlyVolume,
-                'weekly_volume'        => $type->weeklyVolume,
-                'average_daily_volume' => $type->averageDailyVolume,
+                'jita'                   => $type->jitaPrice,
+                'dichstar'               => $type->dichstarPrice,
+                'total_cost'             => $type->totalCost,
+                'margin'                 => $margin,
+                'margin_percent'         => $type->marginPercent,
+                'monthly_volume'         => $type->monthlyVolume,
+                'weekly_volume'          => $type->weeklyVolume,
+                'average_daily_volume'   => $type->averageDailyVolume,
+                'potential_daily_profit' => $type->potentialDailyProfit,
             ],
         ];
     }

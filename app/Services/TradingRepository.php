@@ -2,9 +2,13 @@
 
 namespace App\Services;
 
+use App\Models\CachedPrice;
+use App\Models\SDE\Inventory\Type;
 use App\Models\Trading;
 
 class TradingRepository {
+
+    private const MIN_POTENTIAL_DAILY_PROFIT = 1000000;
 
     public function getFavorites() {
         return Trading\Favorite::all();
@@ -27,5 +31,19 @@ class TradingRepository {
 
     public function deleteFavorite(int $typeId) {
         Trading\Favorite::destroy($typeId);
+    }
+
+    public function getProfitableMarketItems() {
+        $typeIds = CachedPrice::whereNotNull('jita')
+            ->whereNotNull('dichstar')
+            ->whereNotNull('average_daily_volume')
+            ->get()
+            ->map->type_id->unique();
+
+        $types = Type::whereIn('typeID', $typeIds)->get();
+
+        return $types->filter(function ($type) {
+           return $type->potentialDailyProfit > self::MIN_POTENTIAL_DAILY_PROFIT;
+        });
     }
 }

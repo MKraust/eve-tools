@@ -2,7 +2,7 @@
   <div ref="card" class="card card-custom gutter-b">
     <div class="card-header border-0">
       <div class="card-title">
-        <span class="card-icon">
+        <span v-if="icon" class="card-icon">
           <i class="text-primary" :class="icon"></i>
         </span>
         <h3 class="card-label">{{ title }}</h3>
@@ -32,7 +32,7 @@ export default {
     icon: {
       type: String,
       default() {
-        return '';
+        return null;
       },
     },
     loading: {

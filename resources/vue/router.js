@@ -11,7 +11,8 @@ import ProductionTracking from '@/views/pages/Production/Tracking/App';
 
 import TradingRoot from '@/views/pages/Trading/Root';
 import TradingFavorites from '@/views/pages/Trading/Favorites/App';
-import TradingFavoritesNew from '@/views/pages/Trading/FavoritesNew/App';
+import TradingSearch from '@/views/pages/Trading/Search/App';
+import TradingProfitable from '@/views/pages/Trading/Profitable/App';
 
 Vue.use(Router);
 
@@ -63,7 +64,8 @@ export default new Router({
           props: {
             menuItems: [
               { name: 'Favorites', route: 'trading_favorites' },
-              { name: 'Favorites (new)', route: 'trading_favorites_new' },
+              { name: 'Search', route: 'trading_search' },
+              { name: 'Profitable', route: 'trading_profitable' },
             ]
           },
           children: [
@@ -73,9 +75,14 @@ export default new Router({
               component: TradingFavorites,
             },
             {
-              name: 'trading_favorites_new',
-              path: 'favorites_new',
-              component: TradingFavoritesNew,
+              name: 'trading_search',
+              path: 'search',
+              component: TradingSearch,
+            },
+            {
+              name: 'trading_profitable',
+              path: 'profitable',
+              component: TradingProfitable,
             },
           ]
         }

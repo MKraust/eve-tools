@@ -1,13 +1,13 @@
 <template>
   <div class="container">
-    <mk-card title="Favorites" :loading="isLoadingFavorites" :actions="cardActions">
+    <mk-card title="Profitable items" :loading="isLoading" :actions="cardActions">
       <div class="form-group">
         <div class="input-group">
           <input v-model="filterQuery" type="text" class="form-control" placeholder="Filter items..." />
         </div>
       </div>
 
-      <b-table :fields="tableColumns" :items="filteredFavorites" sort-by="name" :sort-desc="false" :responsive="true">
+      <b-table :fields="tableColumns" :items="filteredItems" sort-by="name" :sort-desc="false" :responsive="true">
         <template #cell(icon)="data">
           <div class="symbol symbol-30 d-block">
             <span class="symbol-label overflow-hidden">
@@ -67,18 +67,18 @@ export default {
     this.loadFavorites();
   },
   data: () => ({
-    favorites: [],
-    isLoadingFavorites: false,
+    items: [],
+    isLoading: false,
     filterQuery: '',
     tableColumns: COLUMNS,
   }),
   computed: {
-    filteredFavorites() {
+    filteredItems() {
       if (this.filterQuery === '') {
-        return this.favorites;
+        return this.items;
       }
 
-      return this.favorites.filter(i => i.name.toLowerCase().indexOf(this.filterQuery.toLocaleLowerCase()) !== -1);
+      return this.items.filter(i => i.name.toLowerCase().indexOf(this.filterQuery.toLocaleLowerCase()) !== -1);
     },
     cardActions() {
       return [
@@ -86,23 +86,22 @@ export default {
       ];
     },
     shoppingListHtml() {
-      const wtb = this.favorites.filter(i => i.quantity > 0);
+      const wtb = this.items.filter(i => i.quantity > 0);
 
       return wtb.map(i => `${i.name}* ${i.quantity}`).join('<br>');
     },
   },
   methods: {
     async loadFavorites() {
-      this.isLoadingFavorites = true;
+      this.isLoading = true;
 
-      this.favorites = await this.$api.loadTradingFavorites();
+      this.items = await this.$api.loadTradingProfitableItems();
 
-      this.isLoadingFavorites = false;
+      this.isLoading = false;
     },
     async toggleFavorite(typeId) {
-      console.log(typeId);
       await this.$api.deleteTradingFavorite(typeId);
-      this.favorites = this.favorites.filter(f => f.type_id !== typeId);
+      this.items = this.items.filter(f => f.type_id !== typeId);
     },
     async showShoppingList() {
       $(this.$refs.shoppingListModal).modal();

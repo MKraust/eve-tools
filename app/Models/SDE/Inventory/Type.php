@@ -10,6 +10,8 @@ class Type extends Model
 {
     use HasFactory;
 
+    private const DELIVERY_COST_PER_M3 = 1500;
+
     protected $connection = 'sde';
     protected $table = 'invTypes';
     protected $primaryKey = 'typeID';
@@ -32,6 +34,32 @@ class Type extends Model
 
     public function getJitaPriceAttribute(): ?float {
         return $this->price->jita ?? null;
+    }
+
+    public function getTotalCostAttribute(): ?float {
+        $jitaPrice = $this->jitaPrice;
+
+        return $jitaPrice !== null ? $jitaPrice + $this->volume * self::DELIVERY_COST_PER_M3 : null;
+    }
+
+    public function getMarginAttribute(): ?float {
+        $totalCost = $this->totalCost;
+        $dichstarPrice = $this->dichstarPrice;
+
+        return $dichstarPrice !== null && $totalCost !== null ? round($dichstarPrice * 0.9575 - $totalCost, 2) : null;
+    }
+
+    public function getMarginPercentAttribute(): ?float {
+        $totalCost = $this->totalCost;
+
+        return $totalCost > 0 ? round($this->margin / $totalCost * 100, 2) : 0;
+    }
+
+    public function getPotentialDailyProfitAttribute(): ?float {
+        $averageDailyVolume = $this->averageDailyVolume;
+        $margin = $this->margin;
+
+        return $margin !== null && $averageDailyVolume ? round($margin * $averageDailyVolume, 2) : null;
     }
 
     public function getDichstarPriceAttribute(): ?float {

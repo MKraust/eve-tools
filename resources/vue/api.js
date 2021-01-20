@@ -52,8 +52,6 @@ export default {
 
     return (await axios.get(api('/production/tracked/shopping-list'), { params })).data;
   },
-
-
   async searchTypes(query) {
     const params = { search_query: query };
 
@@ -80,5 +78,8 @@ export default {
   },
   async refreshMarketOrders() {
     return (await axios.post(api('/settings/refresh-market-orders'))).data;
-  }
+  },
+  async loadTradingProfitableItems() {
+    return (await axios.get(api('/trading/profitable/list'))).data.map(i => Object.assign(i, { quantity: 0 }));
+  },
 }
