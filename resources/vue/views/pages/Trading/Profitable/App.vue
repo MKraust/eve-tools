@@ -7,7 +7,7 @@
         </div>
       </div>
 
-      <b-table :fields="tableColumns" :items="filteredItems" sort-by="name" :sort-desc="false" :responsive="true">
+      <b-table :fields="tableColumns" :items="filteredItems" sort-by="potential_daily_profit" :sort-desc="true" :responsive="true" :per-page="40">
         <template #cell(icon)="data">
           <div class="symbol symbol-30 d-block">
             <span class="symbol-label overflow-hidden">
@@ -35,7 +35,7 @@
 
         <template #cell(actions)="data">
           <div class="btn btn-hover-light-warning btn-sm btn-icon" @click="toggleFavorite(data.item.type_id)">
-            <i class="text-warning fas fa-star"></i>
+            <i class="text-warning fa-star" :class="isFavorite(data.item) ? 'fas' : 'far'"></i>
           </div>
         </template>
       </b-table>
@@ -64,13 +64,14 @@ import COLUMNS from './columns';
 
 export default {
   mounted() {
-    this.loadFavorites();
+    this.loadData();
   },
   data: () => ({
     items: [],
     isLoading: false,
     filterQuery: '',
     tableColumns: COLUMNS,
+    favorites: [],
   }),
   computed: {
     filteredItems() {
@@ -92,19 +93,31 @@ export default {
     },
   },
   methods: {
-    async loadFavorites() {
+    async loadData() {
       this.isLoading = true;
 
+      this.favorites = await this.$api.loadTradingFavorites();
       this.items = await this.$api.loadTradingProfitableItems();
 
       this.isLoading = false;
     },
     async toggleFavorite(typeId) {
-      await this.$api.deleteTradingFavorite(typeId);
-      this.items = this.items.filter(f => f.type_id !== typeId);
+      const isAlreadyFavorite = Boolean(this.favorites.find(f => f.type_id === typeId));
+
+      if (isAlreadyFavorite) {
+        await this.$api.deleteTradingFavorite(typeId);
+        this.favorites = this.favorites.filter(f => f.type_id !== typeId);
+      } else {
+        console.log(typeId);
+        const favorite = await this.$api.addTradingFavorite(typeId);
+        this.favorites.push(favorite);
+      }
     },
     async showShoppingList() {
       $(this.$refs.shoppingListModal).modal();
+    },
+    isFavorite(module) {
+      return Boolean(this.favorites.find(f => f.type_id === module.type_id));
     },
   },
 }
