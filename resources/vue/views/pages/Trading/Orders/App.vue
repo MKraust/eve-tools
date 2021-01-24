@@ -12,9 +12,9 @@
           <b-table :fields="tableColumns" :items="filteredOrders" :responsive="true">
             <template #cell(icon)="data">
               <div class="symbol symbol-30 d-block">
-            <span class="symbol-label overflow-hidden">
-              <img :src="data.item.icon" class="module-icon" alt="">
-            </span>
+                <span class="symbol-label overflow-hidden">
+                  <img :src="data.item.type.icon" class="module-icon" alt="">
+                </span>
               </div>
             </template>
           </b-table>
