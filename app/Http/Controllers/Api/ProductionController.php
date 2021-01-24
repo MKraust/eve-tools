@@ -174,6 +174,7 @@ class ProductionController extends Controller
         $totalCost = $productionCost + ($inventionCost ?? 0);
         $margin = $type->dichstarPrice !== null ? $type->dichstarPrice * 0.9575 - $totalCost : null;
         $marginPercent = $totalCost > 0 ? round($margin / $totalCost * 100, 2) : 0;
+        $potentialDailyProfit = $margin !== null && $type->averageDailyVolume ? round($margin * $type->averageDailyVolume, 2) : null;
 
         return [
             'type_id'    => $type->typeID,
@@ -186,13 +187,15 @@ class ProductionController extends Controller
                 'total'      => $totalCost,
             ],
             'prices'     => [
-                'jita'                 => $type->jitaPrice !== null ? (string)$type->jitaPrice : null,
-                'dichstar'             => $type->dichstarPrice !== null ? (string)$type->dichstarPrice : null,
-                'margin'               => $margin !== null ? (string)$margin : null,
-                'margin_percent'       => $marginPercent,
-                'monthly_volume'       => $type->monthlyVolume,
-                'weekly_volume'        => $type->weeklyVolume,
-                'average_daily_volume' => $type->averageDailyVolume,
+                'jita'                   => $type->jitaPrice,
+                'dichstar'               => $type->dichstarPrice,
+                'total_cost'             => $type->totalCost,
+                'margin'                 => $margin,
+                'margin_percent'         => $marginPercent,
+                'monthly_volume'         => $type->monthlyVolume,
+                'weekly_volume'          => $type->weeklyVolume,
+                'average_daily_volume'   => $type->averageDailyVolume,
+                'potential_daily_profit' => $potentialDailyProfit,
             ],
         ];
     }

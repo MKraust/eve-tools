@@ -13,7 +13,7 @@ export default {
     return (await axios.get(api('/production/modules/search'), { params })).data;
   },
   async loadProductionFavorites() {
-    return (await axios.get(api('/production/favorites/list'))).data;
+    return (await axios.get(api('/production/favorites/list'))).data.map(i => Object.assign(i, { production_count: 0, invention_count: 0 }));
   },
   async addProductionFavorite(typeId) {
     const params = { type_id: typeId };

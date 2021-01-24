@@ -84,8 +84,6 @@ class TradingController extends Controller
     }
 
     private function _convertTypeToApi($type) {
-        $margin = $type->margin;
-
         return [
             'type_id'    => $type->typeID,
             'name'       => $type->typeName,
@@ -95,7 +93,7 @@ class TradingController extends Controller
                 'jita'                   => $type->jitaPrice,
                 'dichstar'               => $type->dichstarPrice,
                 'total_cost'             => $type->totalCost,
-                'margin'                 => $margin,
+                'margin'                 => $type->margin,
                 'margin_percent'         => $type->marginPercent,
                 'monthly_volume'         => $type->monthlyVolume,
                 'weekly_volume'          => $type->weeklyVolume,

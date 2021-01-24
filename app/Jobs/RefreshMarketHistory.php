@@ -69,7 +69,7 @@ class RefreshMarketHistory implements ShouldQueue
                 }
 
                 foreach ($apiOrdersHistory as $apiOrdersHistoryDatum) {
-                    if (new \DateTime($apiOrdersHistoryDatum->date) < now()->modify('-31 day')) {
+                    if (new \DateTime($apiOrdersHistoryDatum->date) < now()->modify('-65 day')) {
                         continue;
                     }
 
@@ -120,7 +120,7 @@ class RefreshMarketHistory implements ShouldQueue
             CachedOrdersHistory::whereIn('type_id', $chunk)->delete();
         }
 
-        CachedOrdersHistory::where('date', '<', now()->modify('-31 day')->format('Y-m-d'))->delete();
+        CachedOrdersHistory::where('date', '<', now()->modify('-65 day')->format('Y-m-d'))->delete();
     }
 
     private function _saveMarketHistoryUpdateData() {

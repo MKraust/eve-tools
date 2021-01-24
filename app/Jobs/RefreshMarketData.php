@@ -23,13 +23,15 @@ class RefreshMarketData implements ShouldQueue
     private const DICHSTAR_STRUCTURE_ID = 1031787606461;
     private const INSMOTHER_REGION_ID = 10000009;
 
+    private const SIMPLE_MOVING_AVERAGE_PERIOD = 3;
+
+    private const JIN_KRAUST_CHARACTER_ID = 2117638152;
+
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     private $_esi;
 
     private $_settings;
-
-    private $_marketHistoryUpdateData;
 
     private $_minJitaPrices = [];
 
@@ -43,9 +45,6 @@ class RefreshMarketData implements ShouldQueue
 
         $settings = Setting::getData('market_orders_update');
         $this->_settings = $settings !== null ? json_decode($settings->value, true) : null;
-
-        $marketHistoryUpdateData = Setting::getData('market_history_update_data');
-        $this->_marketHistoryUpdateData = $marketHistoryUpdateData !== null ? json_decode($marketHistoryUpdateData->value, true) : null;
     }
 
     public function handle()
@@ -80,6 +79,8 @@ class RefreshMarketData implements ShouldQueue
 
             $this->_refreshDichstarOrders();
             $this->_refreshJitaOrders();
+            $this->_markMyOrders();
+
             $this->_refreshPrices();
             $this->_refreshSystemIndustryIndices();
         } catch (\Throwable $t) {
@@ -95,6 +96,14 @@ class RefreshMarketData implements ShouldQueue
         $this->_settings['status'] = 'finished';
         $this->_settings['end_date'] = (new \DateTime)->format('Y-m-d H:i:s');
         $this->_saveSettings();
+    }
+
+    private function _markMyOrders() {
+        $orders = $this->_esi->getCharacterOrders(self::JIN_KRAUST_CHARACTER_ID);
+        $orderIds = collect($orders->getArrayCopy())->map->order_id->toArray();
+        Log::info('My orders: ' . json_encode($orderIds));
+
+        CachedOrder::whereIn('order_id', $orderIds)->update(['is_my_order' => 1]);
     }
 
     private function _refreshSystemIndustryIndices() {
@@ -157,7 +166,7 @@ class RefreshMarketData implements ShouldQueue
         $typeIds = array_keys($this->_minDichstarPrices);
         $typeIdsChunks = array_chunk($typeIds, 100);
         foreach ($typeIdsChunks as $typeIdsChunk) {
-            $monthAgo = now()->modify('-30 days')->format('Y-m-d');
+            $monthAgo = now()->modify('-65 days')->format('Y-m-d');
             $ordersHistoryData = CachedOrdersHistory::whereIn('type_id', $typeIdsChunk)->where('date', '>=', $monthAgo)->get();
 
             foreach ($ordersHistoryData->groupBy('type_id') as $typeId => $typeOrdersHistoryData) {
@@ -168,11 +177,45 @@ class RefreshMarketData implements ShouldQueue
                 $priceData['weekly_volume'] = $typeOrdersHistoryData->filter(function ($historyDatum) {
                     return new \DateTime($historyDatum->date) >= now()->modify('-7 days');
                 })->sum->volume;
-                $priceData['average_daily_volume'] = round($monthlyVolume / 30, 2);
+                $priceData['average_daily_volume'] = round($monthlyVolume / 60, 2);
+                $priceData['adjusted_daily_volume'] = $this->_getAdjustedDailyVolume($typeOrdersHistoryData);
 
                 $this->_pricesData[$typeId] = $priceData;
             }
         }
+    }
+
+    private function _getAdjustedDailyVolume($orderHistoryData) {
+        $volumes = $this->_extractVolumes($orderHistoryData);
+        $adjustedVolumes = $this->_simpleMovingAverage($volumes);
+
+        return round(collect($adjustedVolumes)->average(), 2);
+    }
+
+    private function _extractVolumes($orderHistoryData) {
+        $volumeByDate = $orderHistoryData->mapWithKeys(function ($orderHistoryDatum) {
+            return [$orderHistoryDatum->date, $orderHistoryDatum->volume];
+        });
+
+        $periodStart = now()->modify('-65 days');
+        for ($date = $periodStart; $date <= now()->modify('today midnight'); $date->modify('+1 day')) {
+            $dateString = $date->format('Y-m-d');
+            $volumeByDate[$dateString] = $volumeByDate[$dateString] ?? 0;
+        }
+
+        return collect($volumeByDate)->sortKeys()->values()->toArray();
+    }
+
+    private function _simpleMovingAverage(array $values) {
+        $result = [];
+        $collection = collect($values);
+        foreach (array_keys($values) as $index) {
+            if ($index >= self::SIMPLE_MOVING_AVERAGE_PERIOD - 1) {
+                $result[] = $collection->slice($index - self::SIMPLE_MOVING_AVERAGE_PERIOD + 1, self::SIMPLE_MOVING_AVERAGE_PERIOD)->average();
+            }
+        }
+
+        return $result;
     }
 
     private function _getEmptyPricesData(int $typeId) {
@@ -185,6 +228,7 @@ class RefreshMarketData implements ShouldQueue
             'monthly_volume' => null,
             'weekly_volume' => null,
             'average_daily_volume' => null,
+            'adjusted_daily_volume' => null,
         ];
     }
 
@@ -249,7 +293,7 @@ class RefreshMarketData implements ShouldQueue
 
             Log::info('Start saving orders');
             $this->_storeOrders($ordersCollection->toArray());
-            Log::info('FInish saving orders');
+            Log::info('Finish saving orders');
 
             $this->_settings['progress']['dichstar']['total_pages'] = $orders->pages;
             $this->_settings['progress']['dichstar']['processed_pages'] = $page;
@@ -278,10 +322,6 @@ class RefreshMarketData implements ShouldQueue
 
     private function _saveSettings() {
         Setting::setData('market_orders_update', json_encode($this->_settings));
-    }
-
-    private function _saveMarketHistoryUpdateData() {
-        Setting::setData('market_history_update_data', json_encode($this->_marketHistoryUpdateData));
     }
 
     private function _retry($callback, int $times = 1) {

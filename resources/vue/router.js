@@ -7,6 +7,7 @@ import Settings from '@/views/pages/Settings/App';
 
 import ProductionRoot from '@/views/pages/Production/Root';
 import ProductionFavorites from '@/views/pages/Production/Favorites/App';
+import ProductionSearch from '@/views/pages/Production/Search/App';
 import ProductionTracking from '@/views/pages/Production/Tracking/App';
 
 import TradingRoot from '@/views/pages/Trading/Root';
@@ -41,6 +42,7 @@ export default new Router({
           props: {
             menuItems: [
               { name: 'Favorites', route: 'production_favorites' },
+              { name: 'Search', route: 'production_search' },
               { name: 'Tracking', route: 'production_tracking' },
             ]
           },
@@ -49,6 +51,11 @@ export default new Router({
               name: 'production_favorites',
               path: 'favorites',
               component: ProductionFavorites,
+            },
+            {
+              name: 'production_search',
+              path: 'search',
+              component: ProductionSearch,
             },
             {
               name: 'production_tracking',

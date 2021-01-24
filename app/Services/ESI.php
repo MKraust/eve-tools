@@ -62,4 +62,8 @@ class ESI {
             ->setQueryString(['type_id' => $typeId])
             ->invoke('get', '/markets/{region_id}/history', ['region_id' => $regionId]);
     }
+
+    public function getCharacterOrders(int $characterId) {
+        return $this->_client->invoke('get', '/characters/{character_id}/orders', ['character_id' => $characterId]);
+    }
 }
