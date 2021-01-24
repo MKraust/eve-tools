@@ -187,21 +187,14 @@ class RefreshMarketData implements ShouldQueue
 
     private function _getAdjustedDailyVolume($orderHistoryData) {
         $volumes = $this->_extractVolumes($orderHistoryData);
-        try {
-            $adjustedVolumes = $this->_simpleMovingAverage($volumes);
-        } catch (\Throwable $t) {
-            Log::info($t->getMessage());
-            Log::info($orderHistoryData->toJson());
-            Log::info(json_encode($volumes));
-            throw $t;
-        }
+        $adjustedVolumes = $this->_simpleMovingAverage($volumes);
 
         return round(collect($adjustedVolumes)->average(), 2);
     }
 
     private function _extractVolumes($orderHistoryData) {
         $volumeByDate = $orderHistoryData->mapWithKeys(function ($orderHistoryDatum) {
-            return [$orderHistoryDatum->date, $orderHistoryDatum->volume];
+            return [$orderHistoryDatum->date => $orderHistoryDatum->volume];
         });
 
         $periodStart = now()->modify('-65 days');
