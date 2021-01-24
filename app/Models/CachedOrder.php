@@ -68,7 +68,7 @@ class CachedOrder extends Model
     }
 
     public function getOutbidMarginAttribute(): ?float {
-        return $this->isOutBidded ? $this->outbiddingOrders->map->price->min() - $this->price : null;
+        return $this->isOutBidded ? round($this->outbiddingOrders->map->price->min() - $this->price, 2) : null;
     }
 
     public function getOutbidMarginPercentAttribute(): ?float {

@@ -85,4 +85,7 @@ export default {
   async loadTradingProfitableItems() {
     return (await axios.get(api('/trading/profitable/list'))).data.map(i => Object.assign(i, { quantity: 0 }));
   },
+  async loadTradingOrders() {
+    return (await axios.get(api('/trading/orders/list'))).data;
+  },
 }

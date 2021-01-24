@@ -117,7 +117,7 @@ class TradingController extends Controller
           'order_id'              => $order->order_id,
           'price'                 => $order->price,
           'volume_remain'         => $order->volume_remain,
-          'location_name'         => $order->location_id === 60003760 ? 'Jita' : 'Dichstar',
+          'volume_total'          => $order->volume_total,
           'type'                  => $this->_convertTypeToApi($order->type),
           'is_outbidded'          => $order->isOutbidded,
           'outbid_margin'         => $order->outbidMargin,

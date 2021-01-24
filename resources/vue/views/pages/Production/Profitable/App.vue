@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <mk-card title="Favorites" :loading="isLoadingFavorites">
+    <mk-card title="Profitable" :loading="isLoadingFavorites">
       <div class="form-group">
         <div class="input-group">
           <input v-model="filterQuery" type="text" class="form-control" placeholder="Filter items..." />
