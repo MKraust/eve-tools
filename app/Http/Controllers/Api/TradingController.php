@@ -23,6 +23,15 @@ class TradingController extends Controller
         $this->_esi = new Services\ESI;
     }
 
+    public function getOrders() {
+        return $this->_tradingRepository
+            ->getTraderOrders()
+            ->map(function ($order) {
+                return $this->_convertOrderToApi($order);
+            })
+            ->values();
+    }
+
     public function getProfitableItems() {
         return $this->_tradingRepository
             ->getProfitableMarketItems()
@@ -100,6 +109,19 @@ class TradingController extends Controller
                 'average_daily_volume'   => $type->averageDailyVolume,
                 'potential_daily_profit' => $type->potentialDailyProfit,
             ],
+        ];
+    }
+
+    private function _convertOrderToApi($order) {
+        return [
+          'order_id'              => $order->order_id,
+          'price'                 => $order->price,
+          'volume_remain'         => $order->volume_remain,
+          'location_name'         => $order->location_id === 60003760 ? 'Jita' : 'Dichstar',
+          'type'                  => $this->_convertTypeToApi($order->type),
+          'is_outbidded'          => $order->isOutbidded,
+          'outbid_margin'         => $order->outbidMargin,
+          'outbid_margin_percent' => $order->outbidMarginPercent,
         ];
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\CachedOrder;
 use App\Models\CachedPrice;
 use App\Models\SDE\Inventory\Type;
 use App\Models\Trading;
@@ -45,5 +46,9 @@ class TradingRepository {
         return $types->filter(function ($type) {
            return $type->potentialDailyProfit > self::MIN_POTENTIAL_DAILY_PROFIT;
         });
+    }
+
+    public function getTraderOrders() {
+        return CachedOrder::my()->with(['competingOrders'])->get();
     }
 }

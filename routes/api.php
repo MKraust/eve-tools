@@ -50,4 +50,8 @@ Route::prefix('trading')->group(function () {
         Route::post('/add',    [Controllers\Api\TradingController::class, 'addFavorite']);
         Route::post('/delete', [Controllers\Api\TradingController::class, 'deleteFavorite']);
     });
+
+    Route::prefix('orders')->group(function () {
+        Route::get('/list', [Controllers\Api\TradingController::class, 'getOrders']);
+    });
 });
