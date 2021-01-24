@@ -13,6 +13,7 @@ export default [
     sortable: true,
     class: 'text-nowrap',
     tdClass: 'align-middle',
+    sortByFormatted: (value, key, item) => item.type.name,
     formatter: (value, key, item) => formatColumnValue(item.type.name),
   },
   {

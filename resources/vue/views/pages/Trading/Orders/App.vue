@@ -9,7 +9,7 @@
             </div>
           </div>
 
-          <b-table :fields="tableColumns" :items="filteredOrders" :responsive="true">
+          <b-table :fields="tableColumns" :items="filteredOrders" sort-by="name" :sort-desc="false" :responsive="true">
             <template #cell(icon)="data">
               <div class="symbol symbol-30 d-block">
                 <span class="symbol-label overflow-hidden">
