@@ -15,6 +15,9 @@ export default {
   async loadProductionFavorites() {
     return (await axios.get(api('/production/favorites/list'))).data.map(i => Object.assign(i, { production_count: 0, invention_count: 0 }));
   },
+  async loadProductionProfitableItems() {
+    return (await axios.get(api('/production/profitable/list'))).data.map(i => Object.assign(i, { production_count: 0, invention_count: 0 }));
+  },
   async addProductionFavorite(typeId) {
     const params = { type_id: typeId };
 

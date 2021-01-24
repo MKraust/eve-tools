@@ -23,6 +23,7 @@ Route::prefix('settings')->group(function () {
 
 Route::prefix('production')->group(function () {
     Route::get('/modules/search',    [Controllers\Api\ProductionController::class, 'searchModules']);
+    Route::get('/profitable/list',   [Controllers\Api\ProductionController::class, 'getProfitableItems']);
 
     Route::prefix('favorites')->group(function () {
         Route::get('/list',    [Controllers\Api\ProductionController::class, 'getFavorites']);

@@ -50,6 +50,18 @@ class ProductionController extends Controller
             ->values();
     }
 
+    public function getProfitableItems() {
+        return $this->_productionRepository
+            ->getProfitableMarketItems()
+            ->map(function ($type) {
+                return $this->_convertTypeToApi($type);
+            })
+            ->filter(function ($apiType) {
+                return $apiType['prices']['potential_daily_profit'] > 1000000;
+            })
+            ->values();
+    }
+
     public function addFavorite(Request $request) {
         $request->validate([
             'type_id' => 'required|integer|exists:App\Models\SDE\Inventory\Type,typeID',

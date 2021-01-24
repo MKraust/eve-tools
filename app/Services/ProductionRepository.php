@@ -2,9 +2,13 @@
 
 namespace App\Services;
 
+use App\Models\CachedPrice;
 use App\Models\Production;
+use App\Models\SDE\Inventory\Type;
 
 class ProductionRepository {
+
+    private const MIN_POTENTIAL_DAILY_PROFIT = 1000000;
 
     public function getFavorites() {
         return Production\Favorite::all();
@@ -59,5 +63,15 @@ class ProductionRepository {
             'produced'        => $produced,
             'invented'        => $invented,
         ]);
+    }
+
+    public function getProfitableMarketItems() {
+        $typeIds = CachedPrice::whereNotNull('dichstar')->whereNotNull('average_daily_volume')->get()->map->type_id->unique();
+
+        return Type::rigs()->whereIn('typeID', $typeIds)->with([
+            'techLevelAttribute',
+            'blueprint.productionMaterials',
+            'blueprint.tech1Blueprint.inventionMaterials',
+        ])->get();
     }
 }
