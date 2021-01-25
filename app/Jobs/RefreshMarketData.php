@@ -85,6 +85,7 @@ class RefreshMarketData implements ShouldQueue
             $this->_refreshSystemIndustryIndices();
         } catch (\Throwable $t) {
             $this->_settings['status'] = 'error';
+            $this->_settings['end_date'] = (new \DateTime)->format('Y-m-d H:i:s');
             $this->_saveSettings();
 
             Log::info($t->getMessage());
