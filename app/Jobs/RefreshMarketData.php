@@ -23,7 +23,7 @@ class RefreshMarketData implements ShouldQueue
     private const DICHSTAR_STRUCTURE_ID = 1031787606461;
     private const INSMOTHER_REGION_ID = 10000009;
 
-    private const SIMPLE_MOVING_AVERAGE_PERIOD = 3;
+    private const SIMPLE_MOVING_AVERAGE_PERIOD = 5;
 
     private const JIN_KRAUST_CHARACTER_ID = 2117638152;
 
