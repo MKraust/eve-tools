@@ -1,5 +1,5 @@
 <template>
-  <mk-card title="Market history update" :loading="!isInitialSettingsLoadingDone" icon="fas fa-chart-line">
+  <mk-card title="Market history update" :loading="!isInitialSettingsLoadingDone" icon="fas fa-chart-line" :actions="cardActions">
     <div v-if="settings !== null" class="row">
       <div class="col-2">
         <div class="font-size-sm text-muted font-weight-bold">Start date</div>
@@ -52,6 +52,11 @@ export default {
     isWatchingMarketOrdersUpdate: false,
   }),
   computed: {
+    cardActions() {
+      return [
+        { icon: 'fas fa-sync', handler: this.handleRefresh },
+      ];
+    },
     startDate() {
       return this.settings.start_date ? moment(this.settings.start_date).locale('en-ie').format('lll') : '-';
     },
@@ -107,6 +112,13 @@ export default {
       this.settings = await this.$api.loadMarketHistoryUpdateInfo();
 
       this.isInitialSettingsLoadingDone = true;
+    },
+    async handleRefresh() {
+      if (this.isUpdateInProgress) {
+        return;
+      }
+
+      await this.$api.refreshMarketHistory();
     },
     startWatchingMarketOrdersUpdate() {
       if (this.isWatchingMarketOrdersUpdate) {

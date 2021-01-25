@@ -79,8 +79,11 @@ export default {
   async loadMarketHistoryUpdateInfo() {
     return (await axios.get(api('/settings/market-history-update-info'))).data;
   },
-  async refreshMarketOrders() {
-    return (await axios.post(api('/settings/refresh-market-orders'))).data;
+  async refreshMarketData() {
+    return (await axios.post(api('/settings/refresh-market-data'))).data;
+  },
+  async refreshMarketHistory() {
+    return (await axios.post(api('/settings/refresh-market-history'))).data;
   },
   async loadTradingProfitableItems() {
     return (await axios.get(api('/trading/profitable/list'))).data.map(i => Object.assign(i, { quantity: 0 }));

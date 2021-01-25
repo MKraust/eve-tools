@@ -33,6 +33,11 @@ class RefreshMarketHistory implements ShouldQueue
 
     public function handle()
     {
+        $status = $this->_marketHistoryUpdateData !== null && $this->_marketHistoryUpdateData['status'] === 'in_progress';
+        if ($status) {
+            return;
+        }
+
         $this->_marketHistoryUpdateData = [
             'status'     => 'in_progress',
             'start_date' => now()->format('Y-m-d H:i:s'),

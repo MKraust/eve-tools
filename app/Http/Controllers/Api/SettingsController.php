@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\RefreshMarketData;
+use App\Jobs\RefreshMarketHistory;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -21,21 +23,26 @@ class SettingsController extends Controller
         return $info->value ?? 'null';
     }
 
-    public function refreshMarketOrders() {
-        register_shutdown_function(function () {
-            try {
-                if (php_sapi_name() === 'fpm-fcgi') {
-                    fastcgi_finish_request();
-                }
-
-                \App\Jobs\RefreshMarketData::dispatchSync();
-            } catch (\Throwable $t) {
-                Log::error($t->getMessage());
-                Log::error($t->getTraceAsString());
-                throw $t;
-            }
-        });
+    public function refreshMarketData() {
+        $this->_runJobAsync(RefreshMarketData::class);
 
         return ['status' => 'success'];
+    }
+
+    public function refreshMarketHistory() {
+        $this->_runJobAsync(RefreshMarketHistory::class);
+
+        return ['status' => 'success'];
+    }
+
+    private function _runJobAsync(string $jobClass) {
+        register_shutdown_function(function () use ($jobClass) {
+            $phpSapiName = php_sapi_name();
+            if (in_array($phpSapiName, ['fpm-fcgi', 'cli-server'])) {
+                fastcgi_finish_request();
+            }
+
+            $jobClass::dispatchSync();
+        });
     }
 }

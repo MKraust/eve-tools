@@ -1,5 +1,5 @@
 <template>
-  <mk-card title="Market prices update" :loading="!isInitialSettingsLoadingDone" icon="fas fa-chart-line">
+  <mk-card title="Market prices update" :loading="!isInitialSettingsLoadingDone" icon="fas fa-chart-line" :actions="cardActions">
     <div v-if="settings !== null" class="row">
       <div class="col-2">
         <div class="d-flex flex-column">
@@ -109,6 +109,11 @@ export default {
     isWatchingMarketOrdersUpdate: false,
   }),
   computed: {
+    cardActions() {
+      return [
+        { icon: 'fas fa-sync', handler: this.handleRefresh },
+      ];
+    },
     startDate() {
       return this.settings.start_date ? moment(this.settings.start_date).locale('en-ie').format('lll') : '-';
     },
@@ -261,12 +266,12 @@ export default {
 
       this.isInitialSettingsLoadingDone = true;
     },
-    async refreshMarketOrders() {
+    async handleRefresh() {
       if (this.isUpdateInProgress) {
         return;
       }
 
-      await this.$api.refreshMarketOrders();
+      await this.$api.refreshMarketData();
     },
     startWatchingMarketOrdersUpdate() {
       if (this.isWatchingMarketOrdersUpdate) {
