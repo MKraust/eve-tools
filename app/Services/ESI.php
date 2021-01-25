@@ -66,4 +66,8 @@ class ESI {
     public function getCharacterOrders(int $characterId) {
         return $this->_client->invoke('get', '/characters/{character_id}/orders', ['character_id' => $characterId]);
     }
+
+    public function openMarketDetailsWindow(int $typeId) {
+        $this->_client->setQueryString(['type_id' => $typeId])->invoke('post', '/ui/openwindow/marketdetails/');
+    }
 }

@@ -92,6 +92,16 @@ class TradingController extends Controller
         return ['status' => 'success'];
     }
 
+    public function openMarketDetails(Request $request) {
+        $request->validate([
+            'type_id' => 'required|integer',
+        ]);
+
+        $this->_esi->openMarketDetailsWindow($request->type_id);
+
+        return ['status' => 'success'];
+    }
+
     private function _convertTypeToApi($type) {
         return [
             'type_id'    => $type->typeID,

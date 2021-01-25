@@ -88,4 +88,9 @@ export default {
   async loadTradingOrders() {
     return (await axios.get(api('/trading/orders/list'))).data;
   },
+  async openMarketDetails(typeId) {
+    const params = { type_id: typeId };
+
+    await axios.post(api('/trading/open-market-details'), params);
+  },
 }
