@@ -19,7 +19,7 @@ class RefreshMarketData implements ShouldQueue
 {
     private const THE_FORGE_REGION_ID = 10000002;
     private const JITA_TRADING_HUB_ID = 60003760;
-    private const INDUSTRY_SOLAR_SYSTEM_ID = 30000839;
+    private const DICHSTAR_SOLAR_SYSTEM_ID = 30000843;
     private const DICHSTAR_STRUCTURE_ID = 1031787606461;
     private const INSMOTHER_REGION_ID = 10000009;
 
@@ -110,7 +110,7 @@ class RefreshMarketData implements ShouldQueue
     private function _refreshSystemIndustryIndices() {
         $industrySystems = $this->_esi->getIndustrySystems();
         $dichstarSystem = collect($industrySystems)->first(function ($system) {
-            return $system->solar_system_id === self::INDUSTRY_SOLAR_SYSTEM_ID;
+            return $system->solar_system_id === self::DICHSTAR_SOLAR_SYSTEM_ID;
         });
 
         Setting::setData('industry_indices', json_encode($dichstarSystem->cost_indices));
