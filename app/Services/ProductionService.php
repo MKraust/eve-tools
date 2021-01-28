@@ -12,7 +12,7 @@ class ProductionService {
     private const USED_DECRYPTOR_ID = 34203;
 
     private const MANUFACTURING_JOB_COST_MODIFIER = 0.95;
-    private const INVENTION_JOB_COST_MODIFIER = 1;
+    private const INVENTION_JOB_COST_MODIFIER = 0.74;
 
     private $_esi;
 
