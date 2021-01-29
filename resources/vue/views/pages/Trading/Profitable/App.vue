@@ -1,13 +1,19 @@
 <template>
   <div class="container">
-    <mk-card title="Profitable items" :loading="isLoading" :actions="cardActions">
+    <mk-card title="Profitable items" :actions="cardActions">
       <div class="form-group">
         <div class="input-group">
           <input v-model="filterQuery" type="text" class="form-control" placeholder="Filter items..." />
         </div>
       </div>
 
-      <b-table :fields="tableColumns" :items="filteredItems" sort-by="potential_daily_profit" :sort-desc="true" :responsive="true" :per-page="40">
+      <b-table :busy="isLoading" :fields="tableColumns" :items="filteredItems" sort-by="potential_daily_profit" :sort-desc="true" :responsive="true" :per-page="40" hover>
+        <template #table-busy>
+          <div class="text-center text-primary my-2">
+            <b-spinner class="align-middle mr-2"></b-spinner>
+            <strong>Loading...</strong>
+          </div>
+        </template>
         <template #cell(icon)="data">
           <div class="symbol symbol-30 d-block">
             <span class="symbol-label overflow-hidden">

@@ -1,13 +1,20 @@
 <template>
   <div class="container">
-    <mk-card title="Favorites" :loading="isLoadingFavorites">
+    <mk-card title="Favorites">
       <div class="form-group">
         <div class="input-group">
           <input v-model="filterQuery" type="text" class="form-control" placeholder="Filter items..." />
         </div>
       </div>
 
-      <b-table :fields="tableColumns" :items="filteredFavorites" sort-by="name" :sort-desc="false" :responsive="true">
+      <b-table :busy="isLoadingFavorites" :fields="tableColumns" :items="filteredFavorites" sort-by="name" :sort-desc="false" :responsive="true">
+        <template #table-busy>
+          <div class="text-center text-primary my-2">
+            <b-spinner class="align-middle mr-2"></b-spinner>
+            <strong>Loading...</strong>
+          </div>
+        </template>
+
         <template #cell(icon)="data">
           <div class="symbol symbol-30 d-block">
             <span class="symbol-label overflow-hidden">

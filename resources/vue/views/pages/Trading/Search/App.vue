@@ -1,13 +1,20 @@
 <template>
   <div class="container">
-    <mk-card title="Search" :loading="isLoading">
+    <mk-card title="Search">
       <div class="form-group">
         <div class="input-group">
           <input v-model="searchQuery" type="text" class="form-control" placeholder="Search items..." @keyup.enter="search" />
         </div>
       </div>
 
-      <b-table :fields="tableColumns" :items="searchResults" sort-by="name" :sort-desc="false" :responsive="true">
+      <b-table :busy="isLoading" :fields="tableColumns" :items="searchResults" sort-by="name" :sort-desc="false" :responsive="true">
+        <template #table-busy>
+          <div class="text-center text-primary my-2">
+            <b-spinner class="align-middle mr-2"></b-spinner>
+            <strong>Loading...</strong>
+          </div>
+        </template>
+
         <template #cell(icon)="data">
           <div class="symbol symbol-30 d-block">
             <span class="symbol-label overflow-hidden">
