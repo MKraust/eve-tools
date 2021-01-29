@@ -7,7 +7,17 @@
         </div>
       </div>
 
-      <b-table :busy="isLoading" :fields="tableColumns" :items="filteredItems" sort-by="potential_daily_profit" :sort-desc="true" :responsive="true" :per-page="40" hover>
+      <b-table
+        :busy="isLoading"
+        :fields="tableColumns"
+        :items="filteredItems"
+        :responsive="true"
+        :per-page="perPage"
+        :current-page="currentPage"
+        :sort-desc="true"
+        sort-by="potential_daily_profit"
+        hover
+      >
         <template #table-busy>
           <div class="text-center text-primary my-2">
             <b-spinner class="align-middle mr-2"></b-spinner>
@@ -48,6 +58,13 @@
           </div>
         </template>
       </b-table>
+
+      <b-pagination
+        v-model="currentPage"
+        :total-rows="items.length"
+        :per-page="perPage"
+        aria-controls="my-table"
+      ></b-pagination>
     </mk-card>
 
     <div ref="shoppingListModal" class="modal fade" tabindex="-1">
@@ -81,6 +98,8 @@ export default {
     filterQuery: '',
     tableColumns: COLUMNS,
     favorites: [],
+    currentPage: 1,
+    perPage: 40,
   }),
   computed: {
     filteredItems() {
