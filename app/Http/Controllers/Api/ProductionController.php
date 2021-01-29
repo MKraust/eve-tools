@@ -186,7 +186,7 @@ class ProductionController extends Controller
         $totalCost = $productionCost + ($inventionCost ?? 0);
         $margin = $type->dichstarPrice !== null ? $type->dichstarPrice * 0.9575 - $totalCost : null;
         $marginPercent = $totalCost > 0 ? round($margin / $totalCost * 100, 2) : 0;
-        $potentialDailyProfit = $margin !== null && $type->averageDailyVolume ? round($margin * $type->averageDailyVolume, 2) : null;
+        $potentialDailyProfit = $margin !== null && $type->averageDailyVolume ? (int)floor($margin * $type->averageDailyVolume) : null;
 
         return [
             'type_id'    => $type->typeID,

@@ -55,11 +55,11 @@ class Type extends Model
         return $totalCost > 0 ? round($this->margin / $totalCost * 100, 2) : 0;
     }
 
-    public function getPotentialDailyProfitAttribute(): ?float {
+    public function getPotentialDailyProfitAttribute(): ?int {
         $averageDailyVolume = $this->averageDailyVolume;
         $margin = $this->margin;
 
-        return $margin !== null && $averageDailyVolume ? round($margin * $averageDailyVolume, 2) : null;
+        return $margin !== null && $averageDailyVolume ? floor($margin * $averageDailyVolume) : null;
     }
 
     public function getDichstarPriceAttribute(): ?float {

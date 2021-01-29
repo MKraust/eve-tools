@@ -167,7 +167,7 @@ class RefreshMarketData implements ShouldQueue
         $typeIds = array_keys($this->_minDichstarPrices);
         $typeIdsChunks = array_chunk($typeIds, 100);
         foreach ($typeIdsChunks as $typeIdsChunk) {
-            $monthAgo = now()->modify('-65 days')->format('Y-m-d');
+            $monthAgo = now()->modify('-30 days')->format('Y-m-d');
             $ordersHistoryData = CachedOrdersHistory::whereIn('type_id', $typeIdsChunk)->where('date', '>=', $monthAgo)->get();
 
             foreach ($ordersHistoryData->groupBy('type_id') as $typeId => $typeOrdersHistoryData) {
@@ -178,8 +178,8 @@ class RefreshMarketData implements ShouldQueue
                 $priceData['weekly_volume'] = $typeOrdersHistoryData->filter(function ($historyDatum) {
                     return new \DateTime($historyDatum->date) >= now()->modify('-7 days');
                 })->sum->volume;
-                $priceData['average_daily_volume'] = round($monthlyVolume / 60, 2);
-                $priceData['adjusted_daily_volume'] = $this->_getAdjustedDailyVolume($typeOrdersHistoryData);
+                $priceData['average_daily_volume'] = round($monthlyVolume / 30, 2);
+//                $priceData['adjusted_daily_volume'] = $this->_getAdjustedDailyVolume($typeOrdersHistoryData);
 
                 $this->_pricesData[$typeId] = $priceData;
             }
