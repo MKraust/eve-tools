@@ -64,4 +64,12 @@ export default [
     sortByFormatted: (value, key, item) => item.outbid_margin_percent,
     formatter: (value, key, item) => formatColumnValue(item.outbid_margin_percent, val => `${val}%`),
   },
+  {
+    key: 'actions',
+    label: '',
+    tdClass: 'align-middle d-flex',
+    thAttr: {
+      style: 'width: 53px;',
+    },
+  },
 ];

@@ -14,7 +14,7 @@ export default [
   {
     key: 'actions',
     label: '',
-    tdClass: 'align-middle',
+    tdClass: 'align-middle d-flex',
     thAttr: {
       style: 'width: 53px;',
     },

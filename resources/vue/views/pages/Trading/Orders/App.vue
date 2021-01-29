@@ -18,13 +18,8 @@
               </div>
             </template>
 
-            <template #cell(name)="data">
-                <div class="d-flex justify-content-between align-items-center">
-                  <span>{{ data.value }}</span>
-                  <button class="btn btn-sm btn-icon btn-text-primary btn-hover-light-primary" @click="openMarketDetails(data.item)">
-                    <i class="fas fa-external-link-alt"></i>
-                  </button>
-                </div>
+            <template #cell(actions)="data">
+              <mk-market-details-button :id="data.item.type.type_id" />
             </template>
           </b-table>
         </mk-card>
@@ -65,9 +60,6 @@ export default {
       this.orders = await this.$api.loadTradingOrders();
 
       this.isLoading = false;
-    },
-    async openMarketDetails(item) {
-      await this.$api.openMarketDetails(item.type.type_id)
     },
   },
 }

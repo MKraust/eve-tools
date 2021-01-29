@@ -34,8 +34,11 @@
         </template>
 
         <template #cell(actions)="data">
-          <div class="btn btn-hover-light-warning btn-sm btn-icon" @click="toggleFavorite(data.item.type_id)">
-            <i class="text-warning fa-star" :class="isFavorite(data.item) ? 'fas' : 'far'"></i>
+          <div class="d-flex">
+            <div class="btn btn-hover-light-warning btn-sm btn-icon" @click="toggleFavorite(data.item.type_id)">
+              <i class="text-warning fa-star" :class="isFavorite(data.item) ? 'fas' : 'far'"></i>
+            </div>
+            <mk-market-details-button :id="data.item.type_id" />
           </div>
         </template>
       </b-table>
