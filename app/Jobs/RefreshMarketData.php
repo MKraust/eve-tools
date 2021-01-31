@@ -19,7 +19,7 @@ class RefreshMarketData implements ShouldQueue
 {
     private const THE_FORGE_REGION_ID = 10000002;
     private const JITA_TRADING_HUB_ID = 60003760;
-    private const DICHSTAR_SOLAR_SYSTEM_ID = 30000843;
+    private const DICHSTAR_SOLAR_SYSTEM_ID = 30000498;
     private const DICHSTAR_STRUCTURE_ID = 1031787606461;
     private const INSMOTHER_REGION_ID = 10000009;
 
