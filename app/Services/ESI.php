@@ -15,6 +15,7 @@ class ESI {
     public function __construct() {
         $config = Configuration::getInstance();
         $config->setConfiguration(new EsiConfiguration([
+            'http_user_agent'     => 'Personal EVE market screener. Contact Mike Kraust in-game.',
             'logfile_location'    => storage_path() . (php_sapi_name() === 'cli' ? '/cli' : '') . '/logs',
             'file_cache_location' => storage_path() . (php_sapi_name() === 'cli' ? '/cli' : '') . '/esi',
         ]));
@@ -69,5 +70,15 @@ class ESI {
 
     public function openMarketDetailsWindow(int $typeId) {
         $this->_client->setQueryString(['type_id' => $typeId])->invoke('post', '/ui/openwindow/marketdetails/');
+    }
+
+    public function getWalletTransactions(int $characterId, ?int $fromId = null) {
+        if ($fromId !== null) {
+            $this->_client->setQueryString(['from_id' => $fromId]);
+        }
+
+        return $this->_client->invoke('get', '/characters/{character_id}/wallet/transactions/', [
+            'character_id' => $characterId,
+        ]);
     }
 }

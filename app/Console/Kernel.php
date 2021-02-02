@@ -27,6 +27,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->job(new Jobs\RefreshMarketData())->everyFifteenMinutes();
         $schedule->job(new Jobs\RefreshMarketHistory())->dailyAt('14:30');
+        $schedule->job(new Jobs\UpdateTransactions())->hourly();
     }
 
     /**
