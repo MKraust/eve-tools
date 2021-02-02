@@ -1,37 +1,33 @@
 <template>
   <div class="container">
-    <div class="row">
-      <div class="col-8">
-        <mk-card title="Outbidded orders">
-          <div class="form-group">
-            <div class="input-group">
-              <input v-model="filterQuery" type="text" class="form-control" placeholder="Filter items..." />
-            </div>
-          </div>
-
-          <b-table :busy="isLoading" :fields="tableColumns" :items="filteredOrders" sort-by="name" :sort-desc="false" :responsive="true">
-            <template #table-busy>
-              <div class="text-center text-primary my-2">
-                <b-spinner class="align-middle mr-2"></b-spinner>
-                <strong>Loading...</strong>
-              </div>
-            </template>
-
-            <template #cell(icon)="data">
-              <div class="symbol symbol-30 d-block">
-                <span class="symbol-label overflow-hidden">
-                  <img :src="data.item.type.icon" class="module-icon" alt="">
-                </span>
-              </div>
-            </template>
-
-            <template #cell(actions)="data">
-              <mk-market-details-button :id="data.item.type.type_id" />
-            </template>
-          </b-table>
-        </mk-card>
+    <mk-card title="Outbidded orders">
+      <div class="form-group">
+        <div class="input-group">
+          <input v-model="filterQuery" type="text" class="form-control" placeholder="Filter items..." />
+        </div>
       </div>
-    </div>
+
+      <b-table :busy="isLoading" :fields="tableColumns" :items="filteredOrders" sort-by="name" :sort-desc="false" :responsive="true">
+        <template #table-busy>
+          <div class="text-center text-primary my-2">
+            <b-spinner class="align-middle mr-2"></b-spinner>
+            <strong>Loading...</strong>
+          </div>
+        </template>
+
+        <template #cell(icon)="data">
+          <div class="symbol symbol-30 d-block">
+            <span class="symbol-label overflow-hidden">
+              <img :src="data.item.type.icon" class="module-icon" alt="">
+            </span>
+          </div>
+        </template>
+
+        <template #cell(actions)="data">
+          <mk-market-details-button :id="data.item.type.type_id" />
+        </template>
+      </b-table>
+    </mk-card>
   </div>
 </template>
 

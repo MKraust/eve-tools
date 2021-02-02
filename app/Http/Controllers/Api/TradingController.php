@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\CachedOrder;
+use App\Models\CachedTransaction;
 use App\Services;
 use Illuminate\Filesystem\Cache;
 use Illuminate\Http\Request;
@@ -100,6 +101,13 @@ class TradingController extends Controller
         $this->_esi->openMarketDetailsWindow($request->type_id);
 
         return ['status' => 'success'];
+    }
+
+    public function getMoneyFlowStatisticsByTime() {
+        return CachedTransaction::selectRaw("
+            date_format(date - interval minute(date)%30 minute, '%H:%i') as period_start,
+            sum(unit_price * quantity) as sum
+        ")->groupBy('period_start')->get();
     }
 
     private function _convertTypeToApi($type) {
