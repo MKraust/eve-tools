@@ -103,11 +103,22 @@ class TradingController extends Controller
         return ['status' => 'success'];
     }
 
-    public function getMoneyFlowStatisticsByHalfHour() {
-        return CachedTransaction::selectRaw("
-            date_format(date - interval minute(date)%30 minute, '%H:%i') as period_start,
-            sum(unit_price * quantity) as sum
-        ")->groupBy('period_start')->get();
+    public function getMoneyFlowStatistics(Request $request) {
+        $builder = $request->type_id
+            ? CachedTransaction::selectRaw("date_format(date - interval minute(date)%60 minute, '%H:%i') as x, sum(quantity) as y")->where('type_id', $request->type_id)
+            : CachedTransaction::selectRaw("date_format(date - interval minute(date)%60 minute, '%H:%i') as x, sum(unit_price * quantity) as y");
+
+        $data = $builder->groupBy('x')->get()->mapWithKeys(function ($val) {
+           $val['x'] = (new \DateTime($val['x']))->modify('+3 hours')->format('H:i');
+           return [$val['x'] => $val];
+        });
+
+        for ($time = new \DateTime('00:00'); $time < (new \DateTime('00:00'))->modify('+1 day'); $time->modify('+60 minutes')) {
+            $timeString = $time->format('H:i');
+            $data[$timeString] = $data[$timeString] ?? ['x' => $timeString, 'y' => 0];
+        }
+
+        return $data->sortBy('x')->values();
     }
 
     private function _convertTypeToApi($type) {

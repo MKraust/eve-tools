@@ -1,33 +1,44 @@
 <template>
   <div class="container">
-    <mk-card title="Outbidded orders">
-      <div class="form-group">
-        <div class="input-group">
-          <input v-model="filterQuery" type="text" class="form-control" placeholder="Filter items..." />
-        </div>
+    <div class="row">
+      <div class="col-md-6">
+        <mk-card title="Intraday money flow" :loading="isLoading" class="mb-10">
+          <mk-chart :chart-data="intradayMoneyFlowData" :height="300" type="area" />
+        </mk-card>
       </div>
 
-      <b-table :busy="isLoading" :fields="tableColumns" :items="filteredOrders" sort-by="name" :sort-desc="false" :responsive="true">
-        <template #table-busy>
-          <div class="text-center text-primary my-2">
-            <b-spinner class="align-middle mr-2"></b-spinner>
-            <strong>Loading...</strong>
+      <div class="col-md-12">
+        <mk-card title="Outbidded orders">
+          <div class="form-group">
+            <div class="input-group">
+              <input v-model="filterQuery" type="text" class="form-control" placeholder="Filter items..." />
+            </div>
           </div>
-        </template>
 
-        <template #cell(icon)="data">
-          <div class="symbol symbol-30 d-block">
+          <b-table :busy="isLoading" :fields="tableColumns" :items="filteredOrders" sort-by="name" :sort-desc="false" :responsive="true">
+            <template #table-busy>
+              <div class="text-center text-primary my-2">
+                <b-spinner class="align-middle mr-2"></b-spinner>
+                <strong>Loading...</strong>
+              </div>
+            </template>
+
+            <template #cell(icon)="data">
+              <div class="symbol symbol-30 d-block">
             <span class="symbol-label overflow-hidden">
               <img :src="data.item.type.icon" class="module-icon" alt="">
             </span>
-          </div>
-        </template>
+              </div>
+            </template>
 
-        <template #cell(actions)="data">
-          <mk-market-details-button :id="data.item.type.type_id" />
-        </template>
-      </b-table>
-    </mk-card>
+            <template #cell(actions)="data">
+              <mk-money-flow-button :id="data.item.type.type_id" :name="data.item.type.name" />
+              <mk-market-details-button :id="data.item.type.type_id" />
+            </template>
+          </b-table>
+        </mk-card>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -43,6 +54,7 @@ export default {
     isLoading: false,
     filterQuery: '',
     tableColumns: COLUMNS,
+    intradayMoneyFlowData: [],
   }),
   computed: {
     outbiddedOrders() {
@@ -60,7 +72,13 @@ export default {
     async loadData() {
       this.isLoading = true;
 
-      this.orders = await this.$api.loadTradingOrders();
+      const [orders, intradayMoneyFlowData] = await Promise.all([
+        this.$api.loadTradingOrders(),
+        this.$api.loadIntradayMoneyFlowData(),
+      ])
+
+      this.orders = orders;
+      this.intradayMoneyFlowData = intradayMoneyFlowData;
 
       this.isLoading = false;
     },

@@ -96,4 +96,9 @@ export default {
 
     await axios.post(api('/trading/open-market-details'), params);
   },
+  async loadIntradayMoneyFlowData(typeId) {
+    const params = { type_id: typeId };
+
+    return (await axios.get(api('/trading/stats-by-half-hour'), { params })).data
+  }
 }

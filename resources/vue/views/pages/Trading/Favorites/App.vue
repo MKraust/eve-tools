@@ -43,6 +43,7 @@
           <div class="btn btn-hover-light-warning btn-sm btn-icon" @click="toggleFavorite(data.item.type_id)">
             <i class="text-warning fas fa-star"></i>
           </div>
+          <mk-money-flow-button :id="data.item.type_id" :name="data.item.name" />
           <mk-market-details-button :id="data.item.type_id" />
         </template>
       </b-table>

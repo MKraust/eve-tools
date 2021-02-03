@@ -10,12 +10,14 @@ import './metronic';
 
 // Vue 3rd party plugins
 import lodash from 'lodash';
+import numeral from 'numeral';
 import "./plugins/perfect-scrollbar";
 import "./plugins/inline-svg";
 import "./plugins/bootstrap-vue";
 import "@mdi/font/css/materialdesignicons.css";
 
 Vue.prototype.$lodash = lodash;
+Vue.prototype.$numeral = numeral;
 Vue.prototype.$api = api;
 
 new Vue({

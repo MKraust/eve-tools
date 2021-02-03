@@ -54,6 +54,7 @@
             <div class="btn btn-hover-light-warning btn-sm btn-icon" @click="toggleFavorite(data.item.type_id)">
               <i class="text-warning fa-star" :class="isFavorite(data.item) ? 'fas' : 'far'"></i>
             </div>
+            <mk-money-flow-button :id="data.item.type_id" :name="data.item.name" />
             <mk-market-details-button :id="data.item.type_id" />
           </div>
         </template>
@@ -71,7 +72,7 @@
       <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Modal Title</h5>
+            <h5 class="modal-title">Shopping list</h5>
             <button type="button" class="close" data-dismiss="modal">
               <i class="ki ki-close"></i>
             </button>
