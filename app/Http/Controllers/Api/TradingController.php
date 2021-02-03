@@ -103,7 +103,7 @@ class TradingController extends Controller
         return ['status' => 'success'];
     }
 
-    public function getMoneyFlowStatisticsByTime() {
+    public function getMoneyFlowStatisticsByHalfHour() {
         return CachedTransaction::selectRaw("
             date_format(date - interval minute(date)%30 minute, '%H:%i') as period_start,
             sum(unit_price * quantity) as sum
