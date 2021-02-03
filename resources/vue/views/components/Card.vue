@@ -1,6 +1,6 @@
 <template>
   <div ref="card" class="card card-custom gutter-b">
-    <div class="card-header border-0">
+    <div class="card-header">
       <div class="card-title">
         <span v-if="icon" class="card-icon">
           <i class="text-primary" :class="icon"></i>
