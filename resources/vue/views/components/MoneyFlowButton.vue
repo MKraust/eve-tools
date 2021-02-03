@@ -4,7 +4,7 @@
       <i class="fas fa-chart-bar"></i>
     </button>
 
-    <b-modal :id="`money-flow-modal-${id}`" :title="name" :busy="loading" :visible="isModalShown" size="lg" hide-footer>
+    <b-modal v-model="isModalShown" :id="`money-flow-modal-${id}`" :title="name" :busy="loading" size="lg" hide-footer>
       <mk-chart :chart-data="chartData" :height="300" type="area" />
     </b-modal>
   </div>
@@ -23,9 +23,13 @@ export default {
   }),
   methods: {
     async loadChartData() {
+      if (this.chartData.length > 0) {
+        this.isModalShown = true;
+        return;
+      }
+
       this.loading = true;
 
-      this.chartData = [];
       this.isModalShown = true;
       this.chartData = await this.$api.loadIntradayMoneyFlowData(this.id);
 
