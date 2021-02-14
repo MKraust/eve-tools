@@ -15,6 +15,7 @@ class CreateAggregatedCharacterOrdersTable extends Migration
     {
         Schema::create('aggregated_character_orders', function (Blueprint $table) {
             $table->unsignedBigInteger('order_id')->primary()->unique();
+            $table->unsignedBigInteger('character_id');
             $table->unsignedBigInteger('location_id');
             $table->unsignedDecimal('price', 20, 2);
             $table->integer('type_id');

@@ -2,11 +2,11 @@
 
 namespace App\Services\DataRefreshment;
 
+use App\Models\AggregatedPrice;
 use App\Models\CachedOrdersHistory;
 use App\Models\CachedPrice;
 use App\Models\Setting;
 use App\Services;
-use Illuminate\Support\Facades\Log;
 
 class MarketHistoryRefresher {
 
@@ -72,7 +72,7 @@ class MarketHistoryRefresher {
                 $this->_incrementProcessedTypesCount();
             }
 
-            $chunks = array_chunk(array_values($ordersHistoryData), 500);
+            $chunks = array_chunk(array_values($ordersHistoryData), 1000);
             foreach ($chunks as $chunk) {
                 CachedOrdersHistory::insert($chunk);
             }
@@ -127,8 +127,7 @@ class MarketHistoryRefresher {
      * @return int[]
      */
     private function _getTypeIdsForHistoryUpdate(): array {
-        return CachedPrice::select('type_id')
-            ->whereNotNull('dichstar')
+        return CachedPrice::selectRaw('distinct(type_id)')
             ->get()
             ->map->type_id
             ->toArray();

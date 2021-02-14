@@ -2,6 +2,9 @@
 
 namespace App\Services\DataRefreshment;
 
+use App\Events\MarketHistoryRefreshed;
+use App\Events\OrdersRefreshed;
+
 class Controller {
 
     public function refreshTransactions(): void {
@@ -24,6 +27,8 @@ class Controller {
             $refresher = new MarketHistoryRefresher($regionId);
             $refresher->refresh();
         }
+
+        MarketHistoryRefreshed::dispatch();
     }
 
     public function refreshMarketOrders(): void {
@@ -46,6 +51,8 @@ class Controller {
             $refresher = new StationsOrdersRefresher($regionId, $stationIds);
             $refresher->refresh();
         }
+
+        OrdersRefreshed::dispatch();
     }
 
     public function refreshPrices(): void {

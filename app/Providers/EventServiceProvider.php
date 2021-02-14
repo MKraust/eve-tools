@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Events\MarketHistoryRefreshed;
+use App\Events\OrdersRefreshed;
+use App\Services\DataAggregation\Controller;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -27,6 +30,13 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Event::listen(function (MarketHistoryRefreshed $event) {
+            app(Controller::class)->aggregateVolumes();
+        });
+
+        Event::listen(function (OrdersRefreshed $event) {
+            app(Controller::class)->aggregatePrices();
+            app(Controller::class)->aggregateCharactersOrders();
+        });
     }
 }

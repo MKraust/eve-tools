@@ -17,11 +17,11 @@ class CreateAggregatedVolumesTable extends Migration
             $table->id();
             $table->unsignedBigInteger('type_id');
             $table->unsignedBigInteger('region_id');
-            $table->integer('monthly');
-            $table->integer('weekly');
-            $table->unsignedDecimal('average_daily', 20, 2);
+            $table->unsignedBigInteger('monthly')->default(0);
+            $table->unsignedBigInteger('weekly')->default(0);
+            $table->unsignedDecimal('average_daily', 20, 2)->default(0);
 
-            $table->unique(['region_id', 'type_id']);
+            $table->index(['type_id', 'region_id']);
         });
     }
 

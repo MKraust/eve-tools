@@ -17,8 +17,8 @@ class CreateAggregatedPricesTable extends Migration
             $table->id();
             $table->unsignedInteger('type_id');
             $table->unsignedBigInteger('location_id');
-            $table->unsignedDecimal('sell')->nullable();
-            $table->unsignedDecimal('buy')->nullable();
+            $table->unsignedDecimal('sell', 20, 2)->nullable();
+            $table->unsignedDecimal('buy', 20, 2)->nullable();
 
             $table->unique(['type_id', 'location_id']);
         });
