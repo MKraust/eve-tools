@@ -14,6 +14,7 @@ class CachedTransaction extends Model
     protected $connection = 'mysql';
 
     protected $fillable = [
+        'character_id',
         'client_id',
         'date',
         'is_buy',

@@ -5,19 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class CachedPrice extends Model
+class AggregatedVolume extends Model
 {
     use HasFactory;
 
     public $timestamps = false;
 
-    protected $connection = 'mysql';
-
-    protected $primaryKey = 'type_id';
-
     protected $fillable = [
+        'region_id',
         'type_id',
-        'average',
-        'adjusted',
+        'monthly',
+        'weekly',
+        'average_daily',
     ];
 }

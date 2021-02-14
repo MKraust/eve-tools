@@ -9,11 +9,11 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class RefreshMarketHistory implements ShouldQueue
+class RefreshPrices implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public function handle(DataRefreshment\Controller $refreshmentController) {
-        $refreshmentController->refreshMarketHistory();
+        $refreshmentController->refreshPrices();
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use App\Jobs;
@@ -14,7 +15,9 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+        Commands\RefreshOrders::class,
+        Commands\RefreshMarketHistory::class,
+        Commands\RefreshTransactions::class,
     ];
 
     /**
@@ -25,9 +28,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->job(new Jobs\RefreshMarketData())->everyFifteenMinutes();
-        $schedule->job(new Jobs\RefreshMarketHistory())->dailyAt('14:30');
-        $schedule->job(new Jobs\UpdateTransactions())->hourly();
+        $schedule->job(new Jobs\RefreshOrders)->everyFifteenMinutes();
+        $schedule->job(new Jobs\RefreshPrices)->everyFifteenMinutes();
+        $schedule->job(new Jobs\RefreshMarketHistory)->dailyAt('14:30');
+        $schedule->job(new Jobs\RefreshTransactions)->hourly();
     }
 
     /**

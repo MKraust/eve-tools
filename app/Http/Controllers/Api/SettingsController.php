@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Jobs\RefreshMarketData;
+use App\Jobs\RefreshOrders;
 use App\Jobs\RefreshMarketHistory;
 use App\Models\Setting;
 use Illuminate\Http\Request;
@@ -24,7 +24,7 @@ class SettingsController extends Controller
     }
 
     public function refreshMarketData() {
-        $this->_runJobAsync(RefreshMarketData::class);
+        $this->_runJobAsync(RefreshOrders::class);
 
         return ['status' => 'success'];
     }

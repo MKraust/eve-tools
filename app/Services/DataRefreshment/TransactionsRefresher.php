@@ -1,33 +1,28 @@
 <?php
 
-namespace App\Jobs;
+namespace App\Services\DataRefreshment;
 
 use App\Models\CachedTransaction;
-use App\Services\ESI;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
+use App\Services;
 
-class UpdateTransactions implements ShouldQueue
-{
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+class TransactionsRefresher {
 
-    private const JIN_KRAUST_CHARACTER_ID = 2117638152;
+    /** @var int */
+    private $_characterId;
 
-    private $_esi;
+    public function __construct(int $characterId) {
+        $this->_characterId = $characterId;
 
-    public function __construct() {
-        $this->_esi = new ESI();
+        $this->_esi = new Services\ESI;
     }
 
-    public function handle() {
-        $transactions = $this->_esi->getWalletTransactions(self::JIN_KRAUST_CHARACTER_ID);
+    public function refresh(): void {
+        $transactions = $this->_esi->getWalletTransactions($this->_characterId);
 
         $transactionsData = [];
         foreach ($transactions as $transaction) {
             $transactionsData[] = [
+                'character_id' => $this->_characterId,
                 'client_id' => $transaction->client_id,
                 'date' => (new \DateTime($transaction->date))->format('Y-m-d H:i:s'),
                 'is_buy' => $transaction->is_buy,
