@@ -11,6 +11,8 @@ class AggregatedVolume extends Model
 
     public $timestamps = false;
 
+    protected $connection = 'mysql';
+
     protected $fillable = [
         'region_id',
         'type_id',

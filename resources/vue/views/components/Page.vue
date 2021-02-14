@@ -13,11 +13,22 @@
             </ul>
           </div>
         </div>
+        <div class="topbar align-items-center">
+          <b-form-select v-model="currentLocationId">
+            <b-form-select-option
+              v-for="location in locations"
+              :key="location.id"
+              :value="location.id"
+            >
+              {{ location.name }}
+            </b-form-select-option>
+          </b-form-select>
+        </div>
       </div>
     </div>
 
     <div id="kt_content" class="content d-flex flex-column flex-column-fluid">
-      <div class="d-flex flex-column-fluid">
+      <div :key="key" class="d-flex flex-column-fluid">
         <slot />
       </div>
     </div>
@@ -33,6 +44,17 @@ export default {
       default() {
         return [];
       },
+    },
+  },
+  data: () => ({
+    key: 0,
+    locations: window.__locations.filter(l => !l.is_trading_hub),
+    currentLocationId: localStorage.getItem('current_location_id'),
+  }),
+  watch: {
+    currentLocationId(val) {
+      localStorage.setItem('current_location_id', val);
+      this.key++;
     },
   },
 };

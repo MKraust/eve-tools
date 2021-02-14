@@ -24,13 +24,13 @@ export default [
     formatter: (value, key, item) => formatColumnValue(item.costs.total, formatNumber),
   },
   {
-    key: 'dichstar_price',
+    key: 'sell',
     sortable: true,
-    label: 'Dichstar',
+    label: 'Sell',
     class: 'text-right text-nowrap',
     tdClass: 'align-middle',
-    sortByFormatted: (value, key, item) => item.prices.dichstar,
-    formatter: (value, key, item) => formatColumnValue(item.prices.dichstar, formatNumber),
+    sortByFormatted: (value, key, item) => item.prices.sell,
+    formatter: (value, key, item) => formatColumnValue(item.prices.sell, formatNumber),
   },
   {
     key: 'margin',

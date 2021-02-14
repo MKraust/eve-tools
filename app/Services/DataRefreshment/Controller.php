@@ -4,6 +4,8 @@ namespace App\Services\DataRefreshment;
 
 use App\Events\MarketHistoryRefreshed;
 use App\Events\OrdersRefreshed;
+use App\Services\Locations\Keeper;
+use App\Services\Locations\Location;
 
 class Controller {
 
@@ -19,9 +21,7 @@ class Controller {
     }
 
     public function refreshMarketHistory(): void {
-        $regionIds = [
-            10000009, // Insmother
-        ];
+        $regionIds = app(Keeper::class)->getSellingRegionsIds();
 
         foreach ($regionIds as $regionId) {
             $refresher = new MarketHistoryRefresher($regionId);
@@ -32,23 +32,20 @@ class Controller {
     }
 
     public function refreshMarketOrders(): void {
-        $structureIds = [
-            1031787606461, // DICHSTAR
-        ];
+        $locationKeeper = app(Keeper::class);
 
-        $stations = [
-            10000002 => [ // The Forge
-                60003760, // Jita 4-4
-            ],
-        ];
+        $structures = $locationKeeper->getStructures();
+        $stations = $locationKeeper->getStations()->groupBy(function (Location $location) {
+            return $location->regionId();
+        });
 
-        foreach ($structureIds as $structureId) {
-            $refresher = new StructureOrdersRefresher($structureId);
+        foreach ($structures as $structure) {
+            $refresher = new StructureOrdersRefresher($structure->id());
             $refresher->refresh();
         }
 
-        foreach ($stations as $regionId => $stationIds) {
-            $refresher = new StationsOrdersRefresher($regionId, $stationIds);
+        foreach ($stations as $regionId => $station) {
+            $refresher = new StationsOrdersRefresher($regionId, $station->id());
             $refresher->refresh();
         }
 

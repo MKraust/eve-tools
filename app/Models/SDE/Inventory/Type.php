@@ -2,6 +2,8 @@
 
 namespace App\Models\SDE\Inventory;
 
+use App\Services\Locations\Keeper;
+use App\Services\Locations\Location;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models;
@@ -17,11 +19,8 @@ class Type extends Model
     protected $primaryKey = 'typeID';
 
     protected $with = [
-        'price',
-    ];
-
-    protected $casts = [
-        'volume' => 'double',
+        'prices',
+        'volumes',
     ];
 
     public function getTechLevelAttribute(): ?int {
@@ -36,50 +35,12 @@ class Type extends Model
         return $this->price->jita ?? null;
     }
 
-    public function getTotalCostAttribute(): ?float {
-        $jitaPrice = $this->jitaPrice;
-
-        return $jitaPrice !== null ? $jitaPrice + $this->volume * self::DELIVERY_COST_PER_M3 : null;
-    }
-
-    public function getMarginAttribute(): ?float {
-        $totalCost = $this->totalCost;
-        $dichstarPrice = $this->dichstarPrice;
-
-        return $dichstarPrice !== null && $totalCost !== null ? round($dichstarPrice * 0.9575 - $totalCost, 2) : null;
-    }
-
-    public function getMarginPercentAttribute(): ?float {
-        $totalCost = $this->totalCost;
-
-        return $totalCost > 0 ? round($this->margin / $totalCost * 100, 2) : 0;
-    }
-
-    public function getPotentialDailyProfitAttribute(): ?int {
-        $averageDailyVolume = $this->averageDailyVolume;
-        $margin = $this->margin;
-
-        return $margin !== null && $averageDailyVolume ? floor($margin * $averageDailyVolume) : null;
-    }
-
     public function getDichstarPriceAttribute(): ?float {
         return $this->price->dichstar ?? null;
     }
 
     public function getAdjustedPriceAttribute(): ?float {
         return $this->price->adjusted ?? null;
-    }
-
-    public function getMonthlyVolumeAttribute(): ?int {
-        return $this->price->monthly_volume ?? null;
-    }
-
-    public function getWeeklyVolumeAttribute(): ?int {
-        return $this->price->weekly_volume ?? null;
-    }
-
-    public function getAverageDailyVolumeAttribute(): ?float {
-        return $this->price->average_daily_volume ?? null;
     }
 
     public function getBlueprintProductionMaterialsAttribute() {
@@ -119,6 +80,14 @@ class Type extends Model
         return $this->hasOne(Models\CachedPrice::class, 'type_id', 'typeID');
     }
 
+    public function prices() {
+        return $this->hasMany(Models\AggregatedPrice::class, 'type_id', 'typeID');
+    }
+
+    public function volumes() {
+        return $this->hasMany(Models\AggregatedVolume::class, 'type_id', 'typeID');
+    }
+
     public function scopeRigs($query) {
         return $query->whereIn('groupID', [773, 774, 775, 776, 777, 778, 779, 781, 782, 786, 896, 904, 1232, 1233, 1234, 1308]);
     }
@@ -129,5 +98,74 @@ class Type extends Model
 
     public function _getDichstarOrders() {
         return $this->dichstarOrders->sortBy('price');
+    }
+
+
+
+
+
+
+    public function getTotalCost(Location $location): ?float {
+        $buyPrice = $this->getBuyPrice();
+
+        return $buyPrice !== null ? $buyPrice + $this->volume * $location->deliveryCost() : null;
+    }
+
+    public function getMargin(Location $location): ?float {
+        $totalCost = $this->getTotalCost($location);
+        $sellPrice = $this->getSellPrice($location);
+
+        return $sellPrice !== null && $totalCost !== null ? round($sellPrice * 0.9575 - $totalCost, 2) : null;
+    }
+
+    public function getBuyPrice() {
+        $locationsKeeper = app(Keeper::class);
+
+        return $this->prices->filter(function ($price) use ($locationsKeeper) {
+            return in_array($price->location_id, $locationsKeeper->getTradingHubIds());
+        })->min('sell'); // buy from sell orders
+    }
+
+    public function getSellPrice(Location $location) {
+        return $this->prices->first(function ($price) use ($location) {
+                return $price->location_id === $location->id();
+            })->sell ?? null;
+    }
+
+    public function getMarginPercent(Location $location): ?float {
+        $totalCost = $this->getTotalCost($location);
+
+        return $totalCost > 0 ? round($this->getMargin($location) / $totalCost * 100, 2) : 0;
+    }
+
+    public function getPotentialDailyProfit(Location $location): ?int {
+        $averageDailyVolume = $this->getAverageDailyVolume($location);
+        $margin = $this->getMargin($location);
+
+        return $margin !== null && $averageDailyVolume ? floor($margin * $averageDailyVolume) : null;
+    }
+
+    public function getMonthlyVolume(Location $location): ?int {
+        $volume = $this->volumes->first(function (Models\AggregatedVolume $volume) use ($location) {
+            return $volume->region_id === $location->regionId();
+        });
+
+        return $volume->monthly ?? null;
+    }
+
+    public function getWeeklyVolume(Location $location): ?int {
+        $volume = $this->volumes->first(function (Models\AggregatedVolume $volume) use ($location) {
+            return $volume->region_id === $location->regionId();
+        });
+
+        return $volume->weekly ?? null;
+    }
+
+    public function getAverageDailyVolume(Location $location): ?float {
+        $volume = $this->volumes->first(function (Models\AggregatedVolume $volume) use ($location) {
+            return $volume->region_id === $location->regionId();
+        });
+
+        return $volume->average_daily ?? null;
     }
 }

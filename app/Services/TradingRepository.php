@@ -2,10 +2,15 @@
 
 namespace App\Services;
 
+use App\Models\AggregatedCharacterOrder;
+use App\Models\AggregatedPrice;
+use App\Models\AggregatedVolume;
 use App\Models\CachedOrder;
 use App\Models\CachedPrice;
 use App\Models\SDE\Inventory\Type;
 use App\Models\Trading;
+use App\Services\Locations\Keeper;
+use App\Services\Locations\Location;
 
 class TradingRepository {
 
@@ -34,21 +39,25 @@ class TradingRepository {
         Trading\Favorite::destroy($typeId);
     }
 
-    public function getProfitableMarketItems() {
-        $typeIds = CachedPrice::whereNotNull('jita')
-            ->whereNotNull('dichstar')
-            ->whereNotNull('average_daily_volume')
-            ->get()
-            ->map->type_id->unique();
+    public function getProfitableMarketItems(Location $location) {
+        $locationVolumes = AggregatedVolume::where('region_id', $location->regionId())->where('average_daily', '>', 0)->get();
 
+        $typeIds = $locationVolumes->map->type_id->unique();
+        $locationPrices = AggregatedPrice::where('location_id', $location->id())->whereIn('type_id', $typeIds)->whereNotNull('sell')->get();
+
+        $typeIds = $locationPrices->map->type_id->unique();
+        $tradingHubIds = app(Keeper::class)->getTradingHubIds();
+        $tradingHubPrices = AggregatedPrice::whereIn('location_id', $tradingHubIds)->whereIn('type_id', $typeIds)->whereNotNull('sell')->get();
+
+        $typeIds = $tradingHubPrices->map->type_id->unique();
         $types = Type::whereIn('typeID', $typeIds)->get();
 
-        return $types->filter(function ($type) {
-           return $type->potentialDailyProfit > self::MIN_POTENTIAL_DAILY_PROFIT;
+        return $types->filter(function ($type) use ($location) {
+           return $type->getPotentialDailyProfit($location) > self::MIN_POTENTIAL_DAILY_PROFIT;
         });
     }
 
-    public function getTraderOrders() {
-        return CachedOrder::my()->with(['competingOrders'])->get();
+    public function getTraderOrders(int $characterId, int $locationId) {
+        return AggregatedCharacterOrder::where('character_id', $characterId)->where('location_id', $locationId)->get();
     }
 }

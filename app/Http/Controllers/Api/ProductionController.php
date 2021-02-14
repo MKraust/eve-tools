@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\SDE\Inventory\Type;
 use App\Services;
+use App\Services\Locations\Location;
 use Illuminate\Http\Request;
 
 class ProductionController extends Controller
@@ -15,26 +17,39 @@ class ProductionController extends Controller
 
     private $_productionService;
 
-    public function __construct() {
+    private $_locationKeeper;
+
+    public function __construct(Services\Locations\Keeper $locationKeeper) {
         $this->_sdeRepository = new Services\SdeRepository;
         $this->_productionRepository = new Services\ProductionRepository;
         $this->_productionService = new Services\ProductionService;
+
+        $this->_locationKeeper = $locationKeeper;
     }
 
     public function searchModules(Request $request) {
         $request->validate([
+            'location_id'  => 'required|integer',
             'search_query' => 'required|string|min:4',
         ]);
 
+        $location = $this->_locationKeeper->getById($request->location_id);
+
         return $this->_sdeRepository
             ->searchRigs($request->search_query)
-            ->map(function ($type) {
-                return $this->_convertTypeToApi($type);
+            ->map(function ($type) use ($location) {
+                return $this->_convertTypeToApi($type, $location);
             })
             ->values();
     }
 
-    public function getFavorites() {
+    public function getFavorites(Request $request) {
+        $request->validate([
+            'location_id' => 'required|integer',
+        ]);
+
+        $location = $this->_locationKeeper->getById($request->location_id);
+
         $favorites = $this->_productionRepository->getFavorites();
         $types = $this->_sdeRepository->getTypesByIds($favorites->map->type_id->toArray(), [
             'techLevelAttribute',
@@ -44,17 +59,23 @@ class ProductionController extends Controller
 
         return $types
             ->sortBy('typeName')
-            ->map(function ($type) {
-                return $this->_convertTypeToApi($type);
+            ->map(function ($type) use ($location) {
+                return $this->_convertTypeToApi($type, $location);
             })
             ->values();
     }
 
-    public function getProfitableItems() {
+    public function getProfitableItems(Request $request) {
+        $request->validate([
+            'location_id' => 'required|integer',
+        ]);
+
+        $location = $this->_locationKeeper->getById($request->location_id);
+
         return $this->_productionRepository
-            ->getProfitableMarketItems()
-            ->map(function ($type) {
-                return $this->_convertTypeToApi($type);
+            ->getProfitableMarketItems($location)
+            ->map(function ($type) use ($location) {
+                return $this->_convertTypeToApi($type, $location);
             })
             ->filter(function ($apiType) {
                 return $apiType['prices']['potential_daily_profit'] > 1000000;
@@ -88,11 +109,17 @@ class ProductionController extends Controller
         return ['status' => 'success'];
     }
 
-    public function getTrackedTypes() {
+    public function getTrackedTypes(Request $request) {
+        $request->validate([
+            'location_id' => 'required|integer',
+        ]);
+
+        $location = $this->_locationKeeper->getById($request->location_id);
+
         return $this->_productionRepository
             ->getTrackedTypes()
-            ->map(function ($trackedType) {
-                return $this->_convertTrackedTypeToApi($trackedType);
+            ->map(function ($trackedType) use ($location) {
+                return $this->_convertTrackedTypeToApi($trackedType, $location);
             })
             ->values();
     }
@@ -180,13 +207,16 @@ class ProductionController extends Controller
         return array_filter($materialsQuantityByName);
     }
 
-    private function _convertTypeToApi($type) {
+    private function _convertTypeToApi(Type $type, Location $location) {
+        $sellPrice = $type->getSellPrice($location);
+        $averageDailyVolume = $type->getAverageDailyVolume($location);
+
         $productionCost = $this->_productionService->getTypeProductionCost($type);
         $inventionCost = $type->tech_level === 2 ? $this->_productionService->getTypeInventionCost($type) : null;
         $totalCost = $productionCost + ($inventionCost ?? 0);
-        $margin = $type->dichstarPrice !== null ? $type->dichstarPrice * 0.9575 - $totalCost : null;
+        $margin = $sellPrice !== null ? $sellPrice * 0.9575 - $totalCost : null;
         $marginPercent = $totalCost > 0 ? round($margin / $totalCost * 100, 2) : 0;
-        $potentialDailyProfit = $margin !== null && $type->averageDailyVolume ? (int)floor($margin * $type->averageDailyVolume) : null;
+        $potentialDailyProfit = $margin !== null && $averageDailyVolume ? (int)floor($margin * $averageDailyVolume) : null;
 
         return [
             'type_id'    => $type->typeID,
@@ -199,20 +229,20 @@ class ProductionController extends Controller
                 'total'      => $totalCost,
             ],
             'prices'     => [
-                'jita'                   => $type->jitaPrice,
-                'dichstar'               => $type->dichstarPrice,
-                'total_cost'             => $type->totalCost,
+                'buy'                    => $type->getBuyPrice(),
+                'sell'                   => $sellPrice,
+                'total_cost'             => $type->getTotalCost($location),
                 'margin'                 => $margin,
                 'margin_percent'         => $marginPercent,
-                'monthly_volume'         => $type->monthlyVolume,
-                'weekly_volume'          => $type->weeklyVolume,
-                'average_daily_volume'   => $type->averageDailyVolume,
+                'monthly_volume'         => $type->getMonthlyVolume($location),
+                'weekly_volume'          => $type->getWeeklyVolume($location),
+                'average_daily_volume'   => $averageDailyVolume,
                 'potential_daily_profit' => $potentialDailyProfit,
             ],
         ];
     }
 
-    private function _convertTrackedTypeToApi($trackedType) {
+    private function _convertTrackedTypeToApi($trackedType, Location $location) {
         return [
             'id'               => $trackedType->id,
             'production_count' => $trackedType->production_count,
@@ -220,7 +250,7 @@ class ProductionController extends Controller
             'produced'         => $trackedType->produced,
             'invented'         => $trackedType->invented,
             'date'             => (new \DateTime($trackedType->created_at))->format('Y-m-d'),
-            'type'             => $this->_convertTypeToApi($trackedType->type),
+            'type'             => $this->_convertTypeToApi($trackedType->type, $location),
         ];
     }
 

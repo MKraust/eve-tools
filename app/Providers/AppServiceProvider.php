@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Services\DataRefreshment;
 use App\Services\DataAggregation;
+use App\Services\Locations\Keeper;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -17,6 +18,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->singleton(DataRefreshment\Controller::class);
         $this->app->singleton(DataAggregation\Controller::class);
+        $this->app->singleton(Keeper::class);
     }
 
     /**

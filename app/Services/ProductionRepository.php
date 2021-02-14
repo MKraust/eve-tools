@@ -2,9 +2,13 @@
 
 namespace App\Services;
 
+use App\Models\AggregatedPrice;
+use App\Models\AggregatedVolume;
 use App\Models\CachedPrice;
 use App\Models\Production;
 use App\Models\SDE\Inventory\Type;
+use App\Services\Locations\Keeper;
+use App\Services\Locations\Location;
 
 class ProductionRepository {
 
@@ -65,8 +69,12 @@ class ProductionRepository {
         ]);
     }
 
-    public function getProfitableMarketItems() {
-        $typeIds = CachedPrice::whereNotNull('dichstar')->whereNotNull('average_daily_volume')->get()->map->type_id->unique();
+    public function getProfitableMarketItems(Location $location) {
+        $locationVolumes = AggregatedVolume::where('region_id', $location->regionId())->where('average_daily', '>', 0)->get();
+        $typeIds = $locationVolumes->map->type_id->unique();
+
+        $locationPrices = AggregatedPrice::where('location_id', $location->id())->whereIn('type_id', $typeIds)->whereNotNull('sell')->get();
+        $typeIds = $locationPrices->map->type_id->unique();
 
         return Type::rigs()->whereIn('typeID', $typeIds)->with([
             'techLevelAttribute',

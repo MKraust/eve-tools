@@ -11,7 +11,7 @@ class ProductionService {
     private const RUNS_PER_INVENTED_COPY = 10;
     private const USED_DECRYPTOR_ID = 34203;
 
-    private const MANUFACTURING_JOB_COST_MODIFIER = 0.95;
+    private const MANUFACTURING_JOB_COST_MODIFIER = 0.97;
     private const INVENTION_JOB_COST_MODIFIER = 0.74;
 
     private $_esi;
@@ -33,7 +33,7 @@ class ProductionService {
         $cost = 0;
         $EIV = 0;
         foreach ($type->blueprintProductionMaterials as $material) {
-            $cost += $material->materialType->jitaPrice * $material->quantity;
+            $cost += $material->materialType->getBuyPrice() * $material->quantity;
             $EIV += $material->materialType->adjustedPrice * $material->quantity;
         }
 
@@ -50,7 +50,7 @@ class ProductionService {
         $cost = 0;
         $EIV = 0;
         foreach ($type->blueprintInventionMaterials as $material) {
-            $cost += $material->materialType->jitaPrice * $material->quantity;
+            $cost += $material->materialType->getBuyPrice() * $material->quantity;
             $EIV += $material->materialType->adjustedPrice * $material->quantity;
         }
 
@@ -60,6 +60,6 @@ class ProductionService {
 
         $jobInstallCost = $systemIndex !== null ? $EIV * $systemIndex['cost_index'] * self::INVENTION_JOB_COST_MODIFIER : 0;
 
-        return ceil(($cost + $this->_decryptor->jitaPrice + $jobInstallCost) / (self::APPROX_INVENTION_CHANCE / 100) / self::RUNS_PER_INVENTED_COPY);
+        return ceil(($cost + $this->_decryptor->getBuyPrice() + $jobInstallCost) / (self::APPROX_INVENTION_CHANCE / 100) / self::RUNS_PER_INVENTED_COPY);
     }
 }

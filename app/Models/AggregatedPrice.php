@@ -11,6 +11,8 @@ class AggregatedPrice extends Model
 
     public $timestamps = false;
 
+    protected $connection = 'mysql';
+
     protected $fillable = [
         'type_id',
         'location_id',

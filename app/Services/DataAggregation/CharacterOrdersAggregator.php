@@ -42,7 +42,7 @@ class CharacterOrdersAggregator {
                 'price' => $cachedOrder->price,
                 'volume_remain' => $cachedOrder->volume_remain,
                 'volume_total' => $cachedOrder->volume_total,
-                'outbid' => $minPrice ? round($cachedOrder->price - $minPrice->price, 2) : null,
+                'outbid' => $minPrice && $minPrice->price ? round($cachedOrder->price - $minPrice->price, 2) : null,
             ];
         }
 

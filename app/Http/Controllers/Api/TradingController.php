@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\CachedOrder;
 use App\Models\CachedTransaction;
+use App\Models\SDE\Inventory\Type;
 use App\Services;
 use Illuminate\Filesystem\Cache;
 use Illuminate\Http\Request;
@@ -18,51 +19,76 @@ class TradingController extends Controller
 
     private $_esi;
 
-    public function __construct() {
+    private $_locationKeeper;
+
+    public function __construct(Services\Locations\Keeper $locationKeeper) {
         $this->_sdeRepository = new Services\SdeRepository;
         $this->_tradingRepository = new Services\TradingRepository;
         $this->_esi = new Services\ESI;
+
+        $this->_locationKeeper = $locationKeeper;
     }
 
-    public function getOrders() {
+    public function getOrders(Request $request) {
+        $request->validate([
+            'character_id' => 'required|integer',
+            'location_id' => 'required|integer',
+        ]);
+
+        $location = $this->_locationKeeper->getById($request->location_id);
+
         return $this->_tradingRepository
-            ->getTraderOrders()
-            ->map(function ($order) {
-                return $this->_convertOrderToApi($order);
+            ->getTraderOrders($request->character_id, $request->location_id)
+            ->map(function ($order) use ($location) {
+                return $this->_convertOrderToApi($order, $location);
             })
             ->values();
     }
 
-    public function getProfitableItems() {
+    public function getProfitableItems(Request $request) {
+        $request->validate([
+            'location_id' => 'required|integer',
+        ]);
+
+        $location = $this->_locationKeeper->getById($request->location_id);
+
         return $this->_tradingRepository
-            ->getProfitableMarketItems()
-            ->map(function ($type) {
-                return $this->_convertTypeToApi($type);
+            ->getProfitableMarketItems($location)
+            ->map(function ($type) use ($location) {
+                return $this->_convertTypeToApi($type, $location);
             })
             ->values();
     }
 
     public function searchModules(Request $request) {
         $request->validate([
+            'location_id' => 'required|integer',
             'search_query' => 'required|string|min:4',
         ]);
 
+        $location = $this->_locationKeeper->getById($request->location_id);
+
         return $this->_sdeRepository
             ->searchTypes($request->search_query)
-            ->map(function ($type) {
-                return $this->_convertTypeToApi($type);
+            ->map(function ($type) use ($location) {
+                return $this->_convertTypeToApi($type, $location);
             })
             ->values();
     }
 
-    public function getFavorites() {
+    public function getFavorites(Request $request) {
+        $request->validate([
+            'location_id' => 'required|integer',
+        ]);
+
+        $location = $this->_locationKeeper->getById($request->location_id);
         $favorites = $this->_tradingRepository->getFavorites();
         $types = $this->_sdeRepository->getTypesByIds($favorites->map->type_id->toArray());
 
         return $types
             ->sortBy('typeName')
-            ->map(function ($type) {
-                return $this->_convertTypeToApi($type);
+            ->map(function ($type) use ($location) {
+                return $this->_convertTypeToApi($type, $location);
             })
             ->values();
     }
@@ -121,36 +147,35 @@ class TradingController extends Controller
         return $data->sortBy('x')->values();
     }
 
-    private function _convertTypeToApi($type) {
+    private function _convertTypeToApi(Type $type, Services\Locations\Location $location) {
         return [
             'type_id'    => $type->typeID,
             'name'       => $type->typeName,
             'icon'       => $type->icon,
             'volume'     => $type->volume, // TODO: use volume for ships from invVolumes
             'prices'     => [
-                'jita'                   => $type->jitaPrice,
-                'dichstar'               => $type->dichstarPrice,
-                'total_cost'             => $type->totalCost,
-                'margin'                 => $type->margin,
-                'margin_percent'         => $type->marginPercent,
-                'monthly_volume'         => $type->monthlyVolume,
-                'weekly_volume'          => $type->weeklyVolume,
-                'average_daily_volume'   => $type->averageDailyVolume,
-                'potential_daily_profit' => $type->potentialDailyProfit,
+                'buy'                    => $type->getBuyPrice(),
+                'sell'                   => $type->getSellPrice($location),
+                'total_cost'             => $type->getTotalCost($location),
+                'margin'                 => $type->getMargin($location),
+                'margin_percent'         => $type->getMarginPercent($location),
+                'monthly_volume'         => $type->getMonthlyVolume($location),
+                'weekly_volume'          => $type->getWeeklyVolume($location),
+                'average_daily_volume'   => $type->getAverageDailyVolume($location),
+                'potential_daily_profit' => $type->getPotentialDailyProfit($location),
             ],
         ];
     }
 
-    private function _convertOrderToApi($order) {
+    private function _convertOrderToApi($order, Services\Locations\Location $location) {
         return [
           'order_id'              => $order->order_id,
           'price'                 => $order->price,
           'volume_remain'         => $order->volume_remain,
           'volume_total'          => $order->volume_total,
-          'type'                  => $this->_convertTypeToApi($order->type),
-          'is_outbidded'          => $order->isOutbidded,
-          'outbid_margin'         => $order->outbidMargin,
-          'outbid_margin_percent' => $order->outbidMarginPercent,
+          'type'                  => $this->_convertTypeToApi($order->type, $location),
+          'outbid_margin'         => $order->outbid ? -$order->outbid : null,
+          'outbid_margin_percent' => $order->outbid ? -round($order->outbid / $order->price * 100, 2) : null,
         ];
     }
 }

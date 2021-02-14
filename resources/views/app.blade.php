@@ -8,6 +8,12 @@
     <title>EVE Tools</title>
     <script>
         const BASE_URL = '/';
+
+        window.__locations = {!! json_encode($locations) !!};
+
+        if (!localStorage.getItem('current_location_id')) {
+            localStorage.setItem('current_location_id', window.__locations.find(l => !l.is_trading_hub).id);
+        }
     </script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700">
 </head>

@@ -2,13 +2,12 @@
 
 namespace App\Services\DataAggregation;
 
+use App\Services\Locations\Keeper;
+
 class Controller {
 
     public function aggregatePrices(): void {
-        $locationIds = [
-            1031787606461, // DICHSTAR
-            60003760, // Jita 4-4
-        ];
+        $locationIds = app(Keeper::class)->getLocationsIds();
 
         foreach ($locationIds as $locationId) {
             $aggregator = new PricesAggregator($locationId);
@@ -17,9 +16,7 @@ class Controller {
     }
 
     public function aggregateVolumes(): void {
-        $regionIds = [
-            10000009, // Insmother
-        ];
+        $regionIds = app(Keeper::class)->getSellingRegionsIds();
 
         foreach ($regionIds as $regionId) {
             $aggregator = new VolumesAggregator($regionId);

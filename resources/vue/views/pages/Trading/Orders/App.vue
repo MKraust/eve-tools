@@ -58,7 +58,7 @@ export default {
   }),
   computed: {
     outbiddedOrders() {
-      return this.orders.filter(i => i.is_outbidded);
+      return this.orders.filter(i => i.outbid_margin);
     },
     filteredOrders() {
       if (this.filterQuery === '') {

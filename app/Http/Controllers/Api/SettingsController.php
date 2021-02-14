@@ -6,11 +6,19 @@ use App\Http\Controllers\Controller;
 use App\Jobs\RefreshOrders;
 use App\Jobs\RefreshMarketHistory;
 use App\Models\Setting;
+use App\Services\Locations\Keeper;
+use App\Services\Locations\Location;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class SettingsController extends Controller
 {
+    private $_locationKeeper;
+
+    public function __construct(Keeper $locationKeeper) {
+        $this->_locationKeeper = $locationKeeper;
+    }
+
     public function getMarketOrdersUpdateInfo() {
         $info = Setting::getData('market_orders_update');
 
