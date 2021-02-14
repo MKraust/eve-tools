@@ -44,8 +44,12 @@ class Controller {
             $refresher->refresh();
         }
 
-        foreach ($stations as $regionId => $station) {
-            $refresher = new StationsOrdersRefresher($regionId, $station->id());
+        foreach ($stations as $regionId => $regionStations) {
+            $stationIds = $regionStations->map(function (Location $location) {
+                return $location->id();
+            })->toArray();
+
+            $refresher = new StationsOrdersRefresher($regionId, $stationIds);
             $refresher->refresh();
         }
 
