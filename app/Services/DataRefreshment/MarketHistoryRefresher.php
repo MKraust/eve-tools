@@ -39,7 +39,6 @@ class MarketHistoryRefresher {
 
             $this->_clearCachedOrdersHistory($typeIds);
 
-            $ordersHistoryData = [];
             foreach ($typeIds as $typeId) {
                 info("Getting market history for type {$typeId}");
 
@@ -52,6 +51,7 @@ class MarketHistoryRefresher {
                     }
                 }
 
+                $ordersHistoryData = [];
                 foreach ($apiOrdersHistory as $apiOrdersHistoryDatum) {
                     if (new \DateTime($apiOrdersHistoryDatum->date) < now()->modify('-65 day')) {
                         continue;
@@ -69,12 +69,8 @@ class MarketHistoryRefresher {
                     ];
                 }
 
+                CachedOrdersHistory::insert($ordersHistoryData);
                 $this->_incrementProcessedTypesCount();
-            }
-
-            $chunks = array_chunk(array_values($ordersHistoryData), 1000);
-            foreach ($chunks as $chunk) {
-                CachedOrdersHistory::insert($chunk);
             }
 
             $this->_finishProcessWithStatus('finished');
