@@ -3,6 +3,7 @@
 namespace App\Services\DataRefreshment;
 
 use App\Models\AggregatedPrice;
+use App\Models\CachedOrder;
 use App\Models\CachedOrdersHistory;
 use App\Models\CachedPrice;
 use App\Models\Setting;
@@ -123,7 +124,10 @@ class MarketHistoryRefresher {
      * @return int[]
      */
     private function _getTypeIdsForHistoryUpdate(): array {
-        return CachedPrice::selectRaw('distinct(type_id)')
+        $locationIds = app(Services\Locations\Keeper::class)->getLocationIdsByRegionId($this->_regionId);
+
+        return CachedOrder::selectRaw('distinct(type_id)')
+            ->whereIn('location_id', $locationIds)
             ->get()
             ->map->type_id
             ->toArray();

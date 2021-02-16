@@ -41,6 +41,16 @@ class Keeper {
         });
     }
 
+    public function getLocationIdsByRegionId(int $regionId): array {
+        $regionLocations = $this->_locations->filter(function (Location $location) use ($regionId) {
+            return $location->regionId() === $regionId;
+        });
+
+        return $regionLocations->map(function (Location $location) {
+            return $location->id();
+        })->toArray();
+    }
+
     public function getById(int $id): ?Location {
         return $this->_locations->first(function (Location $location) use ($id) {
             return $location->id() === $id;
