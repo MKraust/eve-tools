@@ -59,4 +59,8 @@ class Controller {
     public function refreshPrices(): void {
         (new PricesRefresher)->refresh();
     }
+
+    public function refreshIndustryIndices(): void {
+        (new IndustryIndicesRefresher)->refresh();
+    }
 }

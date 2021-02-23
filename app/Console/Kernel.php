@@ -18,6 +18,7 @@ class Kernel extends ConsoleKernel
         Commands\RefreshOrders::class,
         Commands\RefreshMarketHistory::class,
         Commands\RefreshTransactions::class,
+        Commands\RefreshIndustryIndices::class,
 
         Commands\AggregateVolumes::class,
         Commands\AggregatePrices::class,
@@ -36,6 +37,7 @@ class Kernel extends ConsoleKernel
         $schedule->command(Commands\RefreshPrices::class)->everyFifteenMinutes();
         $schedule->command(Commands\RefreshMarketHistory::class)->dailyAt('14:30');
         $schedule->command(Commands\RefreshTransactions::class)->hourly();
+        $schedule->command(Commands\RefreshIndustryIndices::class)->everyFifteenMinutes();
     }
 
     /**
