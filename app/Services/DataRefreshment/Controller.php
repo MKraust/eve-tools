@@ -74,4 +74,15 @@ class Controller {
             $refresher->refresh();
         }
     }
+
+    public function refreshContracts(): void {
+        $characterIds = [
+            2117638152, // Jin Kraust
+        ];
+
+        foreach ($characterIds as $characterId) {
+            $refresher = new ContractsRefresher($characterId);
+            $refresher->refresh();
+        }
+    }
 }

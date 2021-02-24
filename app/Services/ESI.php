@@ -89,4 +89,19 @@ class ESI {
                 'character_id' => $characterId,
             ]);
     }
+
+    public function getCharacterContracts(int $characterId, int $page = 1) {
+        return $this->_client
+            ->setQueryString(['page' => $page])
+            ->invoke('get', '/characters/{character_id}/contracts/', [
+                'character_id' => $characterId,
+            ]);
+    }
+
+    public function getContractItems(int $characterId, int $contractId) {
+        return $this->_client->invoke('get', '/characters/{character_id}/contracts/{contract_id}/items/', [
+            'character_id' => $characterId,
+            'contract_id'  => $contractId,
+        ]);
+    }
 }

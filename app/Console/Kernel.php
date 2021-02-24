@@ -39,6 +39,7 @@ class Kernel extends ConsoleKernel
         $schedule->command(Commands\RefreshTransactions::class)->hourly();
         $schedule->command(Commands\RefreshIndustryIndices::class)->everyFifteenMinutes();
         $schedule->command(Commands\RefreshAssets::class)->everyFifteenMinutes();
+        $schedule->command(Commands\RefreshContracts::class)->everyFifteenMinutes();
     }
 
     /**
