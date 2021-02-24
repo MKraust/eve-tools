@@ -21,6 +21,7 @@ class CreateAggregatedStockedItemsTable extends Migration
             $table->bigInteger('quantity');
 
             $table->unique(['character_id', 'type_id', 'location_id']);
+            $table->index('type_id');
         });
     }
 

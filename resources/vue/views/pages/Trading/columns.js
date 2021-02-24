@@ -105,4 +105,13 @@ export default [
     sortByFormatted: (value, key, item) => item.prices.potential_daily_profit,
     formatter: (value, key, item) => formatColumnValue(item.prices.potential_daily_profit, formatNumber),
   },
+  {
+    key: 'in_stock',
+    sortable: true,
+    label: 'In stock',
+    class: 'text-right text-nowrap',
+    tdClass: 'align-middle',
+    sortByFormatted: (value, key, item) => item.in_stock,
+    formatter: (value, key, item) => formatColumnValue(item.in_stock, formatNumber),
+  },
 ];
