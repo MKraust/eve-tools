@@ -4,6 +4,7 @@ namespace App\Services\DataRefreshment;
 
 use App\Events\MarketHistoryRefreshed;
 use App\Events\OrdersRefreshed;
+use App\Events\StockRefreshed;
 use App\Services\Locations\Keeper;
 use App\Services\Locations\Location;
 
@@ -54,6 +55,7 @@ class Controller {
         }
 
         OrdersRefreshed::dispatch();
+        StockRefreshed::dispatch();
     }
 
     public function refreshPrices(): void {
@@ -73,6 +75,8 @@ class Controller {
             $refresher = new AssetsRefresher($characterId);
             $refresher->refresh();
         }
+
+        StockRefreshed::dispatch();
     }
 
     public function refreshContracts(): void {

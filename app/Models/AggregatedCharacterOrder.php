@@ -24,6 +24,7 @@ class AggregatedCharacterOrder extends Model
         'volume_remain',
         'volume_total',
         'outbid',
+        'character_id',
     ];
 
     protected $with = ['type'];

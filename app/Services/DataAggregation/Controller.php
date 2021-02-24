@@ -34,4 +34,19 @@ class Controller {
             $aggregator->aggregate();
         }
     }
+
+    public function aggregateStockedItems(): void {
+        $characterIds = [
+            2117638152, // Jin Kraust
+        ];
+
+        $locations = app(Keeper::class)->getSellingLocations();
+
+        foreach ($characterIds as $characterId) {
+            foreach ($locations as $location) {
+                $aggregator = new StockedItemsAggregator($characterId, $location);
+                $aggregator->aggregate();
+            }
+        }
+    }
 }

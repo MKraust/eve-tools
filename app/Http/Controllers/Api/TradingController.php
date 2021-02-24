@@ -164,6 +164,7 @@ class TradingController extends Controller
                 'average_daily_volume'   => $type->getAverageDailyVolume($location),
                 'potential_daily_profit' => $type->getPotentialDailyProfit($location),
             ],
+            'in_stock'   => $type->getStockedQuantity($location, 2117638152),
         ];
     }
 

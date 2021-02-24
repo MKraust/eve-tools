@@ -88,6 +88,10 @@ class Type extends Model
         return $this->hasMany(Models\AggregatedVolume::class, 'type_id', 'typeID');
     }
 
+    public function stockedItems() {
+        return $this->hasMany(Models\AggregatedStockedItem::class, 'type_id', 'typeID');
+    }
+
     public function scopeRigs($query) {
         return $query->whereIn('groupID', [773, 774, 775, 776, 777, 778, 779, 781, 782, 786, 896, 904, 1232, 1233, 1234, 1308]);
     }
@@ -103,7 +107,13 @@ class Type extends Model
 
 
 
+    public function getStockedQuantity(Location $location, int $characterId): int {
+        $stock = $this->stockedItems->first(function (Models\AggregatedStockedItem $stockedItem) use ($location, $characterId) {
+            return $stockedItem->location_id === $location->id() && $stockedItem->character_id === $characterId;
+        });
 
+        return $stock ? $stock->quantity : 0;
+    }
 
     public function getTotalCost(Location $location): ?float {
         $buyPrice = $this->getBuyPrice();
