@@ -63,4 +63,15 @@ class Controller {
     public function refreshIndustryIndices(): void {
         (new IndustryIndicesRefresher)->refresh();
     }
+
+    public function refreshAssets(): void {
+        $characterIds = [
+            2117638152, // Jin Kraust
+        ];
+
+        foreach ($characterIds as $characterId) {
+            $refresher = new AssetsRefresher($characterId);
+            $refresher->refresh();
+        }
+    }
 }

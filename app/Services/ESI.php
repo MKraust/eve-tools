@@ -81,4 +81,12 @@ class ESI {
             'character_id' => $characterId,
         ]);
     }
+
+    public function getCharacterAssets(int $characterId, int $page = 1) {
+        return $this->_client
+            ->setQueryString(['page' => $page])
+            ->invoke('get', '/characters/{character_id}/assets/', [
+                'character_id' => $characterId,
+            ]);
+    }
 }
