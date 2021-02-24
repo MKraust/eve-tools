@@ -21,6 +21,7 @@ class Type extends Model
     protected $with = [
         'prices',
         'volumes',
+        'stockedItems',
     ];
 
     public function getTechLevelAttribute(): ?int {
