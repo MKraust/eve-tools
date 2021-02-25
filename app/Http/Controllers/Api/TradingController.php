@@ -171,11 +171,11 @@ class TradingController extends Controller
 
     private function _convertTypeToApi(Type $type, Services\Locations\Location $location) {
         return [
-            'type_id'    => $type->typeID,
-            'name'       => $type->typeName,
-            'icon'       => $type->icon,
-            'volume'     => $type->volume, // TODO: use volume for ships from invVolumes
-            'prices'     => [
+            'type_id'     => $type->typeID,
+            'name'        => $type->typeName,
+            'icon'        => $type->icon,
+            'volume'      => $type->volume, // TODO: use volume for ships from invVolumes
+            'prices'      => [
                 'buy'                    => $type->getBuyPrice(),
                 'sell'                   => $type->getSellPrice($location),
                 'total_cost'             => $type->getTotalCost($location),
@@ -186,7 +186,8 @@ class TradingController extends Controller
                 'average_daily_volume'   => $type->getAverageDailyVolume($location),
                 'potential_daily_profit' => $type->getPotentialDailyProfit($location),
             ],
-            'in_stock'   => $type->getStockedQuantity($location, 2117638152),
+            'in_stock'    => $type->getStockedQuantity($location, 2117638152),
+            'in_delivery' => $type->getDeliveredQuantity($location),
         ];
     }
 

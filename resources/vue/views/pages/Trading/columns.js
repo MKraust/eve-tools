@@ -112,6 +112,14 @@ export default [
     class: 'text-right text-nowrap',
     tdClass: 'align-middle',
     sortByFormatted: (value, key, item) => item.in_stock,
-    formatter: (value, key, item) => formatColumnValue(item.in_stock, formatNumber),
+    formatter: (value, key, item) => {
+      const inStock = formatColumnValue(item.in_stock, formatNumber);
+
+      if (item.in_delivery === 0) {
+        return inStock;
+      }
+
+      return inStock + ` (${item.in_delivery})`;
+    },
   },
 ];

@@ -22,6 +22,7 @@ class Type extends Model
         'prices',
         'volumes',
         'stockedItems',
+        'deliveredItems',
     ];
 
     public function getTechLevelAttribute(): ?int {
@@ -93,6 +94,11 @@ class Type extends Model
         return $this->hasMany(Models\AggregatedStockedItem::class, 'type_id', 'typeID');
     }
 
+    public function deliveredItems() {
+        return $this->hasMany(Models\DeliveredItem::class, 'type_id', 'typeID')
+            ->whereNull('delivered_date');
+    }
+
     public function scopeRigs($query) {
         return $query->whereIn('groupID', [773, 774, 775, 776, 777, 778, 779, 781, 782, 786, 896, 904, 1232, 1233, 1234, 1308]);
     }
@@ -114,6 +120,14 @@ class Type extends Model
         });
 
         return $stock ? $stock->quantity : 0;
+    }
+
+    public function getDeliveredQuantity(Location $location): int {
+        $deliveredItems = $this->deliveredItems->filter(function (Models\DeliveredItem $deliveredItem) use ($location) {
+            return $deliveredItem->destination_id === $location->id();
+        });
+
+        return $deliveredItems->count() > 0 ? $deliveredItems->sum('quantity') : 0;
     }
 
     public function getTotalCost(Location $location): ?float {
