@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\SDE\Inventory\Type;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -17,4 +18,8 @@ class DeliveredItem extends Model
         'destination_id',
         'delivered_date',
     ];
+
+    public function type() {
+        return $this->belongsTo(Type::class, 'type_id', 'typeID');
+    }
 }

@@ -25,9 +25,9 @@
 
             <template #cell(icon)="data">
               <div class="symbol symbol-30 d-block">
-            <span class="symbol-label overflow-hidden">
-              <img :src="data.item.type.icon" class="module-icon" alt="">
-            </span>
+                <span class="symbol-label overflow-hidden">
+                  <img :src="data.item.type.icon" class="module-icon" alt="">
+                </span>
               </div>
             </template>
 

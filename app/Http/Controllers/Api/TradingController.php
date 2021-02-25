@@ -169,6 +169,46 @@ class TradingController extends Controller
         return ['status' => 'success'];
     }
 
+    public function finishDelivery(Request $request) {
+        $request->validate([
+            'location_id' => 'required|integer',
+        ]);
+
+        DeliveredItem::where('destination_id', $request->location_id)
+            ->whereNull('delivered_date')
+            ->update([
+                'delivered_date' => now()->format('Y-m-d H:i:s'),
+            ]);
+
+        return ['status' => 'success'];
+    }
+
+    public function getDeliveredItems(Request $request) {
+        $request->validate([
+            'location_id' => 'required|integer',
+        ]);
+
+        $items = DeliveredItem::selectRaw('type_id, SUM(quantity) as quantity')
+            ->with('type')
+            ->whereNull('delivered_date')
+            ->where('destination_id', $request->location_id)
+            ->groupBy('type_id')
+            ->get();
+
+        return $items->map(function (DeliveredItem $item) {
+            return $this->_convertDeliveredItemToApi($item);
+        });
+    }
+
+    private function _convertDeliveredItemToApi(DeliveredItem $item) {
+        return [
+            'type_id'  => $item->type->typeID,
+            'name'     => $item->type->typeName,
+            'icon'     => $item->type->icon,
+            'quantity' => $item->quantity,
+        ];
+    }
+
     private function _convertTypeToApi(Type $type, Services\Locations\Location $location) {
         return [
             'type_id'     => $type->typeID,

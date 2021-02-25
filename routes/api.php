@@ -47,7 +47,6 @@ Route::prefix('trading')->group(function () {
     Route::get('/profitable/list',      [Controllers\Api\TradingController::class, 'getProfitableItems']);
     Route::post('/open-market-details', [Controllers\Api\TradingController::class, 'openMarketDetails']);
     Route::get('/stats-by-half-hour',   [Controllers\Api\TradingController::class, 'getMoneyFlowStatistics']);
-    Route::post('/delivery/save',       [Controllers\Api\TradingController::class, 'saveDeliveredItems']);
 
     Route::prefix('favorites')->group(function () {
         Route::get('/list',    [Controllers\Api\TradingController::class, 'getFavorites']);
@@ -57,5 +56,11 @@ Route::prefix('trading')->group(function () {
 
     Route::prefix('orders')->group(function () {
         Route::get('/list', [Controllers\Api\TradingController::class, 'getOrders']);
+    });
+
+    Route::prefix('delivery')->group(function () {
+        Route::get('/list',    [Controllers\Api\TradingController::class, 'getDeliveredItems']);
+        Route::post('/save',   [Controllers\Api\TradingController::class, 'saveDeliveredItems']);
+        Route::post('/finish', [Controllers\Api\TradingController::class, 'finishDelivery']);
     });
 });

@@ -151,5 +151,17 @@ export default {
       location_id: getLocationId(),
       items,
     });
-  }
+  },
+
+  async loadDeliveredItems() {
+    const params = { location_id: getLocationId() };
+
+    return (await axios.get(api('/trading/delivery/list'), { params })).data;
+  },
+
+  async finishDelivery() {
+    await axios.post(api('/trading/delivery/finish'), {
+      location_id: getLocationId(),
+    });
+  },
 };
