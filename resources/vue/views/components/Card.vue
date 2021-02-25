@@ -16,6 +16,9 @@
     <div class="card-body">
       <slot />
     </div>
+    <div v-if="$slots.hasOwnProperty('footer')" class="card-footer">
+      <slot name="footer" />
+    </div>
   </div>
 </template>
 

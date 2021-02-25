@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\CachedOrder;
 use App\Models\CachedTransaction;
+use App\Models\DeliveredItem;
 use App\Models\SDE\Inventory\Type;
 use App\Services;
 use Illuminate\Filesystem\Cache;
@@ -145,6 +146,27 @@ class TradingController extends Controller
         }
 
         return $data->sortBy('x')->values();
+    }
+
+    public function saveDeliveredItems(Request $request) {
+        $request->validate([
+            'location_id' => 'required|integer',
+            'items'       => 'required|array',
+        ]);
+
+        $deliveredItems = collect();
+        foreach ($request->items as $item) {
+            $type = Type::where('typeName', $item['name'])->first();
+            $deliveredItems->push(new DeliveredItem([
+                'type_id' => $type->typeID,
+                'destination_id' => $request->location_id,
+                'quantity' => $item['quantity'],
+            ]));
+        }
+
+        $deliveredItems->each->save();
+
+        return ['status' => 'success'];
     }
 
     private function _convertTypeToApi(Type $type, Services\Locations\Location $location) {

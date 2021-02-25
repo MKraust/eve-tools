@@ -145,4 +145,11 @@ export default {
 
     return (await axios.get(api('/trading/stats-by-half-hour'), { params })).data
   },
+
+  async saveDeliveredItems(items) {
+    await axios.post(api('/trading/delivery/save'), {
+      location_id: getLocationId(),
+      items,
+    });
+  }
 };
