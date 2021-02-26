@@ -36,11 +36,11 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command(Commands\RefreshOrders::class)->everyFifteenMinutes();
-        $schedule->command(Commands\RefreshPrices::class)->everyFifteenMinutes();
-        $schedule->command(Commands\RefreshIndustryIndices::class)->everyFifteenMinutes();
-        $schedule->command(Commands\RefreshAssets::class)->everyFifteenMinutes();
-        $schedule->command(Commands\RefreshContracts::class)->everyFifteenMinutes();
+        $schedule->command(Commands\RefreshOrders::class)->everyTenMinutes();
+        $schedule->command(Commands\RefreshPrices::class)->everyTenMinutes();
+        $schedule->command(Commands\RefreshIndustryIndices::class)->everyTenMinutes();
+        $schedule->command(Commands\RefreshAssets::class)->everyTenMinutes();
+        $schedule->command(Commands\RefreshContracts::class)->everyTenMinutes();
         $schedule->command(Commands\RefreshTransactions::class)->hourly();
         $schedule->command(Commands\RefreshMarketHistory::class)->dailyAt('14:30');
     }
