@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\CachedOrder;
+use App\Models\AggregatedCharacterOrder;
 use App\Models\CachedTransaction;
 use App\Models\DeliveredItem;
 use App\Models\SDE\Inventory\Type;
@@ -37,9 +37,11 @@ class TradingController extends Controller
         ]);
 
         $location = $this->_locationKeeper->getById($request->location_id);
-
-        return $this->_tradingRepository
-            ->getTraderOrders($request->character_id, $request->location_id)
+        return AggregatedCharacterOrder::selectRaw('type_id, MIN(price) as price, SUM(volume_remain) as volume_remain, SUM(volume_total) as volume_total, MAX(outbid) as outbid')
+            ->where('character_id', $request->character_id)
+            ->where('location_id', $request->location_id)
+            ->groupBy('type_id')
+            ->get()
             ->map(function ($order) use ($location) {
                 return $this->_convertOrderToApi($order, $location);
             })
