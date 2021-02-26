@@ -32,10 +32,10 @@ abstract class AbstractOrdersRefresher {
     abstract protected function _deleteOldData(): void;
 
     public function refresh(): void {
-        if ($this->_isInProgress()) {
-            logger('Already in progress');
-            return;
-        }
+//        if ($this->_isInProgress()) {
+//            logger('Already in progress');
+//            return;
+//        }
 
         $this->_initUpdateData();
 

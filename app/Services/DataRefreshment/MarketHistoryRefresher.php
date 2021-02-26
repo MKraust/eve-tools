@@ -26,10 +26,10 @@ class MarketHistoryRefresher {
     }
 
     public function refresh(): void {
-        if ($this->_isInProgress()) {
-            info('Already in progress');
-            return;
-        }
+//        if ($this->_isInProgress()) {
+//            info('Already in progress');
+//            return;
+//        }
 
         $this->_initUpdateData();
 
