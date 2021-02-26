@@ -37,7 +37,7 @@ class TradingController extends Controller
         ]);
 
         $location = $this->_locationKeeper->getById($request->location_id);
-        return AggregatedCharacterOrder::selectRaw('type_id, MIN(price) as price, SUM(volume_remain) as volume_remain, SUM(volume_total) as volume_total, MIN(outbid) as outbid')
+        return AggregatedCharacterOrder::selectRaw('type_id, MIN(price) as price, SUM(volume_remain) as volume_remain, SUM(volume_total) as volume_total, MIN(IFNULL(outbid, 0)) as outbid')
             ->where('character_id', $request->character_id)
             ->where('location_id', $request->location_id)
             ->groupBy('type_id')
