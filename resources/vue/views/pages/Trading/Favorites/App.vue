@@ -7,7 +7,14 @@
         </div>
       </div>
 
-      <b-table :busy="isLoadingFavorites" :fields="tableColumns" :items="filteredFavorites" sort-by="name" :sort-desc="false" :responsive="true">
+      <b-table
+        :busy="isLoadingFavorites"
+        :fields="tableColumns"
+        :items="filteredFavorites"
+        :sort-desc="true"
+        :responsive="true"
+        sort-by="potential_daily_profit"
+      >
         <template #table-busy>
           <div class="text-center text-primary my-2">
             <b-spinner class="align-middle mr-2"></b-spinner>
