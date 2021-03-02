@@ -65,6 +65,22 @@ export default [
     formatter: (value, key, item) => formatColumnValue(item.outbid_margin_percent, val => `${val}%`),
   },
   {
+    key: 'margin_percent',
+    sortable: true,
+    label: 'Margin, %',
+    class: 'text-right text-nowrap',
+    tdClass: (value, key, item) => {
+      const classes = ['align-middle'];
+      if (item.type.prices.margin_percent !== null) {
+        classes.push(item.type.prices.margin_percent > 0 ? 'text-success' : 'text-danger');
+      }
+
+      return classes.join(' ');
+    },
+    sortByFormatted: (value, key, item) => item.type.prices.margin_percent,
+    formatter: (value, key, item) => formatColumnValue(item.type.prices.margin_percent, val => `${val}%`),
+  },
+  {
     key: 'potential_daily_profit',
     sortable: true,
     class: 'text-right text-nowrap',
