@@ -15,7 +15,7 @@
             </div>
           </div>
 
-          <b-table :busy="isLoading" :fields="tableColumns" :items="filteredOrders" sort-by="outbid_margin" :sort-desc="false" :responsive="true">
+          <b-table :busy="isLoading" :fields="tableColumns" :items="filteredOrders" sort-by="potential_daily_profit" :sort-desc="true" :responsive="true">
             <template #table-busy>
               <div class="text-center text-primary my-2">
                 <b-spinner class="align-middle mr-2"></b-spinner>
