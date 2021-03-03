@@ -214,7 +214,7 @@ class ProductionController extends Controller
         $productionCost = $this->_productionService->getTypeProductionCost($type);
         $inventionCost = $type->tech_level === 2 ? $this->_productionService->getTypeInventionCost($type) : null;
         $totalCost = $productionCost + ($inventionCost ?? 0);
-        $margin = $sellPrice !== null ? $sellPrice * 0.9575 - $totalCost : null;
+        $margin = $sellPrice !== null ? $sellPrice * 0.9675 - $totalCost : null;
         $marginPercent = $totalCost > 0 ? round($margin / $totalCost * 100, 2) : 0;
         $potentialDailyProfit = $margin !== null && $averageDailyVolume ? (int)floor($margin * $averageDailyVolume) : null;
 
