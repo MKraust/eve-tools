@@ -98,9 +98,11 @@ class TradingController extends Controller
 
     public function addFavorite(Request $request) {
         $request->validate([
-            'type_id' => 'required|integer|exists:App\Models\SDE\Inventory\Type,typeID',
+            'location_id' => 'required|integer',
+            'type_id'     => 'required|integer|exists:App\Models\SDE\Inventory\Type,typeID',
         ]);
 
+        $location = $this->_locationKeeper->getById($request->location_id);
         $type = $this->_sdeRepository->getTypeById($request->type_id);
 
         try {
@@ -109,7 +111,7 @@ class TradingController extends Controller
             return response('Already exists', 400);
         }
 
-        return $this->_convertTypeToApi($type);
+        return $this->_convertTypeToApi($type, $location);
     }
 
     public function deleteFavorite(Request $request) {

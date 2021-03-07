@@ -11,7 +11,7 @@ export default [
   {
     key: 'name',
     sortable: true,
-    class: 'text-nowrap',
+    class: 'text-wrap',
     tdClass: 'align-middle',
   },
   {

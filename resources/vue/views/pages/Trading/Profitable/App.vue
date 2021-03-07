@@ -1,9 +1,12 @@
 <template>
   <div class="container">
     <mk-card title="Profitable items" :actions="cardActions">
-      <div class="form-group">
-        <div class="input-group">
+      <div class="d-flex align-items-center mb-7">
+        <div class="flex-grow-1">
           <input v-model="filterQuery" type="text" class="form-control" placeholder="Filter items..." />
+        </div>
+        <div class="ml-5">
+          <mk-switch v-model="withFavorites" label="Избранные" type="brand" size="sm" />
         </div>
       </div>
 
@@ -97,6 +100,7 @@ export default {
     items: [],
     isLoading: false,
     filterQuery: '',
+    withFavorites: true,
     tableColumns: COLUMNS,
     favorites: [],
     currentPage: 1,
@@ -104,11 +108,16 @@ export default {
   }),
   computed: {
     filteredItems() {
-      if (this.filterQuery === '') {
-        return this.items;
+      let filteredItems = this.items;
+      if (!this.withFavorites) {
+        filteredItems = filteredItems.filter(i => !this.isFavorite(i));
       }
 
-      return this.items.filter(i => i.name.toLowerCase().indexOf(this.filterQuery.toLocaleLowerCase()) !== -1);
+      if (this.filterQuery === '') {
+        return filteredItems;
+      }
+
+      return filteredItems.filter(i => i.name.toLowerCase().indexOf(this.filterQuery.toLocaleLowerCase()) !== -1);
     },
     cardActions() {
       return [

@@ -95,7 +95,7 @@ export default {
   },
 
   async addTradingFavorite(typeId) {
-    const params = { type_id: typeId };
+    const params = { type_id: typeId, location_id: getLocationId() };
 
     return (await axios.post(api('/trading/favorites/add'), params)).data
   },
