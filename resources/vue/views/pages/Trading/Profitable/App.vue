@@ -6,7 +6,7 @@
           <input v-model="filterQuery" type="text" class="form-control" placeholder="Filter items..." />
         </div>
         <div class="ml-5">
-          <mk-switch v-model="withFavorites" label="Избранные" type="brand" size="sm" />
+          <mk-switch v-model="withFavorites" label="Favorites" type="brand" size="sm" />
         </div>
       </div>
 
