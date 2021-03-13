@@ -25,6 +25,10 @@ class Type extends Model
         'deliveredItems',
     ];
 
+    public function getVolumeAttribute(): ?int {
+        return $this->volume == 4000 ? 1000 : $this->volume;
+    }
+
     public function getTechLevelAttribute(): ?int {
         return $this->techLevelAttribute ? $this->techLevelAttribute->valueFloat : null;
     }
