@@ -26,7 +26,7 @@ class Type extends Model
     ];
 
     public function getVolumeAttribute(): ?int {
-        return $this->volume == 4000 ? 1000 : $this->volume;
+        return $this->attributes['volume'] == 4000 ? 1000 : $this->attributes['volume'];
     }
 
     public function getTechLevelAttribute(): ?int {
