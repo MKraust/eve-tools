@@ -15,11 +15,19 @@ class DeliveredItem extends Model
     protected $fillable = [
         'type_id',
         'quantity',
-        'destination_id',
-        'delivered_date',
+        'volume',
+        'delivery_id',
+    ];
+
+    protected $with = [
+        'delivery',
     ];
 
     public function type() {
         return $this->belongsTo(Type::class, 'type_id', 'typeID');
+    }
+
+    public function delivery() {
+        return $this->belongsTo(Delivery::class);
     }
 }

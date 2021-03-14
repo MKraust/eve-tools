@@ -99,8 +99,7 @@ class Type extends Model
     }
 
     public function deliveredItems() {
-        return $this->hasMany(Models\DeliveredItem::class, 'type_id', 'typeID')
-            ->whereNull('delivered_date');
+        return $this->hasMany(Models\DeliveredItem::class, 'type_id', 'typeID');
     }
 
     public function scopeRigs($query) {
@@ -123,12 +122,13 @@ class Type extends Model
             return $stockedItem->location_id === $location->id() && $stockedItem->character_id === $characterId;
         });
 
-        return $stock ? $stock->quantity : 0;
+        return $stock ? $stock->in_hangar + $stock->in_market : 0;
     }
 
     public function getDeliveredQuantity(Location $location): int {
         $deliveredItems = $this->deliveredItems->filter(function (Models\DeliveredItem $deliveredItem) use ($location) {
-            return $deliveredItem->destination_id === $location->id();
+            return $deliveredItem->delivery->finished_at === null
+                && $deliveredItem->delivery->destination_id === $location->id();
         });
 
         return $deliveredItems->count() > 0 ? $deliveredItems->sum('quantity') : 0;

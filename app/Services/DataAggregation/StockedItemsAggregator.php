@@ -40,7 +40,8 @@ class StockedItemsAggregator {
                 'character_id' => $this->_characterId,
                 'location_id'  => $this->_location->id(),
                 'type_id'      => $asset->type_id,
-                'quantity'     => $asset->quantity,
+                'in_hangar'    => $asset->quantity,
+                'in_market'    => 0,
             ];
         }
 
@@ -55,10 +56,11 @@ class StockedItemsAggregator {
                 'character_id' => $this->_characterId,
                 'location_id'  => $this->_location->id(),
                 'type_id'      => $order->type_id,
-                'quantity'     => 0,
+                'in_hangar'    => 0,
+                'in_market'    => 0,
             ];
 
-            $result['quantity'] += $order->volume_remain;
+            $result['in_market'] += $order->volume_remain;
             $results[$order->type_id] = $result;
         }
 

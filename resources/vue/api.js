@@ -159,9 +159,16 @@ export default {
     return (await axios.get(api('/trading/delivery/list'), { params })).data;
   },
 
-  async finishDelivery() {
+  async loadUnlistedItems() {
+    const params = { location_id: getLocationId() };
+
+    return (await axios.get(api('/trading/unlisted'), { params })).data;
+  },
+
+  async finishDelivery(deliveryId) {
     await axios.post(api('/trading/delivery/finish'), {
       location_id: getLocationId(),
+      delivery_id: deliveryId,
     });
   },
 };

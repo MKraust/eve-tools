@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\AggregatedCharacterOrder;
+use App\Models\AggregatedStockedItem;
 use App\Models\CachedTransaction;
 use App\Models\DeliveredItem;
+use App\Models\Delivery;
 use App\Models\SDE\Inventory\Type;
 use App\Services;
 use Illuminate\Filesystem\Cache;
@@ -158,13 +160,19 @@ class TradingController extends Controller
             'items'       => 'required|array',
         ]);
 
+        $delivery = Delivery::create([
+            'destination_id' => $request->location_id,
+        ]);
+
         $deliveredItems = collect();
         foreach ($request->items as $item) {
             $type = Type::where('typeName', $item['name'])->first();
+
             $deliveredItems->push(new DeliveredItem([
+                'delivery_id' => $delivery->id,
                 'type_id' => $type->typeID,
-                'destination_id' => $request->location_id,
                 'quantity' => $item['quantity'],
+                'volume' => $item['volume'],
             ]));
         }
 
@@ -176,12 +184,13 @@ class TradingController extends Controller
     public function finishDelivery(Request $request) {
         $request->validate([
             'location_id' => 'required|integer',
+            'delivery_id' => 'required|integer',
         ]);
 
-        DeliveredItem::where('destination_id', $request->location_id)
-            ->whereNull('delivered_date')
+        Delivery::where('id', $request->delivery_id)
+            ->whereNull('finished_at')
             ->update([
-                'delivered_date' => now()->format('Y-m-d H:i:s'),
+                'finished_at' => now()->format('Y-m-d H:i:s'),
             ]);
 
         return ['status' => 'success'];
@@ -192,15 +201,46 @@ class TradingController extends Controller
             'location_id' => 'required|integer',
         ]);
 
-        $items = DeliveredItem::selectRaw('type_id, SUM(quantity) as quantity')
-            ->with('type')
-            ->whereNull('delivered_date')
-            ->where('destination_id', $request->location_id)
-            ->groupBy('type_id')
-            ->get();
+        $deliveries = Delivery::where('destination_id', $request->location_id)
+                              ->whereNull('finished_at')
+                              ->get();
 
-        return $items->map(function (DeliveredItem $item) {
-            return $this->_convertDeliveredItemToApi($item);
+        $apiDeliveries = [];
+        foreach ($deliveries as $delivery) {
+            $items = DeliveredItem::selectRaw('type_id, SUM(quantity) as quantity, SUM(volume) as volume')
+                                  ->with('type')
+                                  ->where('delivery_id', $delivery->id)
+                                  ->groupBy('type_id')
+                                  ->get();
+
+            $apiItems = $items->map(function (DeliveredItem $item) {
+                return $this->_convertDeliveredItemToApi($item);
+            });
+
+            $apiDeliveries[] = [
+                'id'    => $delivery->id,
+                'items' => $apiItems,
+            ];
+        }
+
+        return $apiDeliveries;
+    }
+
+    public function getUnlistedItems(Request $request) {
+        $request->validate([
+            'location_id' => 'required|integer',
+        ]);
+
+        $location = $this->_locationKeeper->getById($request->location_id);
+        $unlistedTypes = AggregatedStockedItem::where('location_id', $request->location_id)
+            ->with('type')
+            ->where('in_hangar', '>', 0)
+            ->where('in_market', 0)
+            ->get()
+            ->map->type;
+
+        return $unlistedTypes->map(function (Type $type) use ($location) {
+            return $this->_convertTypeToApi($type, $location);
         });
     }
 
@@ -210,6 +250,7 @@ class TradingController extends Controller
             'name'     => $item->type->typeName,
             'icon'     => $item->type->icon,
             'quantity' => $item->quantity,
+            'volume'   => (float)$item->volume,
         ];
     }
 

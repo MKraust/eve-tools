@@ -8,6 +8,32 @@
       </div>
 
       <div class="col-md-12">
+        <mk-card title="Unlisted items">
+          <b-table :busy="isLoading" :fields="unlistedItemsColumns" :items="unlistedItems" sort-by="potential_daily_profit" :sort-desc="true" :responsive="true">
+            <template #table-busy>
+              <div class="text-center text-primary my-2">
+                <b-spinner class="align-middle mr-2"></b-spinner>
+                <strong>Loading...</strong>
+              </div>
+            </template>
+
+            <template #cell(icon)="data">
+              <div class="symbol symbol-30 d-block">
+                <span class="symbol-label overflow-hidden">
+                  <img :src="data.item.icon" class="module-icon" alt="">
+                </span>
+              </div>
+            </template>
+
+            <template #cell(actions)="data">
+              <mk-money-flow-button :id="data.item.type_id" :name="data.item.name" />
+              <mk-market-details-button :id="data.item.type_id" />
+            </template>
+          </b-table>
+        </mk-card>
+      </div>
+
+      <div class="col-md-12">
         <mk-card title="Outbidded orders">
           <div class="form-group">
             <div class="input-group">
@@ -15,7 +41,7 @@
             </div>
           </div>
 
-          <b-table :busy="isLoading" :fields="tableColumns" :items="filteredOrders" sort-by="potential_daily_profit" :sort-desc="true" :responsive="true">
+          <b-table :busy="isLoading" :fields="ordersColumns" :items="filteredOrders" sort-by="potential_daily_profit" :sort-desc="true" :responsive="true">
             <template #table-busy>
               <div class="text-center text-primary my-2">
                 <b-spinner class="align-middle mr-2"></b-spinner>
@@ -43,7 +69,7 @@
 </template>
 
 <script>
-import COLUMNS from './columns';
+import { ORDERS_COLUMNS, UNLISTED_ITEMS_COLUMNS } from './columns';
 
 export default {
   mounted() {
@@ -53,8 +79,10 @@ export default {
     orders: [],
     isLoading: false,
     filterQuery: '',
-    tableColumns: COLUMNS,
+    ordersColumns: ORDERS_COLUMNS,
+    unlistedItemsColumns: UNLISTED_ITEMS_COLUMNS,
     intradayMoneyFlowData: [],
+    unlistedItems: [],
   }),
   computed: {
     outbiddedOrders() {
@@ -72,11 +100,13 @@ export default {
     async loadData() {
       this.isLoading = true;
 
-      const [orders, intradayMoneyFlowData] = await Promise.all([
+      const [unlistedItems, orders, intradayMoneyFlowData] = await Promise.all([
+        this.$api.loadUnlistedItems(),
         this.$api.loadTradingOrders(),
         this.$api.loadIntradayMoneyFlowData(),
       ])
 
+      this.unlistedItems = unlistedItems;
       this.orders = orders;
       this.intradayMoneyFlowData = intradayMoneyFlowData;
 

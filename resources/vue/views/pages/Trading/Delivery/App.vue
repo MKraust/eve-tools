@@ -2,29 +2,40 @@
   <div class="container">
     <div class="row">
       <div class="col-6">
-        <mk-card title="Delivered items" :actions="cardActions">
-          <b-table :busy="isLoadingDeliveredItems" :fields="columns" :items="deliveredItems" sort-by="name" :sort-desc="false" :responsive="true">
-            <template #table-busy>
-              <div class="text-center text-primary my-2">
-                <b-spinner class="align-middle mr-2"></b-spinner>
-                <strong>Loading...</strong>
-              </div>
-            </template>
+        <div class="d-flex flex-column">
+          <div class="mb-5">
+            <mk-card
+              v-for="delivery in deliveries"
+              :key="delivery.id"
+              :title="`${getDeliveryVolume(delivery)} m3`"
+              :actions="[
+                { icon: 'fas fa-flag-checkered', handler: () => finishDelivery(delivery) },
+              ]"
+            >
+              <b-table :busy="isLoadingDeliveredItems" :fields="columns" :items="delivery.items" sort-by="name" :sort-desc="false" :responsive="true">
+                <template #table-busy>
+                  <div class="text-center text-primary my-2">
+                    <b-spinner class="align-middle mr-2"></b-spinner>
+                    <strong>Loading...</strong>
+                  </div>
+                </template>
 
-            <template #cell(icon)="data">
-              <div class="symbol symbol-30 d-block">
+                <template #cell(icon)="data">
+                  <div class="symbol symbol-30 d-block">
                 <span class="symbol-label overflow-hidden">
                   <img :src="data.item.icon" class="module-icon" alt="">
                 </span>
-              </div>
-            </template>
+                  </div>
+                </template>
 
-            <template #cell(actions)="data">
-              <mk-money-flow-button :id="data.item.type_id" :name="data.item.name" />
-              <mk-market-details-button :id="data.item.type_id" />
-            </template>
-          </b-table>
-        </mk-card>
+                <template #cell(actions)="data">
+                  <mk-money-flow-button :id="data.item.type_id" :name="data.item.name" />
+                  <mk-market-details-button :id="data.item.type_id" />
+                </template>
+              </b-table>
+            </mk-card>
+          </div>
+        </div>
       </div>
       <div class="col-6">
         <mk-card title="Save delivered items">
@@ -51,35 +62,31 @@ import COLUMNS from './columns';
 
 export default {
   created() {
-    this.loadDeliveredItems();
+    this.loadDeliveries();
   },
   data: () => ({
     deliveredItemsRawText: '',
     isSaving: false,
     isLoadingDeliveredItems: false,
-    deliveredItems: [],
+    deliveries: [],
     columns: COLUMNS,
   }),
-  computed: {
-    cardActions() {
-      return [
-        { icon: 'fas fa-flag-checkered', handler: this.finishDelivery },
-      ];
-    },
-  },
   methods: {
-    async finishDelivery() {
+    getDeliveryVolume(delivery) {
+      return delivery.items.reduce((sum, i) => i.volume + sum, 0);
+    },
+    async finishDelivery(delivery) {
       this.isLoadingDeliveredItems = true;
 
-      await this.$api.finishDelivery();
-      await this.loadDeliveredItems();
+      await this.$api.finishDelivery(delivery.id);
+      await this.loadDeliveries();
 
       this.isLoadingDeliveredItems = false;
     },
-    async loadDeliveredItems() {
+    async loadDeliveries() {
       this.isLoadingDeliveredItems = true;
 
-      this.deliveredItems = await this.$api.loadDeliveredItems();
+      this.deliveries = await this.$api.loadDeliveredItems();
 
       this.isLoadingDeliveredItems = false;
     },
@@ -92,10 +99,13 @@ export default {
         }
 
         const itemDataParts = itemRow.split('\t');
+        const volumePart = itemDataParts.find(i => i.indexOf('m3') !== -1);
+        const volume = Number((volumePart || '0').replace('m3', '').replace(' ', '').replace(',', '.'));
 
         return {
           name: itemDataParts[0].replace(/\*$/g, ''),
           quantity: Number(itemDataParts[1].replace(/\W/g, '')),
+          volume,
         };
       }).filter(i => i);
 

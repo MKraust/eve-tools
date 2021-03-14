@@ -1,6 +1,22 @@
 import { formatNumber, formatColumnValue } from '@/helper';
 
-export default [
+import {
+  ICON,
+  NAME,
+  AVERAGE_DAILY_VOLUME,
+  POTENTIAL_DAILY_PROFIT,
+  IN_STOCK
+} from '../columns';
+
+export const UNLISTED_ITEMS_COLUMNS = [
+  ICON,
+  NAME,
+  AVERAGE_DAILY_VOLUME,
+  POTENTIAL_DAILY_PROFIT,
+  IN_STOCK,
+];
+
+export const ORDERS_COLUMNS = [
   {
     key: 'icon',
     tdClass: 'align-middle',
