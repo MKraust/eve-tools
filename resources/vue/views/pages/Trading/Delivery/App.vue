@@ -7,10 +7,12 @@
             <mk-card
               v-for="delivery in deliveries"
               :key="delivery.id"
-              :title="`${getDeliveryVolume(delivery)} m3`"
+              :title="getDeliveryVolume(delivery)"
               :actions="[
                 { icon: 'fas fa-flag-checkered', handler: () => finishDelivery(delivery) },
               ]"
+              collapsable
+              collapsed
             >
               <b-table :busy="isLoadingDeliveredItems" :fields="columns" :items="delivery.items" sort-by="name" :sort-desc="false" :responsive="true">
                 <template #table-busy>
@@ -58,6 +60,8 @@
 </template>
 
 <script>
+import { formatNumber } from '@/helper';
+
 import COLUMNS from './columns';
 
 export default {
@@ -73,7 +77,7 @@ export default {
   }),
   methods: {
     getDeliveryVolume(delivery) {
-      return delivery.items.reduce((sum, i) => i.volume + sum, 0);
+      return `${formatNumber(delivery.items.reduce((sum, i) => i.volume + sum, 0))} m³`;
     },
     async finishDelivery(delivery) {
       this.isLoadingDeliveredItems = true;

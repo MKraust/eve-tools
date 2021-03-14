@@ -1,5 +1,5 @@
 <template>
-  <div ref="card" class="card card-custom gutter-b">
+  <div ref="card" class="card card-custom gutter-b" :class="{ 'card-collapse': isCollapsed }">
     <div class="card-header">
       <div class="card-title">
         <span v-if="icon" class="card-icon">
@@ -8,17 +8,22 @@
         <h3 class="card-label">{{ title }}</h3>
       </div>
       <div v-if="hasActions" class="card-toolbar">
-        <button v-for="(action, idx) in actions" :key="idx" class="btn btn-icon btn-sm btn-hover-light-primary" @click="action.handler">
+        <button v-for="(action, idx) in actions" :key="idx" class="btn btn-icon btn-sm btn-hover-light-primary ml-1" @click="action.handler">
           <i :class="action.icon"></i>
+        </button>
+        <button v-if="collapsable" class="btn btn-icon btn-sm btn-hover-light-primary ml-1" @click="toggleCollapse">
+          <i class="ki icon-nm" :class="`ki-arrow-${isCollapsed ? 'up' : 'down'}`"></i>
         </button>
       </div>
     </div>
-    <div class="card-body">
-      <slot />
-    </div>
-    <div v-if="$slots.hasOwnProperty('footer')" class="card-footer">
-      <slot name="footer" />
-    </div>
+    <template v-if="!isCollapsed">
+      <div class="card-body">
+        <slot />
+      </div>
+      <div v-if="$slots.hasOwnProperty('footer')" class="card-footer">
+        <slot name="footer" />
+      </div>
+    </template>
   </div>
 </template>
 
@@ -50,10 +55,24 @@ export default {
         return [];
       },
     },
+    collapsable: {
+      type: Boolean,
+      default() {
+        return false;
+      },
+    },
+    collapsed: {
+      type: Boolean,
+      default() {
+        return false;
+      },
+    },
   },
-  data: () => ({
-
-  }),
+  data() {
+    return {
+      isCollapsed: this.collapsed,
+    };
+  },
   computed: {
     hasActions() {
       return this.actions.length > 0;
@@ -75,6 +94,11 @@ export default {
           KTApp.unblock(this.$refs.card);
         }
       },
+    },
+  },
+  methods: {
+    toggleCollapse() {
+      this.isCollapsed = !this.isCollapsed;
     },
   },
 }
