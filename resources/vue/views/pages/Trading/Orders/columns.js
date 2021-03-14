@@ -8,12 +8,22 @@ import {
   IN_STOCK
 } from '../columns';
 
+export const ACTIONS = {
+  key: 'actions',
+  label: '',
+  tdClass: 'align-middle d-flex',
+  thAttr: {
+    style: 'width: 53px;',
+  },
+};
+
 export const UNLISTED_ITEMS_COLUMNS = [
   ICON,
   NAME,
   AVERAGE_DAILY_VOLUME,
   POTENTIAL_DAILY_PROFIT,
   IN_STOCK,
+  ACTIONS,
 ];
 
 export const ORDERS_COLUMNS = [
@@ -111,12 +121,5 @@ export const ORDERS_COLUMNS = [
     sortByFormatted: (value, key, item) => item.type.prices.potential_daily_profit,
     formatter: (value, key, item) => formatColumnValue(item.type.prices.potential_daily_profit, formatNumber),
   },
-  {
-    key: 'actions',
-    label: '',
-    tdClass: 'align-middle d-flex',
-    thAttr: {
-      style: 'width: 53px;',
-    },
-  },
+  ACTIONS,
 ];

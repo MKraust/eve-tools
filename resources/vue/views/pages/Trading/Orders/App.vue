@@ -1,13 +1,13 @@
 <template>
   <div class="container">
     <div class="row">
-      <div class="col-md-6">
+      <div class="col-md-5">
         <mk-card title="Intraday money flow" :loading="isLoading" class="mb-10">
           <mk-chart :chart-data="intradayMoneyFlowData" :height="300" type="area" />
         </mk-card>
       </div>
 
-      <div class="col-md-12">
+      <div class="col-md-7">
         <mk-card title="Unlisted items">
           <b-table :busy="isLoading" :fields="unlistedItemsColumns" :items="unlistedItems" sort-by="potential_daily_profit" :sort-desc="true" :responsive="true">
             <template #table-busy>

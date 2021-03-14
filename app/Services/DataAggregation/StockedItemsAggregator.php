@@ -31,6 +31,7 @@ class StockedItemsAggregator {
         $assets = CachedAsset::selectRaw('type_id, SUM(quantity) as quantity')
             ->where('character_id', $this->_characterId)
             ->where('location_id', $this->_location->id())
+            ->where('is_singleton', 0)
             ->groupBy('type_id')
             ->get();
 
