@@ -99,8 +99,8 @@ export default {
         }
 
         const itemDataParts = itemRow.split('\t');
-        const volumePart = itemDataParts.find(i => i.indexOf('m3') !== -1);
-        const volume = Number((volumePart || '0').replace('m3', '').replace(' ', '').replace(',', '.'));
+        const volumePart = itemDataParts.find(i => i.includes('m3'));
+        const volume = Number((volumePart || '0').replace('m3', '').replace(/\W/g, '').replace(',', '.'));
 
         return {
           name: itemDataParts[0].replace(/\*$/g, ''),

@@ -167,6 +167,9 @@ class TradingController extends Controller
         $deliveredItems = collect();
         foreach ($request->items as $item) {
             $type = Type::where('typeName', $item['name'])->first();
+            if (!$type) {
+                continue;
+            }
 
             $deliveredItems->push(new DeliveredItem([
                 'delivery_id' => $delivery->id,
