@@ -104,7 +104,7 @@ export default {
 
         const itemDataParts = itemRow.split('\t');
         const volumePart = itemDataParts.find(i => i.includes('m3'));
-        const volume = Number((volumePart || '0').replace('m3', '').replace(/\W/g, '').replace(',', '.'));
+        const volume = Number((volumePart || '0').replace('m3', '').replace(',', '.').replace(/\W/g, ''));
 
         return {
           name: itemDataParts[0].replace(/\*$/g, ''),
