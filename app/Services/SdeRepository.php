@@ -9,7 +9,10 @@ class SdeRepository {
 
     public function searchTypes(string $query) {
         $blueprintGroupIds = $this->_getBlueprintGroupIds();
-        return SDE\Inventory\Type::whereNotIn('groupID', $blueprintGroupIds)->where('typeName', 'like', "%{$query}%")->get();
+        return SDE\Inventory\Type::where('published', 1)
+                                 ->whereNotIn('groupID', $blueprintGroupIds)
+                                 ->where('typeName', 'like', "%{$query}%")
+                                 ->get();
     }
 
     public function searchRigs(string $query) {
