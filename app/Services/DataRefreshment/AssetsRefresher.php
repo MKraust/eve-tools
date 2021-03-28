@@ -40,7 +40,9 @@ class AssetsRefresher {
 
     private function _storeAssets(array $assets): void {
         $assetsData = array_map(function ($asset) {
-            $a = json_decode(json_encode($asset), true);
+            $a = [];
+            $a['is_blueprint_copy'] = false;
+            $a = array_merge($a, json_decode(json_encode($asset), true));
             $a['character_id'] = $this->_character->id;
 
             return $a;

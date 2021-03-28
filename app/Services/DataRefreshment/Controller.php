@@ -14,19 +14,17 @@ class Controller {
     private const JIN_KRAUST_ID = 2117638152;
 
     public function refreshTransactions(): void {
-        $characterIds = [
-            self::JIN_KRAUST_ID, // Jin Kraust
-        ];
+        $characters = Character::trader()->get();
 
-        foreach ($characterIds as $characterId) {
-            $refresher = new TransactionsRefresher($characterId);
+        foreach ($characters as $character) {
+            $refresher = new TransactionsRefresher($character);
             $refresher->refresh();
         }
     }
 
     public function refreshMarketHistory(): void {
         $regionIds = app(Keeper::class)->getSellingRegionsIds();
-        $character = Character::find(self::JIN_KRAUST_ID);
+        $character = Character::dataSource()->first();
 
         foreach ($regionIds as $regionId) {
             $refresher = new MarketHistoryRefresher($character, $regionId);
@@ -39,7 +37,7 @@ class Controller {
     public function refreshMarketOrders(): void {
         $locationKeeper = app(Keeper::class);
 
-        $character = Character::find(self::JIN_KRAUST_ID);
+        $character = Character::dataSource()->first();
 
         $structures = $locationKeeper->getStructures();
         $stations = $locationKeeper->getStations()->groupBy(function (Location $location) {
@@ -65,22 +63,19 @@ class Controller {
     }
 
     public function refreshPrices(): void {
-        $character = Character::find(self::JIN_KRAUST_ID);
+        $character = Character::dataSource()->first();
         (new PricesRefresher($character))->refresh();
     }
 
     public function refreshIndustryIndices(): void {
-        $character = Character::find(self::JIN_KRAUST_ID);
+        $character = Character::dataSource()->first();
         (new IndustryIndicesRefresher($character))->refresh();
     }
 
     public function refreshAssets(): void {
-        $characterIds = [
-            self::JIN_KRAUST_ID, // Jin Kraust
-        ];
+        $characters = Character::all();
 
-        foreach ($characterIds as $characterId) {
-            $character = Character::find($characterId);
+        foreach ($characters as $character) {
             $refresher = new AssetsRefresher($character);
             $refresher->refresh();
         }
@@ -89,12 +84,10 @@ class Controller {
     }
 
     public function refreshContracts(): void {
-        $characterIds = [
-            self::JIN_KRAUST_ID, // Jin Kraust
-        ];
+        $characters = Character::trader()->get();
 
-        foreach ($characterIds as $characterId) {
-            $refresher = new ContractsRefresher($characterId);
+        foreach ($characters as $character) {
+            $refresher = new ContractsRefresher($character);
             $refresher->refresh();
         }
     }

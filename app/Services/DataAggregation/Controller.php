@@ -26,27 +26,21 @@ class Controller {
     }
 
     public function aggregateCharactersOrders(): void {
-        $characterIds = [
-            2117638152, // Jin Kraust
-        ];
+        $characters = Character::trader()->get();
 
-        foreach ($characterIds as $characterId) {
-            $character = Character::find($characterId);
+        foreach ($characters as $character) {
             $aggregator = new CharacterOrdersAggregator($character);
             $aggregator->aggregate();
         }
     }
 
     public function aggregateStockedItems(): void {
-        $characterIds = [
-            2117638152, // Jin Kraust
-        ];
-
+        $characters = Character::trader()->get();
         $locations = app(Keeper::class)->getSellingLocations();
 
-        foreach ($characterIds as $characterId) {
+        foreach ($characters as $character) {
             foreach ($locations as $location) {
-                $aggregator = new StockedItemsAggregator($characterId, $location);
+                $aggregator = new StockedItemsAggregator($character, $location);
                 $aggregator->aggregate();
             }
         }

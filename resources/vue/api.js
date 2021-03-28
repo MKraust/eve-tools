@@ -171,4 +171,12 @@ export default {
       delivery_id: deliveryId,
     });
   },
+
+  async toggleCharacterRole(characterId, role, isActive) {
+    await axios.post(api('/characters/role/toggle'), {
+      character_id: characterId,
+      role,
+      is_active: isActive,
+    });
+  }
 };

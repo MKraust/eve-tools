@@ -22,6 +22,10 @@ Route::prefix('settings')->group(function () {
     Route::post('/refresh-market-history',       [Controllers\Api\SettingsController::class, 'refreshMarketHistory']);
 });
 
+Route::prefix('characters')->group(function () {
+    Route::post('/role/toggle', [Controllers\Api\CharactersController::class, 'toggleRole']);
+});
+
 Route::prefix('production')->group(function () {
     Route::get('/modules/search',    [Controllers\Api\ProductionController::class, 'searchModules']);
     Route::get('/profitable/list',   [Controllers\Api\ProductionController::class, 'getProfitableItems']);

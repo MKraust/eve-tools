@@ -9,6 +9,7 @@
     <script>
         const BASE_URL = '/';
 
+        window.__characters = {!! json_encode($characters) !!}
         window.__locations = {!! json_encode($locations) !!};
 
         if (!localStorage.getItem('current_location_id')) {

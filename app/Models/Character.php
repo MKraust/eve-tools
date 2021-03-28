@@ -18,10 +18,28 @@ class Character extends Model
         'access_token',
         'expires',
         'esi_scopes',
+        'is_data_source',
+        'is_trader',
+        'is_industrialist',
     ];
 
     protected $casts = [
         'expires' => 'datetime',
-        'esi_scopes'  => 'array'
+        'esi_scopes'  => 'array',
+        'is_data_source' => 'boolean',
+        'is_trader' => 'boolean',
+        'is_industrialist' => 'boolean',
     ];
+
+    public function scopeDataSource($query) {
+        return $query->where('is_data_source', 1);
+    }
+
+    public function scopeTrader($query) {
+        return $query->where('is_trader', 1);
+    }
+
+    public function scopeIndustrialist($query) {
+        return $query->where('is_industrialist', 1);
+    }
 }
