@@ -3,6 +3,7 @@
 namespace App\Services\DataRefreshment;
 
 use App\Models\CachedOrder;
+use App\Models\Character;
 use Seat\Eseye\Containers\EsiResponse;
 
 class StructureOrdersRefresher extends AbstractOrdersRefresher {
@@ -10,10 +11,10 @@ class StructureOrdersRefresher extends AbstractOrdersRefresher {
     /** @var int */
     private $_structureId;
 
-    public function __construct(int $structureId) {
+    public function __construct(Character $character, int $structureId) {
         $this->_structureId = $structureId;
 
-        $this->_init();
+        $this->_init($character);
     }
 
     protected function _getUpdateDataKey(): string {

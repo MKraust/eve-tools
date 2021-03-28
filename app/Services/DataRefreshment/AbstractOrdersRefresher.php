@@ -3,6 +3,7 @@
 namespace App\Services\DataRefreshment;
 
 use App\Models\CachedOrder;
+use App\Models\Character;
 use App\Models\Setting;
 use App\Services\ESI;
 use Illuminate\Support\Facades\Log;
@@ -16,8 +17,8 @@ abstract class AbstractOrdersRefresher {
     /** @var array|null */
     protected $_marketOrdersUpdateData;
 
-    protected function _init(): void {
-        $this->_esi = new ESI;
+    protected function _init(Character $character): void {
+        $this->_esi = new ESI($character);
 
         $settings = Setting::getData($this->_getUpdateDataKey());
         $this->_marketOrdersUpdateData = $settings !== null ? json_decode($settings->value, true) : null;

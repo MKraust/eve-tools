@@ -14,4 +14,7 @@ use App\Http\Controllers;
 |
 */
 
+Route::get('/auth', [Controllers\AuthController::class, 'auth']);
+Route::get('/auth/callback', [Controllers\AuthController::class, 'handleCallback'])->name('auth.callback');
+
 Route::get('/{any}', [Controllers\VueController::class, 'index'])->where('any', '.*');

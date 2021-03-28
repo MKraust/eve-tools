@@ -4,24 +4,23 @@ namespace App\Services\DataAggregation;
 
 use App\Models\AggregatedCharacterOrder;
 use App\Models\CachedOrder;
+use App\Models\Character;
 use App\Services\ESI;
 
 class CharacterOrdersAggregator {
 
-    /** @var int */
-    private $_characterId;
+    private Character $_character;
 
     /** @var ESI */
     private $_esi;
 
-    public function __construct(int $characterId) {
-        $this->_characterId = $characterId;
-
-        $this->_esi = new ESI;
+    public function __construct(Character $character) {
+        $this->_character = $character;
+        $this->_esi = new ESI($character);
     }
 
     public function aggregate(): void {
-        $orders = $this->_esi->getCharacterOrders($this->_characterId);
+        $orders = $this->_esi->getCharacterOrders($this->_character->id);
         $orderIds = collect($orders->getArrayCopy())->map->order_id->toArray();
 
         $cachedOrders = CachedOrder::whereIn('order_id', $orderIds)->get();
@@ -35,7 +34,7 @@ class CharacterOrdersAggregator {
                 ->first();
 
             $aggregatedOrdersData[] = [
-                'character_id' => $this->_characterId,
+                'character_id' => $this->_character->id,
                 'order_id' => $cachedOrder->order_id,
                 'location_id' => $cachedOrder->location_id,
                 'type_id' => $cachedOrder->type_id,
@@ -46,7 +45,7 @@ class CharacterOrdersAggregator {
             ];
         }
 
-        AggregatedCharacterOrder::where('character_id', $this->_characterId)->delete();
+        AggregatedCharacterOrder::where('character_id', $this->_character->id)->delete();
         AggregatedCharacterOrder::insert($aggregatedOrdersData);
     }
 }

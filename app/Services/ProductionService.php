@@ -14,14 +14,11 @@ class ProductionService {
     private const MANUFACTURING_JOB_COST_MODIFIER = 0.97;
     private const INVENTION_JOB_COST_MODIFIER = 0.74;
 
-    private $_esi;
-
     private $_decryptor;
 
     private $_industryIndices;
 
     public function __construct() {
-        $this->_esi = new ESI;
         $this->_decryptor = Type::find(self::USED_DECRYPTOR_ID);
 
         $industryIndicesSetting = Setting::getData('industry_indices');

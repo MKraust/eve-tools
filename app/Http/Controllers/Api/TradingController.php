@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AggregatedCharacterOrder;
 use App\Models\AggregatedStockedItem;
 use App\Models\CachedTransaction;
+use App\Models\Character;
 use App\Models\DeliveredItem;
 use App\Models\Delivery;
 use App\Models\SDE\Inventory\Type;
@@ -20,14 +21,11 @@ class TradingController extends Controller
 
     private $_tradingRepository;
 
-    private $_esi;
-
     private $_locationKeeper;
 
     public function __construct(Services\Locations\Keeper $locationKeeper) {
         $this->_sdeRepository = new Services\SdeRepository;
         $this->_tradingRepository = new Services\TradingRepository;
-        $this->_esi = new Services\ESI;
 
         $this->_locationKeeper = $locationKeeper;
     }
@@ -128,10 +126,13 @@ class TradingController extends Controller
 
     public function openMarketDetails(Request $request) {
         $request->validate([
+            'character_id' => 'required|integer',
             'type_id' => 'required|integer',
         ]);
 
-        $this->_esi->openMarketDetailsWindow($request->type_id);
+        $character = Character::find($request->character_id);
+        $esi = new Services\ESI($character);
+        $esi->openMarketDetailsWindow($request->type_id);
 
         return ['status' => 'success'];
     }

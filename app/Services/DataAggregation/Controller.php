@@ -2,6 +2,7 @@
 
 namespace App\Services\DataAggregation;
 
+use App\Models\Character;
 use App\Services\Locations\Keeper;
 
 class Controller {
@@ -30,7 +31,8 @@ class Controller {
         ];
 
         foreach ($characterIds as $characterId) {
-            $aggregator = new CharacterOrdersAggregator($characterId);
+            $character = Character::find($characterId);
+            $aggregator = new CharacterOrdersAggregator($character);
             $aggregator->aggregate();
         }
     }

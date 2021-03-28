@@ -135,7 +135,7 @@ export default {
   },
 
   async openMarketDetails(typeId) {
-    const params = { type_id: typeId };
+    const params = { type_id: typeId, character_id: DEFAULT_CHARACTER_ID };
 
     await axios.post(api('/trading/open-market-details'), params);
   },

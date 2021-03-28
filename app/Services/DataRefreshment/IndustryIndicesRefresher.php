@@ -12,8 +12,8 @@ class IndustryIndicesRefresher {
     /** @var Services\ESI */
     private $_esi;
 
-    public function __construct() {
-        $this->_esi = new Services\ESI();
+    public function __construct(Models\Character $character) {
+        $this->_esi = new Services\ESI($character);
     }
 
     public function refresh() {

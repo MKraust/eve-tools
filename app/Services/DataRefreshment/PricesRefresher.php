@@ -3,6 +3,7 @@
 namespace App\Services\DataRefreshment;
 
 use App\Models\CachedPrice;
+use App\Models\Character;
 use App\Services\ESI;
 use Illuminate\Support\Facades\DB;
 
@@ -11,8 +12,8 @@ class PricesRefresher {
     /** @var ESI */
     private $_esi;
 
-    public function __construct() {
-        $this->_esi = new ESI;
+    public function __construct(Character $character) {
+        $this->_esi = new ESI($character);
     }
 
     public function refresh(): void {

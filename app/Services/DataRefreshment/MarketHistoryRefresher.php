@@ -6,6 +6,7 @@ use App\Models\AggregatedPrice;
 use App\Models\CachedOrder;
 use App\Models\CachedOrdersHistory;
 use App\Models\CachedPrice;
+use App\Models\Character;
 use App\Models\Setting;
 use App\Services;
 
@@ -16,10 +17,10 @@ class MarketHistoryRefresher {
 
     private $_regionId;
 
-    public function __construct(int $regionId) {
+    public function __construct(Character $character, int $regionId) {
         $this->_regionId = $regionId;
 
-        $this->_esi = new Services\ESI;
+        $this->_esi = new Services\ESI($character);
 
         $marketHistoryUpdateData = Setting::getData($this->_getUpdateDataKey());
         $this->_marketHistoryUpdateData = $marketHistoryUpdateData !== null ? json_decode($marketHistoryUpdateData->value, true) : null;

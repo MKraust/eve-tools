@@ -3,26 +3,26 @@
 namespace App\Services\DataRefreshment;
 
 use App\Models\CachedTransaction;
+use App\Models\Character;
 use App\Services;
 
 class TransactionsRefresher {
 
-    /** @var int */
-    private $_characterId;
+    private Character $_character;
 
-    public function __construct(int $characterId) {
-        $this->_characterId = $characterId;
+    public function __construct(Character $character) {
+        $this->_character = $character;
 
-        $this->_esi = new Services\ESI;
+        $this->_esi = new Services\ESI($character);
     }
 
     public function refresh(): void {
-        $transactions = $this->_esi->getWalletTransactions($this->_characterId);
+        $transactions = $this->_esi->getWalletTransactions($this->_character->id);
 
         $transactionsData = [];
         foreach ($transactions as $transaction) {
             $transactionsData[] = [
-                'character_id' => $this->_characterId,
+                'character_id' => $this->_character->id,
                 'client_id' => $transaction->client_id,
                 'date' => (new \DateTime($transaction->date))->format('Y-m-d H:i:s'),
                 'is_buy' => $transaction->is_buy,

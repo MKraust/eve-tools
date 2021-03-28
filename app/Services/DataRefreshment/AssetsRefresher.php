@@ -3,21 +3,19 @@
 namespace App\Services\DataRefreshment;
 
 use App\Models\CachedAsset;
+use App\Models\Character;
 use App\Services;
 use Seat\Eseye\Containers\EsiResponse;
 
 class AssetsRefresher {
 
-    /** @var Services\ESI */
-    private $_esi;
+    private Services\ESI $_esi;
 
-    /** @var int */
-    private $_characterId;
+    private Character $_character;
 
-    public function __construct(int $characterId) {
-        $this->_esi = new Services\ESI;
-
-        $this->_characterId = $characterId;
+    public function __construct(Character $character) {
+        $this->_character = $character;
+        $this->_esi = new Services\ESI($character);
     }
 
     public function refresh(): void {
@@ -27,7 +25,7 @@ class AssetsRefresher {
 
         do {
             $assets = retry(4, function () use ($page) {
-                return $this->_esi->getCharacterAssets($this->_characterId, $page);
+                return $this->_esi->getCharacterAssets($this->_character->id, $page);
             }, 1000);
 
             $this->_storeAssets($assets->getArrayCopy());
@@ -37,13 +35,13 @@ class AssetsRefresher {
     }
 
     private function _clearAssets(): void {
-        CachedAsset::where('character_id', $this->_characterId)->delete();
+        CachedAsset::where('character_id', $this->_character->id)->delete();
     }
 
     private function _storeAssets(array $assets): void {
         $assetsData = array_map(function ($asset) {
             $a = json_decode(json_encode($asset), true);
-            $a['character_id'] = $this->_characterId;
+            $a['character_id'] = $this->_character->id;
 
             return $a;
         }, $assets);

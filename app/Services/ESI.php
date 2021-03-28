@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Character;
 use Seat\Eseye\Configuration;
 use Seat\Eseye\Containers\EsiConfiguration;
 use Seat\Eseye\Containers\EsiAuthentication;
@@ -9,24 +10,26 @@ use Seat\Eseye\Eseye;
 
 class ESI {
 
-    /** @var Eseye */
-    private $_client;
+    private Eseye $_client;
 
-    public function __construct() {
+    private Character $_character;
+
+    public function __construct(Character $character) {
         $config = Configuration::getInstance();
         $config->setConfiguration(new EsiConfiguration([
-            'http_user_agent'     => 'Personal EVE market screener. Contact Mike Kraust in-game.',
+            'http_user_agent'     => config('esi.user_agent'),
             'logfile_location'    => storage_path() . (php_sapi_name() === 'cli' ? '/cli' : '') . '/logs',
             'file_cache_location' => storage_path() . (php_sapi_name() === 'cli' ? '/cli' : '') . '/esi',
         ]));
 
         $authentication = new EsiAuthentication([
-            'client_id'     => env('ESI_CLIENT_ID'),
-            'secret'        => env('ESI_SECRET_KEY'),
-            'refresh_token' => env('ESI_CHARACTER_REFRESH_TOKEN'),
+            'client_id'     => config('esi.client_id'),
+            'secret'        => config('esi.secret'),
+            'refresh_token' => $character->refresh_token,
         ]);
 
         $this->_client = new Eseye($authentication);
+        $this->_character = $character;
     }
 
     public function getMarketOrders(int $regionId, string $orderType = 'all', int $page = 1, int $typeId = null) {

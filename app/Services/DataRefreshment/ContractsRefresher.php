@@ -7,22 +7,19 @@ use App\Services;
 
 class ContractsRefresher {
 
-    /** @var Services\ESI */
-    private $_esi;
+    private Services\ESI $_esi;
 
-    /** @var int */
-    private $_characterId;
+    private Models\Character $_character;
 
     /** @var int[] */
-    private $_newContractIds = [];
+    private array $_newContractIds = [];
 
     /** @var int[] */
-    private $_existedContractIds = [];
+    private array $_existedContractIds = [];
 
-    public function __construct(int $characterId) {
-        $this->_esi = new Services\ESI;
-
-        $this->_characterId = $characterId;
+    public function __construct(Models\Character $character) {
+        $this->_character = $character;
+        $this->_esi = new Services\ESI($character);
     }
 
     public function refresh(): void {
@@ -37,7 +34,7 @@ class ContractsRefresher {
 
         do {
             $contracts = retry(4, function () use ($page) {
-                return $this->_esi->getCharacterContracts($this->_characterId, $page);
+                return $this->_esi->getCharacterContracts($this->_character->id, $page);
             }, 1000);
 
             $collection = collect($contracts->getArrayCopy());
@@ -58,7 +55,7 @@ class ContractsRefresher {
     private function _storeContracts(array $contracts): void {
         foreach ($contracts as $contract) {
             $c = json_decode(json_encode($contract), true);
-            $c['character_id'] = $this->_characterId;
+            $c['character_id'] = $this->_character->id;
 
             $c['date_accepted'] = ($c['date_accepted'] ?? null) ? (new \DateTime($c['date_accepted']))->format('Y-m-d H:i:s') : null;
             $c['date_completed'] = ($c['date_completed'] ?? null) ? (new \DateTime($c['date_completed']))->format('Y-m-d H:i:s') : null;
@@ -73,7 +70,7 @@ class ContractsRefresher {
     private function _refreshContractItems(): void {
         foreach ($this->_newContractIds as $contractId) {
             $items = retry(4, function () use ($contractId) {
-                return $this->_esi->getContractItems($this->_characterId, $contractId);
+                return $this->_esi->getContractItems($this->_character->id, $contractId);
             }, 1000);
 
             $this->_storeContractItems($contractId, $items->getArrayCopy());

@@ -5,14 +5,17 @@ namespace App\Services\DataRefreshment;
 use App\Events\MarketHistoryRefreshed;
 use App\Events\OrdersRefreshed;
 use App\Events\StockRefreshed;
+use App\Models\Character;
 use App\Services\Locations\Keeper;
 use App\Services\Locations\Location;
 
 class Controller {
 
+    private const JIN_KRAUST_ID = 2117638152;
+
     public function refreshTransactions(): void {
         $characterIds = [
-            2117638152, // Jin Kraust
+            self::JIN_KRAUST_ID, // Jin Kraust
         ];
 
         foreach ($characterIds as $characterId) {
@@ -23,9 +26,10 @@ class Controller {
 
     public function refreshMarketHistory(): void {
         $regionIds = app(Keeper::class)->getSellingRegionsIds();
+        $character = Character::find(self::JIN_KRAUST_ID);
 
         foreach ($regionIds as $regionId) {
-            $refresher = new MarketHistoryRefresher($regionId);
+            $refresher = new MarketHistoryRefresher($character, $regionId);
             $refresher->refresh();
         }
 
@@ -35,13 +39,15 @@ class Controller {
     public function refreshMarketOrders(): void {
         $locationKeeper = app(Keeper::class);
 
+        $character = Character::find(self::JIN_KRAUST_ID);
+
         $structures = $locationKeeper->getStructures();
         $stations = $locationKeeper->getStations()->groupBy(function (Location $location) {
             return $location->regionId();
         });
 
         foreach ($structures as $structure) {
-            $refresher = new StructureOrdersRefresher($structure->id());
+            $refresher = new StructureOrdersRefresher($character, $structure->id());
             $refresher->refresh();
         }
 
@@ -50,7 +56,7 @@ class Controller {
                 return $location->id();
             })->toArray();
 
-            $refresher = new StationsOrdersRefresher($regionId, $stationIds);
+            $refresher = new StationsOrdersRefresher($character, $regionId, $stationIds);
             $refresher->refresh();
         }
 
@@ -59,20 +65,23 @@ class Controller {
     }
 
     public function refreshPrices(): void {
-        (new PricesRefresher)->refresh();
+        $character = Character::find(self::JIN_KRAUST_ID);
+        (new PricesRefresher($character))->refresh();
     }
 
     public function refreshIndustryIndices(): void {
-        (new IndustryIndicesRefresher)->refresh();
+        $character = Character::find(self::JIN_KRAUST_ID);
+        (new IndustryIndicesRefresher($character))->refresh();
     }
 
     public function refreshAssets(): void {
         $characterIds = [
-            2117638152, // Jin Kraust
+            self::JIN_KRAUST_ID, // Jin Kraust
         ];
 
         foreach ($characterIds as $characterId) {
-            $refresher = new AssetsRefresher($characterId);
+            $character = Character::find($characterId);
+            $refresher = new AssetsRefresher($character);
             $refresher->refresh();
         }
 
@@ -81,7 +90,7 @@ class Controller {
 
     public function refreshContracts(): void {
         $characterIds = [
-            2117638152, // Jin Kraust
+            self::JIN_KRAUST_ID, // Jin Kraust
         ];
 
         foreach ($characterIds as $characterId) {

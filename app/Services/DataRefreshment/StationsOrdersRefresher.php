@@ -3,6 +3,7 @@
 namespace App\Services\DataRefreshment;
 
 use App\Models\CachedOrder;
+use App\Models\Character;
 use Seat\Eseye\Containers\EsiResponse;
 
 class StationsOrdersRefresher extends AbstractOrdersRefresher {
@@ -13,11 +14,11 @@ class StationsOrdersRefresher extends AbstractOrdersRefresher {
     /** @var int[] */
     private $_stationIds;
 
-    public function __construct(int $regionId, array $stationIds) {
+    public function __construct(Character $character, int $regionId, array $stationIds) {
         $this->_regionId = $regionId;
         $this->_stationIds = $stationIds;
 
-        $this->_init();
+        $this->_init($character);
     }
 
     protected function _getUpdateDataKey(): string {
