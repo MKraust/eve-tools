@@ -49,6 +49,9 @@
         </template>
 
         <template #cell(actions)="data">
+          <div class="btn btn-hover-light-danger btn-sm btn-icon" @click="toggleIgnoreFastShopping(data.item.type_id)">
+            <i class="fas fa-bolt" :class="{ 'text-danger': isFastShoppingIgnoredForItem(data.item.type_id) }"></i>
+          </div>
           <div class="btn btn-hover-light-warning btn-sm btn-icon" @click="toggleFavorite(data.item.type_id)">
             <i class="text-warning fas fa-star"></i>
           </div>
@@ -79,6 +82,8 @@
 <script>
 import COLUMNS from './columns';
 
+const KEY_FAST_SHOPPING_IGNORED_TYPES = 'fast_shopping_ignored_types';
+
 export default {
   mounted() {
     this.loadFavorites();
@@ -88,6 +93,7 @@ export default {
     isLoadingFavorites: false,
     filterQuery: '',
     tableColumns: COLUMNS,
+    fastShoppingIgnoredTypes: [],
   }),
   computed: {
     filteredFavorites() {
@@ -114,8 +120,13 @@ export default {
       this.isLoadingFavorites = true;
 
       this.favorites = await this.$api.loadTradingFavorites();
+      this.loadFastShoppingIgnoredTypes();
 
       this.isLoadingFavorites = false;
+    },
+    loadFastShoppingIgnoredTypes() {
+      const fastShoppingIgnoredTypes = localStorage.getItem(KEY_FAST_SHOPPING_IGNORED_TYPES);
+      this.fastShoppingIgnoredTypes = fastShoppingIgnoredTypes ? JSON.parse(fastShoppingIgnoredTypes) : [];
     },
     async toggleFavorite(typeId) {
       console.log(typeId);
@@ -127,10 +138,22 @@ export default {
     },
     fastFillShoppingList() {
       this.favorites.forEach(f => {
-        if (f.prices.potential_daily_profit >= 3_000_000) {
+        if (f.prices.potential_daily_profit >= 3_000_000 && !this.isFastShoppingIgnoredForItem(f.type_id)) {
           f.quantity = f.prices.weekly_volume - f.in_stock - f.in_delivery;
         }
       });
+    },
+    toggleIgnoreFastShopping(typeId) {
+      if (this.fastShoppingIgnoredTypes.some(i => i === typeId)) {
+        this.fastShoppingIgnoredTypes = this.fastShoppingIgnoredTypes.filter(t => t !== typeId);
+      } else {
+        this.fastShoppingIgnoredTypes.push(typeId);
+      }
+
+      localStorage.setItem(KEY_FAST_SHOPPING_IGNORED_TYPES, JSON.stringify(this.fastShoppingIgnoredTypes));
+    },
+    isFastShoppingIgnoredForItem(typeId) {
+      return this.fastShoppingIgnoredTypes.some(i => i === typeId);
     },
   },
 }
