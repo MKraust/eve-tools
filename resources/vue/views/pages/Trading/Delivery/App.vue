@@ -60,7 +60,7 @@
 </template>
 
 <script>
-import { formatNumber } from '@/helper';
+import { confirm, formatNumber } from '@/helper';
 
 import COLUMNS from './columns';
 
@@ -80,6 +80,11 @@ export default {
       return `${formatNumber(delivery.items.reduce((sum, i) => i.volume + sum, 0))} m³`;
     },
     async finishDelivery(delivery) {
+      const confirmed = await confirm('Finish?', 'Really finish this delivery?', 'Finish');
+      if (!confirmed) {
+        return;
+      }
+
       this.isLoadingDeliveredItems = true;
 
       await this.$api.finishDelivery(delivery.id);

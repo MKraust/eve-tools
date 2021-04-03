@@ -46,6 +46,8 @@
 </template>
 
 <script>
+import { confirm } from '@/helper';
+
 import TrackedModule from './components/TrackedModule';
 
 export default {
@@ -160,21 +162,9 @@ export default {
       }
     },
     async handleDelete(trackedType) {
-      const result = await Swal.fire({
-        title: "Delete?",
-        text: "Really delete this module from tracking list?",
-        icon: "error",
-        buttonsStyling: false,
-        confirmButtonText: "Delete",
-        showCancelButton: true,
-        cancelButtonText: "Cancel",
-        customClass: {
-          confirmButton: "btn btn-danger",
-          cancelButton: "btn btn-default"
-        }
-      });
+      const confirmed = await confirm('Delete?', 'Really delete this module from tracking list?', 'Delete');
 
-      if (result.value) {
+      if (confirmed) {
         await this.$api.deleteTrackedType(trackedType.id);
         const deletedIndex = this.trackedTypes.indexOf(i => i.id === trackedType.id && i.date === trackedType.date);
         this.trackedTypes.splice(deletedIndex, 1);
