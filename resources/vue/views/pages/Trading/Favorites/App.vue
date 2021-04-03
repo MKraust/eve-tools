@@ -1,9 +1,12 @@
 <template>
   <div class="container">
     <mk-card title="Favorites" :actions="cardActions">
-      <div class="form-group">
-        <div class="input-group">
+      <div class="d-flex align-items-center mb-7">
+        <div class="flex-grow-1">
           <input v-model="filterQuery" type="text" class="form-control" placeholder="Filter items..." />
+        </div>
+        <div class="ml-5">
+          <mk-switch v-model="onlyFastShopIgnored" label="Only ignored" type="brand" size="sm" />
         </div>
       </div>
 
@@ -94,11 +97,18 @@ export default {
     filterQuery: '',
     tableColumns: COLUMNS,
     fastShoppingIgnoredTypes: [],
+    onlyFastShopIgnored: false,
   }),
   computed: {
     filteredFavorites() {
+      let result = this.favorites;
+
+      if (this.onlyFastShopIgnored) {
+        result = result.filter(i => this.isFastShoppingIgnoredForItem(i.type_id));
+      }
+
       if (this.filterQuery === '') {
-        return this.favorites;
+        return result;
       }
 
       return this.favorites.filter(i => i.name.toLowerCase().indexOf(this.filterQuery.toLocaleLowerCase()) !== -1);
