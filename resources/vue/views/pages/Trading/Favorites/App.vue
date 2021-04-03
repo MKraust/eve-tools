@@ -21,6 +21,7 @@
             <strong>Loading...</strong>
           </div>
         </template>
+
         <template #cell(icon)="data">
           <div class="symbol symbol-30 d-block">
             <span class="symbol-label overflow-hidden">
@@ -28,13 +29,14 @@
             </span>
           </div>
         </template>
+
         <template #cell(quantity)="data">
           <div class="form-group mb-0">
             <div class="input-group input-group-sm mr-1">
               <div class="input-group-prepend">
-              <span class="input-group-text">
-                <i class="fas fas fa-shopping-cart"></i>
-              </span>
+                <span class="input-group-text">
+                  <i class="fas fas fa-shopping-cart"></i>
+                </span>
               </div>
               <input
                 v-model="data.item.quantity"
@@ -97,6 +99,7 @@ export default {
     },
     cardActions() {
       return [
+        { icon: 'fas fa-bolt', handler: this.fastFillShoppingList },
         { icon: 'fas fa-shopping-cart', handler: this.showShoppingList },
       ];
     },
@@ -121,6 +124,13 @@ export default {
     },
     async showShoppingList() {
       $(this.$refs.shoppingListModal).modal();
+    },
+    fastFillShoppingList() {
+      this.favorites.forEach(f => {
+        if (f.prices.potential_daily_profit >= 3_000_000) {
+          f.quantity = f.prices.weekly_volume - f.in_stock - f.in_delivery;
+        }
+      });
     },
   },
 }
