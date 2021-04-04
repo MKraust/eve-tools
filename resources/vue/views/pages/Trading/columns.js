@@ -4,7 +4,7 @@ export const ICON = {
   key: 'icon',
   tdClass: 'align-middle',
   thAttr: {
-    style: 'width: 50px;',
+    style: 'width: 60px;',
   },
 };
 
@@ -15,88 +15,47 @@ export const NAME = {
   tdClass: 'align-middle',
 };
 
-export const TOTAL_COST = {
-  key: 'buy',
-  sortable: true,
-  label: 'Buy',
+export const PRICES = {
+  key: 'prices',
+  sortable: false,
+  label: 'Prices',
   class: 'text-right text-nowrap',
-  tdClass: 'align-middle',
+  tdClass: 'flex-column align-middle',
+  tdAttr: {
+    style: 'font-size: 0.94rem !important',
+  },
   sortByFormatted: (value, key, item) => item.prices.buy,
-  formatter: (value, key, item) => formatColumnValue(item.prices.buy, formatNumber),
 };
-
-export const SELL_PRICE = {
-  key: 'sell',
-  sortable: true,
-  label: 'Sell',
-  class: 'text-right text-nowrap',
-  tdClass: 'align-middle',
-  sortByFormatted: (value, key, item) => item.prices.sell,
-  formatter: (value, key, item) => formatColumnValue(item.prices.sell, formatNumber),
-}
 
 export const MARGIN = {
   key: 'margin',
   sortable: true,
+  label: 'Margin',
   class: 'text-right text-nowrap',
   tdClass: (value, key, item) => {
-    const classes = ['align-middle'];
+    const classes = ['flex-column', 'align-middle'];
     if (item.prices.margin !== null) {
       classes.push(item.prices.margin > 0 ? 'text-success' : 'text-danger');
     }
 
     return classes.join(' ');
   },
-  sortByFormatted: (value, key, item) => item.prices.margin,
-  formatter: (value, key, item) => formatColumnValue(item.prices.margin, formatNumber),
-};
-
-export const MARGIN_PERCENT = {
-  key: 'margin_percent',
-  sortable: true,
-  label: 'Margin, %',
-  class: 'text-right text-nowrap',
-  tdClass: (value, key, item) => {
-    const classes = ['align-middle'];
-    if (item.prices.margin_percent !== null) {
-      classes.push(item.prices.margin_percent > 0 ? 'text-success' : 'text-danger');
-    }
-
-    return classes.join(' ');
+  tdAttr: {
+    style: 'font-size: 0.94rem !important',
   },
   sortByFormatted: (value, key, item) => item.prices.margin_percent,
-  formatter: (value, key, item) => formatColumnValue(item.prices.margin_percent, val => `${val}%`),
 };
 
-export const MONTHLY_VOLUME = {
-  key: 'monthly_volume',
-  sortable: true,
-  label: 'M vol',
+export const VOLUME = {
+  key: 'volume',
+  sortable: false,
+  label: 'Volume',
   class: 'text-right text-nowrap',
-  tdClass: 'align-middle',
-  sortByFormatted: (value, key, item) => item.prices.monthly_volume,
-  formatter: (value, key, item) => formatColumnValue(item.prices.monthly_volume, formatNumber),
-};
-
-export const WEEKLY_VOLUME = {
-  key: 'weekly_volume',
-  sortable: true,
-  label: 'W vol',
-  class: 'text-right text-nowrap',
-  tdClass: 'align-middle',
-  sortByFormatted: (value, key, item) => item.prices.weekly_volume,
-  formatter: (value, key, item) => formatColumnValue(item.prices.weekly_volume, formatNumber),
-};
-
-export const AVERAGE_DAILY_VOLUME = {
-  key: 'average_daily_volume',
-  sortable: true,
-  label: 'D vol',
-  class: 'text-right text-nowrap',
-  tdClass: 'align-middle',
-  sortByFormatted: (value, key, item) => item.prices.average_daily_volume,
-  formatter: (value, key, item) => formatColumnValue(item.prices.average_daily_volume, formatNumber),
-};
+  tdClass: 'flex-column align-middle',
+  tdAttr: {
+    style: 'font-size: 0.86rem !important',
+  },
+}
 
 export const POTENTIAL_DAILY_PROFIT = {
   key: 'potential_daily_profit',
@@ -135,13 +94,9 @@ export const IN_STOCK = {
 export default [
   ICON,
   NAME,
-  TOTAL_COST,
-  SELL_PRICE,
+  PRICES,
   MARGIN,
-  MARGIN_PERCENT,
-  MONTHLY_VOLUME,
-  WEEKLY_VOLUME,
-  AVERAGE_DAILY_VOLUME,
+  VOLUME,
   POTENTIAL_DAILY_PROFIT,
   IN_STOCK,
 ];

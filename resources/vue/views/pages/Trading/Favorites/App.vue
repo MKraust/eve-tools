@@ -22,15 +22,37 @@
           </div>
         </template>
 
-        <template #cell(icon)="data">
-          <div class="symbol symbol-30 d-block">
+        <template #cell(icon)="{ item }">
+          <div class="symbol symbol-40 d-block">
             <span class="symbol-label overflow-hidden">
-              <img :src="data.item.icon" class="module-icon" alt="">
+              <img :src="item.icon" class="module-icon" alt="">
             </span>
           </div>
         </template>
 
-        <template #cell(quantity)="data">
+        <template #cell(prices)="{ item }">
+          <div>{{ formatValue(item.prices.buy) }}</div>
+          <div>{{ formatValue(item.prices.sell) }}</div>
+        </template>
+
+        <template #cell(margin)="{ item }">
+          <template v-if="item.prices.margin">
+            <div>{{ formatValue(item.prices.margin_percent) }}%</div>
+            <div>{{ formatValue(item.prices.margin) }}</div>
+          </template>
+
+          <div v-else>-</div>
+        </template>
+
+        <template #cell(volume)="{ item }">
+          <div>{{ formatValue(item.prices.monthly_volume) }}</div>
+          <div>{{ formatValue(item.prices.weekly_volume) }}</div>
+          <div :class="{ 'font-weight-bolder': item.prices.average_daily_volume }">
+            {{ formatValue(item.prices.average_daily_volume) }}
+          </div>
+        </template>
+
+        <template #cell(quantity)="{ item }">
           <div class="form-group mb-0">
             <div class="input-group input-group-sm mr-1">
               <div class="input-group-prepend">
@@ -39,7 +61,7 @@
                 </span>
               </div>
               <input
-                v-model="data.item.quantity"
+                v-model="item.quantity"
                 type="number"
                 class="form-control form-control-sm"
                 placeholder="0"
@@ -49,7 +71,7 @@
           </div>
         </template>
 
-        <template #cell(fast_shopping_limit)="data">
+        <template #cell(fast_shopping_limit)="{ item }">
           <div class="form-group mb-0">
             <div class="input-group input-group-sm mr-1">
               <div class="input-group-prepend">
@@ -58,7 +80,7 @@
                 </span>
               </div>
               <input
-                v-model="fastShoppingLimits[data.item.type_id]"
+                v-model="fastShoppingLimits[item.type_id]"
                 type="number"
                 class="form-control form-control-sm"
                 placeholder="0"
@@ -68,12 +90,14 @@
           </div>
         </template>
 
-        <template #cell(actions)="data">
-          <div class="btn btn-hover-light-warning btn-sm btn-icon" @click="toggleFavorite(data.item.type_id)">
-            <i class="text-warning fas fa-star"></i>
+        <template #cell(actions)="{ item }">
+          <div class="d-flex">
+            <div class="btn btn-hover-light-warning btn-sm btn-icon" @click="toggleFavorite(item.type_id)">
+              <i class="text-warning fas fa-star"></i>
+            </div>
+            <mk-money-flow-button :id="item.type_id" :name="item.name" />
+            <mk-market-details-button :id="item.type_id" />
           </div>
-          <mk-money-flow-button :id="data.item.type_id" :name="data.item.name" />
-          <mk-market-details-button :id="data.item.type_id" />
         </template>
       </b-table>
     </mk-card>
@@ -105,6 +129,8 @@
 </template>
 
 <script>
+import { formatColumnValue, formatNumber } from '@/helper';
+
 import COLUMNS from './columns';
 
 const KEY_FAST_SHOPPING_LIMITS = 'fast_shopping_limits';
@@ -185,6 +211,9 @@ export default {
           f.quantity = Math.max(0, Number(fastShoppingLimit) - f.in_stock - f.in_delivery);
         }
       });
+    },
+    formatValue(val) {
+      return formatColumnValue(val, formatNumber);
     },
   },
 }

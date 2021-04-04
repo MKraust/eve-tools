@@ -23,7 +23,7 @@ export default [
   {
     key: 'actions',
     label: '',
-    tdClass: 'align-middle d-flex',
+    tdClass: 'align-middle',
     thAttr: {
       style: 'width: 53px;',
     },
