@@ -77,7 +77,7 @@ export default {
   }),
   methods: {
     getDeliveryVolume(delivery) {
-      return `${formatNumber(delivery.items.reduce((sum, i) => i.volume + sum, 0))} m³`;
+      return `${formatNumber(Math.floor(delivery.items.reduce((sum, i) => i.volume + sum, 0)))} m³`;
     },
     async finishDelivery(delivery) {
       const confirmed = await confirm('Finish?', 'Really finish this delivery?', 'Finish');
@@ -109,7 +109,7 @@ export default {
 
         const itemDataParts = itemRow.split('\t');
         const volumePart = itemDataParts.find(i => i.includes('m3'));
-        const volume = Number((volumePart || '0').replace('m3', '').replace(',', '.').replace(/\W/g, ''));
+        const volume = Number((volumePart || '0').replace('m3', '').replace(',', '.').replace(/[^a-zA-Z0-9_.]/g, ''));
 
         return {
           name: itemDataParts[0].replace(/\*$/g, ''),
