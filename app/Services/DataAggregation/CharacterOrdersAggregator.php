@@ -45,6 +45,8 @@ class CharacterOrdersAggregator {
             ];
         }
 
+        $aggregatedOrdersData = collect($aggregatedOrdersData)->unique('order_id')->toArray();
+
         AggregatedCharacterOrder::where('character_id', $this->_character->id)->delete();
         AggregatedCharacterOrder::insert($aggregatedOrdersData);
     }
