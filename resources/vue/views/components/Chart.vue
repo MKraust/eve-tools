@@ -46,13 +46,18 @@ export default {
             show: false,
           },
         },
+        plotOptions: {
+          bar: {
+            columnWidth: '95%',
+          },
+        },
         dataLabels: {
           enabled: false,
         },
         grid: {
           xaxis: {
             lines: {
-              show: true,
+              show: false,
             },
           },
         },
