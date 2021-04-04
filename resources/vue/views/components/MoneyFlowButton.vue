@@ -5,7 +5,7 @@
     </button>
 
     <b-modal v-model="isModalShown" :id="`money-flow-modal-${id}`" :title="name" :busy="loading" size="lg" hide-footer>
-      <mk-chart :chart-data="chartData" :height="300" type="area" />
+      <mk-chart :chart-data="chartData" :height="300" type="bar" />
     </b-modal>
   </div>
 </template>

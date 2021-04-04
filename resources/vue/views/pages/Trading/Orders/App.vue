@@ -3,7 +3,7 @@
     <div class="row">
       <div class="col-md-5">
         <mk-card title="Intraday money flow" :loading="isLoading" class="mb-10">
-          <mk-chart :chart-data="intradayMoneyFlowData" :height="300" type="area" />
+          <mk-chart :chart-data="intradayMoneyFlowData" :height="300" type="bar" />
         </mk-card>
       </div>
 

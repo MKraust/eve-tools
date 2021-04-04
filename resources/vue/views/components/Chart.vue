@@ -59,6 +59,9 @@ export default {
         xaxis: {
           categories: this.chartData.map(datum => datum.x),
           tickAmount: 24,
+          labels: {
+            formatter: val => String(val).split(':')[0],
+          },
         },
         yaxis: {
           labels: {
