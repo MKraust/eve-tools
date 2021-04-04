@@ -119,6 +119,7 @@ export default {
       }).filter(i => i);
 
       await this.$api.saveDeliveredItems(items);
+      await this.loadDeliveries();
 
       this.deliveredItemsRawText = '';
 

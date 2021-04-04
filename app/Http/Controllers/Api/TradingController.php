@@ -142,6 +142,8 @@ class TradingController extends Controller
             ? CachedTransaction::selectRaw("date_format(date - interval minute(date)%60 minute, '%H:%i') as x, sum(quantity) as y")->where('type_id', $request->type_id)
             : CachedTransaction::selectRaw("date_format(date - interval minute(date)%60 minute, '%H:%i') as x, sum(unit_price * quantity) as y");
 
+        $builder->where('is_buy', 0);
+
         $data = $builder->groupBy('x')->get()->mapWithKeys(function ($val) {
            $val['x'] = (new \DateTime($val['x']))->modify('+3 hours')->format('H:i');
            return [$val['x'] => $val];
