@@ -5,9 +5,6 @@
         <div class="flex-grow-1">
           <input v-model="filterQuery" type="text" class="form-control" placeholder="Filter items..." />
         </div>
-        <div class="ml-5">
-          <mk-switch v-model="onlyFastShopIgnored" label="Only ignored" type="brand" size="sm" />
-        </div>
       </div>
 
       <b-table
@@ -38,7 +35,7 @@
             <div class="input-group input-group-sm mr-1">
               <div class="input-group-prepend">
                 <span class="input-group-text">
-                  <i class="fas fas fa-shopping-cart"></i>
+                  <i class="fas fa-shopping-cart"></i>
                 </span>
               </div>
               <input
@@ -46,15 +43,32 @@
                 type="number"
                 class="form-control form-control-sm"
                 placeholder="0"
+                min="0"
+              >
+            </div>
+          </div>
+        </template>
+
+        <template #cell(fast_shopping_limit)="data">
+          <div class="form-group mb-0">
+            <div class="input-group input-group-sm mr-1">
+              <div class="input-group-prepend">
+                <span class="input-group-text">
+                  <i class="fas fa-bolt"></i>
+                </span>
+              </div>
+              <input
+                v-model="fastShoppingLimits[data.item.type_id]"
+                type="number"
+                class="form-control form-control-sm"
+                placeholder="0"
+                min="0"
               >
             </div>
           </div>
         </template>
 
         <template #cell(actions)="data">
-          <div class="btn btn-hover-light-danger btn-sm btn-icon" @click="toggleIgnoreFastShopping(data.item.type_id)">
-            <i class="fas fa-bolt" :class="{ 'text-danger': isFastShoppingIgnoredForItem(data.item.type_id) }"></i>
-          </div>
           <div class="btn btn-hover-light-warning btn-sm btn-icon" @click="toggleFavorite(data.item.type_id)">
             <i class="text-warning fas fa-star"></i>
           </div>
@@ -68,7 +82,7 @@
       <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Modal Title</h5>
+            <h5 class="modal-title">Shopping list</h5>
             <button type="button" class="close" data-dismiss="modal">
               <i class="ki ki-close"></i>
             </button>
@@ -83,9 +97,11 @@
 </template>
 
 <script>
+import { debounce } from '@/helper';
+
 import COLUMNS from './columns';
 
-const KEY_FAST_SHOPPING_IGNORED_TYPES = 'fast_shopping_ignored_types';
+const KEY_FAST_SHOPPING_LIMITS = 'fast_shopping_limits';
 
 export default {
   mounted() {
@@ -98,17 +114,12 @@ export default {
     tableColumns: COLUMNS,
     fastShoppingIgnoredTypes: [],
     onlyFastShopIgnored: false,
+    fastShoppingLimits: {},
   }),
   computed: {
     filteredFavorites() {
-      let result = this.favorites;
-
-      if (this.onlyFastShopIgnored) {
-        result = result.filter(i => this.isFastShoppingIgnoredForItem(i.type_id));
-      }
-
       if (this.filterQuery === '') {
-        return result;
+        return this.favorites;
       }
 
       return this.favorites.filter(i => i.name.toLowerCase().indexOf(this.filterQuery.toLocaleLowerCase()) !== -1);
@@ -125,18 +136,29 @@ export default {
       return wtb.map(i => `${i.name}* ${i.quantity}`).join('<br>');
     },
   },
+  watch: {
+    fastShoppingLimits: {
+      deep: true,
+      handler() {
+        this.saveFastShoppingLimits();
+      },
+    }
+  },
   methods: {
     async loadFavorites() {
       this.isLoadingFavorites = true;
 
       this.favorites = await this.$api.loadTradingFavorites();
-      this.loadFastShoppingIgnoredTypes();
+      this.loadFastShoppingLimits();
 
       this.isLoadingFavorites = false;
     },
-    loadFastShoppingIgnoredTypes() {
-      const fastShoppingIgnoredTypes = localStorage.getItem(KEY_FAST_SHOPPING_IGNORED_TYPES);
-      this.fastShoppingIgnoredTypes = fastShoppingIgnoredTypes ? JSON.parse(fastShoppingIgnoredTypes) : [];
+    loadFastShoppingLimits() {
+      const fastShoppingLimits = localStorage.getItem(KEY_FAST_SHOPPING_LIMITS);
+      this.fastShoppingLimits = fastShoppingLimits ? JSON.parse(fastShoppingLimits) : {};
+    },
+    saveFastShoppingLimits() {
+      localStorage.setItem(KEY_FAST_SHOPPING_LIMITS, JSON.stringify(this.fastShoppingLimits));
     },
     async toggleFavorite(typeId) {
       console.log(typeId);
@@ -148,22 +170,11 @@ export default {
     },
     fastFillShoppingList() {
       this.favorites.forEach(f => {
-        if (f.prices.potential_daily_profit >= 3_000_000 && !this.isFastShoppingIgnoredForItem(f.type_id)) {
-          f.quantity = f.prices.weekly_volume - f.in_stock - f.in_delivery;
+        if (f.prices.potential_daily_profit >= 3_000_000) {
+          const fastShoppingLimit = this.fastShoppingLimits[f.type_id] || 0;
+          f.quantity = Math.max(0, Number(fastShoppingLimit) - f.in_stock - f.in_delivery);
         }
       });
-    },
-    toggleIgnoreFastShopping(typeId) {
-      if (this.fastShoppingIgnoredTypes.some(i => i === typeId)) {
-        this.fastShoppingIgnoredTypes = this.fastShoppingIgnoredTypes.filter(t => t !== typeId);
-      } else {
-        this.fastShoppingIgnoredTypes.push(typeId);
-      }
-
-      localStorage.setItem(KEY_FAST_SHOPPING_IGNORED_TYPES, JSON.stringify(this.fastShoppingIgnoredTypes));
-    },
-    isFastShoppingIgnoredForItem(typeId) {
-      return this.fastShoppingIgnoredTypes.some(i => i === typeId);
     },
   },
 }
