@@ -88,7 +88,15 @@
             </button>
           </div>
           <div class="modal-body">
-            <div v-html="shoppingListHtml" data-scroll="true" data-height="500"></div>
+            <b-form-textarea
+              v-model="shoppingList"
+              id="shopping-list-input"
+              rows="35"
+              no-resize
+            />
+          </div>
+          <div class="modal-footer">
+            <b-button variant="primary" @click="copyShoppingListToClipboard">Copy</b-button>
           </div>
         </div>
       </div>
@@ -97,8 +105,6 @@
 </template>
 
 <script>
-import { debounce } from '@/helper';
-
 import COLUMNS from './columns';
 
 const KEY_FAST_SHOPPING_LIMITS = 'fast_shopping_limits';
@@ -130,11 +136,12 @@ export default {
         { icon: 'fas fa-shopping-cart', handler: this.showShoppingList },
       ];
     },
-    shoppingListHtml() {
-      const wtb = this.favorites.filter(i => i.quantity > 0);
-
-      return wtb.map(i => `${i.name}* ${i.quantity}`).join('<br>');
-    },
+    shoppingList() {
+      return this.favorites
+        .filter(i => i.quantity > 0)
+        .map(i => `${i.name}* ${i.quantity}`)
+        .join('\n');
+    }
   },
   watch: {
     fastShoppingLimits: {
@@ -161,12 +168,15 @@ export default {
       localStorage.setItem(KEY_FAST_SHOPPING_LIMITS, JSON.stringify(this.fastShoppingLimits));
     },
     async toggleFavorite(typeId) {
-      console.log(typeId);
       await this.$api.deleteTradingFavorite(typeId);
       this.favorites = this.favorites.filter(f => f.type_id !== typeId);
     },
     async showShoppingList() {
       $(this.$refs.shoppingListModal).modal();
+    },
+    copyShoppingListToClipboard() {
+      $('#shopping-list-input').select();
+      document.execCommand('copy');
     },
     fastFillShoppingList() {
       this.favorites.forEach(f => {
