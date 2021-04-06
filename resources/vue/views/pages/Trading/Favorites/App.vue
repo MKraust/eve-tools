@@ -181,8 +181,11 @@ export default {
     fastFillShoppingList() {
       this.favorites.forEach(f => {
         if (f.prices.potential_daily_profit >= 3_000_000 || !f.prices.sell) {
-          const fastShoppingLimit = this.fastShoppingLimits[f.type_id] || 0;
-          f.quantity = Math.max(0, Number(fastShoppingLimit) - f.in_stock - f.in_delivery);
+          const fastShoppingLimit = Number(this.fastShoppingLimits[f.type_id] || 0);
+          const needToBuy = fastShoppingLimit - f.in_stock - f.in_delivery;
+          const needToBuyPercent = fastShoppingLimit > 0 ? needToBuy / fastShoppingLimit * 100 : 0;
+
+          f.quantity = needToBuyPercent > 30 ? Math.max(0, needToBuy) : 0;
         }
       });
     },
