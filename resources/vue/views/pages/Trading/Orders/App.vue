@@ -9,7 +9,7 @@
 
       <div class="col-md-7">
         <mk-card title="Unlisted items">
-          <b-table :busy="isLoading" :fields="unlistedItemsColumns" :items="unlistedItems" sort-by="potential_daily_profit" :sort-desc="true" :responsive="true">
+          <b-table :busy="isLoading" :fields="unlistedItemsColumns" :items="unlistedItems" sort-by="outbid_margin_percent" :sort-desc="true" :responsive="true">
             <template #table-busy>
               <div class="text-center text-primary my-2">
                 <b-spinner class="align-middle mr-2"></b-spinner>
@@ -35,9 +35,12 @@
 
       <div class="col-md-12">
         <mk-card title="Outbidded orders">
-          <div class="form-group">
-            <div class="input-group">
+          <div class="d-flex align-items-center mb-7">
+            <div class="flex-grow-1">
               <input v-model="filterQuery" type="text" class="form-control" placeholder="Filter items..." />
+            </div>
+            <div class="ml-5">
+              Total: <b>{{ filteredOrders.length }}</b>
             </div>
           </div>
 
