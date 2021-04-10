@@ -9,7 +9,7 @@
 
       <div class="col-md-7">
         <mk-card title="Unlisted items">
-          <b-table :busy="isLoading" :fields="unlistedItemsColumns" :items="unlistedItems" sort-by="outbid_margin_percent" :sort-desc="true" :responsive="true">
+          <b-table :busy="isLoading" :fields="unlistedItemsColumns" :items="unlistedItems" sort-by="potential_daily_profit" :sort-desc="true" :responsive="true">
             <template #table-busy>
               <div class="text-center text-primary my-2">
                 <b-spinner class="align-middle mr-2"></b-spinner>
@@ -44,7 +44,7 @@
             </div>
           </div>
 
-          <b-table :busy="isLoading" :fields="ordersColumns" :items="filteredOrders" sort-by="potential_daily_profit" :sort-desc="true" :responsive="true">
+          <b-table :busy="isLoading" :fields="ordersColumns" :items="filteredOrders" sort-by="outbid_margin_percent" :sort-desc="true" :responsive="true">
             <template #table-busy>
               <div class="text-center text-primary my-2">
                 <b-spinner class="align-middle mr-2"></b-spinner>
