@@ -17,6 +17,7 @@ import TradingSearch from '@/views/pages/Trading/Search/App';
 import TradingProfitable from '@/views/pages/Trading/Profitable/App';
 import TradingOrders from '@/views/pages/Trading/Orders/App';
 import TradingDelivery from '@/views/pages/Trading/Delivery/App';
+import TradingProfit from '@/views/pages/Trading/Profit/App';
 
 Vue.use(Router);
 
@@ -84,6 +85,7 @@ export default new Router({
               { name: 'Profitable', route: 'trading_profitable' },
               { name: 'Orders', route: 'trading_orders' },
               { name: 'Delivery', route: 'trading_delivery' },
+              { name: 'Profit', route: 'trading_profit' },
             ]
           },
           children: [
@@ -111,6 +113,11 @@ export default new Router({
               name: 'trading_delivery',
               path: 'delivery',
               component: TradingDelivery,
+            },
+            {
+              name: 'trading_profit',
+              path: 'profit',
+              component: TradingProfit,
             },
           ]
         }

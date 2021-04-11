@@ -178,5 +178,12 @@ export default {
       role,
       is_active: isActive,
     });
-  }
+  },
+
+  async loadTradingProfits(page, perPage) {
+    const params = { page, per_page: perPage };
+    const { data } = await axios.get(api('/trading/profit/record/list'), { params });
+
+    return data;
+  },
 };

@@ -22,4 +22,8 @@ export default {
     @import "assets/plugins/flaticon2/flaticon.css";
     @import "assets/plugins/keenthemes-icons/font/ki.css";
     @import "assets/sass/style.scss";
+
+    .monospace {
+      font-family: Consolas,Monaco, "Andale Mono", "Ubuntu Mono", monospace;
+    }
 </style>

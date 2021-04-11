@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\AggregatedCharacterOrder;
+use App\Models\AggregatedProfit;
 use App\Models\AggregatedStockedItem;
 use App\Models\CachedTransaction;
 use App\Models\Character;
@@ -28,6 +29,22 @@ class TradingController extends Controller
         $this->_tradingRepository = new Services\TradingRepository;
 
         $this->_locationKeeper = $locationKeeper;
+    }
+
+    public function getProfits(Request $request) {
+        $request->validate([
+           'per_page' => 'required|integer|min:10|max:100',
+           'page' => 'required|integer|min:1',
+        ]);
+
+        $perPage = $request->per_page;
+        $page = $request->page;
+
+        return AggregatedProfit::with(['type', 'sellTransaction', 'buyTransaction'])
+                               ->orderBy('date', 'desc')
+                               ->offset(($page - 1) * $perPage)
+                               ->limit($perPage)
+                               ->get();
     }
 
     public function getOrders(Request $request) {

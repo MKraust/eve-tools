@@ -68,4 +68,8 @@ Route::prefix('trading')->group(function () {
         Route::post('/save',   [Controllers\Api\TradingController::class, 'saveDeliveredItems']);
         Route::post('/finish', [Controllers\Api\TradingController::class, 'finishDelivery']);
     });
+
+    Route::prefix('profit')->group(function () {
+        Route::get('/record/list', [Controllers\Api\TradingController::class, 'getProfits']);
+    });
 });

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\SDE\Inventory\Type;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -30,4 +31,16 @@ class AggregatedProfit extends Model
     protected $casts = [
         'date'  => 'datetime:Y-m-d H:i:s',
     ];
+
+    public function type() {
+        return $this->belongsTo(Type::class, 'type_id', 'typeID');
+    }
+
+    public function buyTransaction() {
+        return $this->belongsTo(CachedTransaction::class, 'buy_transaction_id', 'transaction_id');
+    }
+
+    public function sellTransaction() {
+        return $this->belongsTo(CachedTransaction::class, 'sell_transaction_id', 'transaction_id');
+    }
 }

@@ -25,6 +25,10 @@ class Type extends Model
         'deliveredItems',
     ];
 
+    protected $appends = [
+        'icon',
+    ];
+
     public function getVolumeAttribute(): ?float {
         return $this->attributes['volume'] == 4000 ? 1000 : $this->attributes['volume'];
     }
