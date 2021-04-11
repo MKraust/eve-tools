@@ -46,7 +46,7 @@ export const ORDERS_COLUMNS = [
     key: 'volume',
     label: 'Volume',
     class: 'text-right text-nowrap',
-    tdClass: 'align-middle',
+    tdClass: 'align-middle monospace',
     formatter: (value, key, item) => formatColumnValue(item.volume_remain, formatNumber) + ' / ' + formatColumnValue(item.volume_total, formatNumber),
   },
   {
@@ -54,7 +54,7 @@ export const ORDERS_COLUMNS = [
     sortable: true,
     label: 'Price',
     class: 'text-right text-nowrap',
-    tdClass: 'align-middle',
+    tdClass: 'align-middle monospace',
     sortByFormatted: (value, key, item) => item.price,
     formatter: (value, key, item) => formatColumnValue(item.price, formatNumber),
   },
@@ -64,7 +64,7 @@ export const ORDERS_COLUMNS = [
     label: 'Outbid',
     class: 'text-right text-nowrap',
     tdClass: (value, key, item) => {
-      const classes = ['align-middle'];
+      const classes = ['align-middle', 'monospace'];
       if (item.outbid_margin !== null) {
         classes.push(item.outbid_margin > 0 ? 'text-success' : 'text-danger');
       }
@@ -80,7 +80,7 @@ export const ORDERS_COLUMNS = [
     label: 'Outbid, %',
     class: 'text-right text-nowrap',
     tdClass: (value, key, item) => {
-      const classes = ['align-middle'];
+      const classes = ['align-middle', 'monospace'];
       if (item.outbid_margin_percent !== null) {
         classes.push(item.outbid_margin_percent > 0 ? 'text-success' : 'text-danger');
       }
@@ -96,7 +96,7 @@ export const ORDERS_COLUMNS = [
     label: 'Margin, %',
     class: 'text-right text-nowrap',
     tdClass: (value, key, item) => {
-      const classes = ['align-middle'];
+      const classes = ['align-middle', 'monospace'];
       if (item.type.prices.margin_percent !== null) {
         classes.push(item.type.prices.margin_percent > 0 ? 'text-success' : 'text-danger');
       }
@@ -111,7 +111,7 @@ export const ORDERS_COLUMNS = [
     sortable: true,
     class: 'text-right text-nowrap',
     tdClass: (value, key, item) => {
-      const classes = ['align-middle'];
+      const classes = ['align-middle', 'monospace'];
       if (item.type.prices.potential_daily_profit !== null) {
         classes.push(item.type.prices.potential_daily_profit > 0 ? 'text-success' : 'text-danger');
       }

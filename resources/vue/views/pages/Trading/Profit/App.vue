@@ -10,7 +10,7 @@
       <b-table
         :busy="isLoading"
         :fields="tableColumns"
-        :items="filteredItems"
+        :items="loadData"
         :responsive="true"
         :per-page="perPage"
         :current-page="currentPage"
@@ -43,7 +43,7 @@
 
       <b-pagination
         v-model="currentPage"
-        :total-rows="items.length"
+        :total-rows="total"
         :per-page="perPage"
         aria-controls="my-table"
       ></b-pagination>
@@ -55,16 +55,13 @@
 import COLUMNS from './columns';
 
 export default {
-  mounted() {
-    this.loadData();
-  },
   data: () => ({
-    items: [],
     isLoading: false,
     filterQuery: '',
     tableColumns: COLUMNS,
     currentPage: 1,
-    perPage: 40,
+    perPage: 50,
+    total: 0,
   }),
   computed: {
     filteredItems() {
@@ -79,9 +76,12 @@ export default {
     async loadData() {
       this.isLoading = true;
 
-      this.items = await this.$api.loadTradingProfits(this.currentPage, this.perPage);
+      const { items, total } = await this.$api.loadTradingProfits(this.currentPage, this.perPage);
 
+      this.total = total;
       this.isLoading = false;
+
+      return items;
     },
   },
 }

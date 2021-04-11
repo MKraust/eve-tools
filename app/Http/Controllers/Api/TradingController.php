@@ -40,11 +40,16 @@ class TradingController extends Controller
         $perPage = $request->per_page;
         $page = $request->page;
 
-        return AggregatedProfit::with(['type', 'sellTransaction', 'buyTransaction'])
-                               ->orderBy('date', 'desc')
-                               ->offset(($page - 1) * $perPage)
-                               ->limit($perPage)
-                               ->get();
+        $records = AggregatedProfit::with(['type', 'sellTransaction', 'buyTransaction'])
+                                   ->orderBy('date', 'desc')
+                                   ->offset(($page - 1) * $perPage)
+                                   ->limit($perPage)
+                                   ->get();
+
+        return [
+            'items' => $records,
+            'total' => AggregatedProfit::count(),
+        ];
     }
 
     public function getOrders(Request $request) {

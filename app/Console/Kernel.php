@@ -41,8 +41,8 @@ class Kernel extends ConsoleKernel
         $schedule->command(Commands\RefreshIndustryIndices::class)->everyTenMinutes();
         $schedule->command(Commands\RefreshAssets::class)->everyTenMinutes();
         $schedule->command(Commands\RefreshTransactions::class)->hourly();
+        $schedule->command(Commands\AggregateProfits::class)->hourly();
         $schedule->command(Commands\RefreshMarketHistory::class)->dailyAt('14:30');
-        $schedule->command(Commands\AggregateProfits::class)->everyTenMinutes();
     }
 
     /**

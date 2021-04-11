@@ -3,7 +3,7 @@ import { formatColumnValue, formatNumber } from '@/helper';
 export default [
   {
     key: 'date',
-    sortable: true,
+    sortable: false,
     class: 'text-nowrap',
     tdClass: 'align-middle monospace',
   },
@@ -16,7 +16,7 @@ export default [
   },
   {
     key: 'name',
-    sortable: true,
+    sortable: false,
     class: 'text-nowrap',
     tdClass: 'align-middle',
     sortByFormatted: (value, key, item) => item.type.typeName,
@@ -24,7 +24,7 @@ export default [
   },
   {
     key: 'buy',
-    sortable: true,
+    sortable: false,
     label: 'Buy',
     class: 'text-right text-nowrap',
     tdClass: 'align-middle monospace',
@@ -33,7 +33,7 @@ export default [
   },
   {
     key: 'sell',
-    sortable: true,
+    sortable: false,
     label: 'Sell',
     class: 'text-right text-nowrap',
     tdClass: 'align-middle monospace',
@@ -42,7 +42,7 @@ export default [
   },
   {
     key: 'quantity',
-    sortable: true,
+    sortable: false,
     label: 'Quantity',
     class: 'text-right text-nowrap',
     tdClass: 'align-middle monospace',
@@ -51,7 +51,7 @@ export default [
   },
   {
     key: 'delivery_cost',
-    sortable: true,
+    sortable: false,
     label: 'Delivery Cost',
     class: 'text-right text-nowrap',
     tdClass: 'align-middle monospace',
@@ -60,7 +60,7 @@ export default [
   },
   {
     key: 'profit',
-    sortable: true,
+    sortable: false,
     label: 'Profit',
     class: 'text-right text-nowrap',
     tdClass: (value, key, item) => {
