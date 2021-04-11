@@ -31,6 +31,10 @@ class ProfitsAggregator {
     private function _processSellTransactions(Collection $sellTransactions): void {
         foreach ($sellTransactions as $sell) {
             $sellCharacter = Character::find($sell->character_id);
+            if ($sellCharacter === null) {
+                throw new \Exception("Character {$sell->character_id} not found. Transaction {$sell->transaction_id}");
+            }
+
             $type = Type::find($sell->type_id);
 
             while ($sell->processed_quantity < $sell->quantity) {
@@ -67,10 +71,10 @@ class ProfitsAggregator {
         $buyCharacterBrokerFeePercent = $buyCharacter !== null ? $buyCharacter->buy_broker_fee_percent : 0;
         $buyBrokerFee = round($buy->unit_price * ($buyCharacterBrokerFeePercent / 100) * $quantityToProcess, 2);
 
-        $sellCharacterBrokerFeePercent = $sellCharacter !== null ? $sellCharacter->sell_broker_fee_percent : 0;
+        $sellCharacterBrokerFeePercent = $sellCharacter->sell_broker_fee_percent ?? 0;
         $sellBrokerFee = round($sell->unit_price * ($sellCharacterBrokerFeePercent / 100) * $quantityToProcess, 2);
 
-        $sellCharacterSalesTaxPercent = $sellCharacter !== null ? $sellCharacter->sales_tax_percent : 0;
+        $sellCharacterSalesTaxPercent = $sellCharacter->sales_tax_percent ?? 0;
         $salesTax = round($sell->unit_price * ($sellCharacterSalesTaxPercent / 100) * $quantityToProcess, 2);
 
         $profit = ($sell->unit_price - $buy->unit_price) * $quantityToProcess - $deliveryCost - $buyBrokerFee - $sellBrokerFee - $salesTax;

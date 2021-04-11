@@ -11,8 +11,6 @@ use App\Services\Locations\Location;
 
 class Controller {
 
-    private const JIN_KRAUST_ID = 2117638152;
-
     public function refreshTransactions(): void {
         $characters = Character::trader()->get();
 
