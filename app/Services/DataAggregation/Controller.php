@@ -45,4 +45,8 @@ class Controller {
             }
         }
     }
+
+    public function aggregateProfits(): void {
+        (new ProfitsAggregator)->aggregate();
+    }
 }

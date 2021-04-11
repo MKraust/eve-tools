@@ -25,7 +25,7 @@ class Type extends Model
         'deliveredItems',
     ];
 
-    public function getVolumeAttribute(): ?int {
+    public function getVolumeAttribute(): ?float {
         return $this->attributes['volume'] == 4000 ? 1000 : $this->attributes['volume'];
     }
 
@@ -132,6 +132,10 @@ class Type extends Model
         });
 
         return $deliveredItems->count() > 0 ? $deliveredItems->sum('quantity') : 0;
+    }
+
+    public function getDeliveryCost(Location $location): float {
+        return $this->volume * $location->deliveryCost();
     }
 
     public function getTotalCost(Location $location): ?float {

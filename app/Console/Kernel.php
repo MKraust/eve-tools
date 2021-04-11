@@ -25,6 +25,7 @@ class Kernel extends ConsoleKernel
         Commands\AggregatePrices::class,
         Commands\AggregateCharacterOrders::class,
         Commands\AggregateStockedItems::class,
+        Commands\AggregateProfits::class,
     ];
 
     /**
@@ -41,6 +42,7 @@ class Kernel extends ConsoleKernel
         $schedule->command(Commands\RefreshAssets::class)->everyTenMinutes();
         $schedule->command(Commands\RefreshTransactions::class)->hourly();
         $schedule->command(Commands\RefreshMarketHistory::class)->dailyAt('14:30');
+        $schedule->command(Commands\AggregateProfits::class)->everyTenMinutes();
     }
 
     /**

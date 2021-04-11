@@ -21,6 +21,9 @@ class Character extends Model
         'is_data_source',
         'is_trader',
         'is_industrialist',
+        'buy_broker_fee_percent',
+        'sell_broker_fee_percent',
+        'sales_tax_percent',
     ];
 
     protected $casts = [
