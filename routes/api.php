@@ -71,5 +71,6 @@ Route::prefix('trading')->group(function () {
 
     Route::prefix('profit')->group(function () {
         Route::get('/record/list', [Controllers\Api\TradingController::class, 'getProfits']);
+        Route::get('/stats/daily', [Controllers\Api\TradingController::class, 'getDailyProfitStatistics']);
     });
 });

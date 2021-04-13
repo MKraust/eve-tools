@@ -52,6 +52,27 @@ class TradingController extends Controller
         ];
     }
 
+    public function getDailyProfitStatistics(Request $request) {
+        $request->validate([
+           'days' => 'required|integer|min:1',
+        ]);
+
+        $endDate = now()->modify('tomorrow midnight')->modify('-1 second')->format('Y-m-d');
+        $startDate = now()->modify('tomorrow midnight')->modify("-{$request->days} days")->format('Y-m-d');
+
+        $data = AggregatedProfit::selectRaw("SUM(profit) as profit, DATE_FORMAT(date, '%Y-%m-%d') as day")
+                               ->whereRaw("DATE_FORMAT(date, '%Y-%m-%d') BETWEEN '{$startDate}' AND '{$endDate}'")
+                               ->groupBy('day')
+                               ->get();
+
+        return $data->map(function($item) {
+            return [
+                'day' => $item->day,
+                'profit' => (int)$item->profit,
+            ];
+        });
+    }
+
     public function getOrders(Request $request) {
         $request->validate([
             'character_id' => 'required|integer',

@@ -36,6 +36,10 @@ export default {
         return [];
       },
     },
+    ticks: {
+      type: Number,
+      required: true,
+    },
   },
   computed: {
     options() {
@@ -63,9 +67,10 @@ export default {
         },
         xaxis: {
           categories: this.chartData.map(datum => datum.x),
-          tickAmount: 24,
+          tickAmount: this.ticks,
           labels: {
             formatter: val => String(val).split(':')[0],
+            hideOverflowingLabels: true,
           },
         },
         yaxis: {

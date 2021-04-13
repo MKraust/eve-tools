@@ -186,4 +186,11 @@ export default {
 
     return data;
   },
+
+  async loadDailyProfitStatistics(days) {
+    const params = { days };
+    const { data } = await axios.get(api('/trading/profit/stats/daily'), { params });
+
+    return data;
+  },
 };
