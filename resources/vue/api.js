@@ -13,6 +13,18 @@ function getLocationId() {
 }
 
 export default {
+  async loadSettings(key) {
+    const { data } = await axios.get(api('/settings/get'), { params: { key }});
+
+    return data;
+  },
+
+  async saveSettings(key, value) {
+    value = JSON.stringify(value);
+
+    await axios.post(api('/settings/save'), { key, value });
+  },
+
   async getLocations() {
     return (await axios.get(api('/settings/location/list'))).data;
   },

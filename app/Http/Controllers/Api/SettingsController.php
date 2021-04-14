@@ -19,6 +19,27 @@ class SettingsController extends Controller
         $this->_locationKeeper = $locationKeeper;
     }
 
+    public function getSettings(Request $request) {
+        $request->validate([
+            'key' => 'required|string|min:1',
+        ]);
+
+        $setting = Setting::getData($request->key);
+
+        return $setting->value ?? 'null';
+    }
+
+    public function saveSettings(Request $request) {
+        $request->validate([
+            'key' => 'required|string|min:1',
+            'value' => 'required|string',
+        ]);
+
+        Setting::setData($request->key, $request->value);
+
+        return ['status' => 'success'];
+    }
+
     public function getMarketOrdersUpdateInfo() {
         $info = Setting::getData('market_orders_update');
 

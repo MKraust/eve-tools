@@ -20,6 +20,9 @@ Route::prefix('settings')->group(function () {
     Route::get('/market-history-update-info',    [Controllers\Api\SettingsController::class, 'getMarketHistoryUpdateInfo']);
     Route::post('/refresh-market-data',          [Controllers\Api\SettingsController::class, 'refreshMarketData']);
     Route::post('/refresh-market-history',       [Controllers\Api\SettingsController::class, 'refreshMarketHistory']);
+
+    Route::get('/get',   [Controllers\Api\SettingsController::class, 'getSettings']);
+    Route::post('/save', [Controllers\Api\SettingsController::class, 'saveSettings']);
 });
 
 Route::prefix('characters')->group(function () {

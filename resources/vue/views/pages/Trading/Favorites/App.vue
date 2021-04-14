@@ -63,6 +63,7 @@
                 class="form-control form-control-sm"
                 placeholder="0"
                 min="0"
+                @keydown.enter="saveFastShoppingLimits"
               >
             </div>
           </div>
@@ -143,29 +144,17 @@ export default {
         .join('\n');
     }
   },
-  watch: {
-    fastShoppingLimits: {
-      deep: true,
-      handler() {
-        this.saveFastShoppingLimits();
-      },
-    }
-  },
   methods: {
     async loadFavorites() {
       this.isLoadingFavorites = true;
 
       this.favorites = await this.$api.loadTradingFavorites();
-      this.loadFastShoppingLimits();
+      this.fastShoppingLimits = (await this.$api.loadSettings(KEY_FAST_SHOPPING_LIMITS)) || {}
 
       this.isLoadingFavorites = false;
     },
-    loadFastShoppingLimits() {
-      const fastShoppingLimits = localStorage.getItem(KEY_FAST_SHOPPING_LIMITS);
-      this.fastShoppingLimits = fastShoppingLimits ? JSON.parse(fastShoppingLimits) : {};
-    },
-    saveFastShoppingLimits() {
-      localStorage.setItem(KEY_FAST_SHOPPING_LIMITS, JSON.stringify(this.fastShoppingLimits));
+    async saveFastShoppingLimits() {
+      await this.$api.saveSettings(KEY_FAST_SHOPPING_LIMITS, this.fastShoppingLimits);
     },
     async toggleFavorite(typeId) {
       await this.$api.deleteTradingFavorite(typeId);
