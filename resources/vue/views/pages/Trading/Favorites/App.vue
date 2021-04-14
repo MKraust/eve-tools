@@ -63,7 +63,6 @@
                 class="form-control form-control-sm"
                 placeholder="0"
                 min="0"
-                @keydown.enter="saveFastShoppingLimits"
               >
             </div>
           </div>
@@ -114,15 +113,18 @@ export default {
   mounted() {
     this.loadFavorites();
   },
-  data: () => ({
-    favorites: [],
-    isLoadingFavorites: false,
-    filterQuery: '',
-    tableColumns: COLUMNS,
-    fastShoppingIgnoredTypes: [],
-    onlyFastShopIgnored: false,
-    fastShoppingLimits: {},
-  }),
+  data() {
+    return {
+      favorites: [],
+      isLoadingFavorites: false,
+      filterQuery: '',
+      tableColumns: COLUMNS,
+      fastShoppingIgnoredTypes: [],
+      onlyFastShopIgnored: false,
+      fastShoppingLimits: {},
+      throttledSaveFastShoppingLimitsLimits: this.$lodash.throttle(this.saveFastShoppingLimits, 2000),
+    }
+  },
   computed: {
     filteredFavorites() {
       if (this.filterQuery === '') {
@@ -143,6 +145,14 @@ export default {
         .map(i => `${i.name}* ${i.quantity}`)
         .join('\n');
     }
+  },
+  watch: {
+    fastShoppingLimits: {
+      deep: true,
+      handler() {
+        this.throttledSaveFastShoppingLimitsLimits();
+      },
+    },
   },
   methods: {
     async loadFavorites() {
