@@ -205,4 +205,14 @@ export default {
 
     return data;
   },
+
+  async loadItemHistory(typeId) {
+    const params = {
+      type_id: typeId,
+      location_id: getLocationId(),
+    };
+    const { data } = await axios.get(api('/trading/history'), { params });
+
+    return data;
+  },
 };

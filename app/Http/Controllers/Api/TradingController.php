@@ -293,6 +293,32 @@ class TradingController extends Controller
         });
     }
 
+    public function getItemHistory(Request $request) {
+        $request->validate([
+            'location_id' => 'required|integer',
+            'type_id' => 'required|integer',
+        ]);
+
+        $location = $this->_locationKeeper->getById($request->location_id);
+        $unprocessedBuyTransactions = CachedTransaction::with(['type'])
+                                                       ->buy()
+                                                       ->unprocessed()
+                                                       ->where('type_id', $request->type_id)
+                                                       ->orderBy('date', 'asc')
+                                                       ->get();
+
+        return $unprocessedBuyTransactions->map(fn(CachedTransaction $transaction) => [
+            'type_id'        => $transaction->type->id,
+            'icon'           => $transaction->type->icon,
+            'name'           => $transaction->type->name,
+            'buy'            => $transaction->unit_price,
+            'quantity'       => $transaction->quantity,
+            'date'           => $transaction->date,
+            'margin'         => $transaction->type->getMargin($location, $transaction->unit_price),
+            'margin_percent' => $transaction->type->getMarginPercent($location, $transaction->unit_price),
+        ]);
+    }
+
     private function _convertDeliveredItemToApi(DeliveredItem $item) {
         return [
             'type_id'  => $item->type->typeID,

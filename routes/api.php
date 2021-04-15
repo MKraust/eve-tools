@@ -55,6 +55,7 @@ Route::prefix('trading')->group(function () {
     Route::post('/open-market-details', [Controllers\Api\TradingController::class, 'openMarketDetails']);
     Route::get('/stats-by-half-hour',   [Controllers\Api\TradingController::class, 'getMoneyFlowStatistics']);
     Route::get('/unlisted',             [Controllers\Api\TradingController::class, 'getUnlistedItems']);
+    Route::get('/history',              [Controllers\Api\TradingController::class, 'getItemHistory']);
 
     Route::prefix('favorites')->group(function () {
         Route::get('/list',    [Controllers\Api\TradingController::class, 'getFavorites']);

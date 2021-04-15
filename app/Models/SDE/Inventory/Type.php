@@ -142,15 +142,15 @@ class Type extends Model
         return $this->volume * $location->deliveryCost();
     }
 
-    public function getTotalCost(Location $location): ?float {
-        $buyPrice = $this->getBuyPrice();
+    public function getTotalCost(Location $location, ?float $buyPrice = null): ?float {
+        $buyPrice ??= $this->getBuyPrice();
 
         return $buyPrice !== null ? $buyPrice + $this->volume * $location->deliveryCost() : null;
     }
 
-    public function getMargin(Location $location): ?float {
-        $totalCost = $this->getTotalCost($location);
-        $sellPrice = $this->getSellPrice($location);
+    public function getMargin(Location $location, ?float $buyPrice = null, ?float $sellPrice = null): ?float {
+        $totalCost = $this->getTotalCost($location, $buyPrice);
+        $sellPrice ??= $this->getSellPrice($location);
 
         return $sellPrice !== null && $totalCost !== null ? round($sellPrice * 0.9575 - $totalCost, 2) : null;
     }
@@ -158,21 +158,17 @@ class Type extends Model
     public function getBuyPrice() {
         $locationsKeeper = app(Keeper::class);
 
-        return $this->prices->filter(function ($price) use ($locationsKeeper) {
-            return in_array($price->location_id, $locationsKeeper->getTradingHubIds());
-        })->min('sell'); // buy from sell orders
+        return $this->prices->filter(fn($price) => in_array($price->location_id, $locationsKeeper->getTradingHubIds()))->min('sell'); // buy from sell orders
     }
 
     public function getSellPrice(Location $location) {
-        return $this->prices->first(function ($price) use ($location) {
-                return $price->location_id === $location->id();
-            })->sell ?? null;
+        return $this->prices->first(fn($price) => $price->location_id === $location->id())->sell ?? null;
     }
 
-    public function getMarginPercent(Location $location): ?float {
-        $totalCost = $this->getTotalCost($location);
+    public function getMarginPercent(Location $location, ?float $buyPrice = null, ?float $sellPrice = null): ?float {
+        $totalCost = $this->getTotalCost($location, $buyPrice);
 
-        return $totalCost > 0 ? round($this->getMargin($location) / $totalCost * 100, 2) : 0;
+        return $totalCost > 0 ? round($this->getMargin($location, $buyPrice, $sellPrice) / $totalCost * 100, 2) : 0;
     }
 
     public function getPotentialDailyProfit(Location $location): ?int {
