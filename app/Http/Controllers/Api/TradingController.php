@@ -312,7 +312,7 @@ class TradingController extends Controller
             'icon'           => $transaction->type->icon,
             'name'           => $transaction->type->name,
             'buy'            => $transaction->unit_price,
-            'quantity'       => $transaction->quantity,
+            'quantity'       => $transaction->quantityToProcess,
             'date'           => $transaction->date,
             'margin'         => $transaction->type->getMargin($location, $transaction->unit_price),
             'margin_percent' => $transaction->type->getMarginPercent($location, $transaction->unit_price),
