@@ -21,8 +21,10 @@ class ProfitsAggregator {
 
     public function aggregate(): void {
         $unprocessedSellTransactionsCount = CachedTransaction::sell()->unprocessed()->count();
+        logger("Unprocessed sell transactions: {$unprocessedSellTransactionsCount}");
 
         for ($offset = 0; $offset < $unprocessedSellTransactionsCount; $offset += self::CHUNK_SIZE) {
+            logger("Processed transactions: {$offset}");
             $sellTransactions = CachedTransaction::sell()->unprocessed()->earliest()->limit(self::CHUNK_SIZE)->offset($offset)->get();
             $this->_processSellTransactions($sellTransactions);
         }
@@ -37,15 +39,18 @@ class ProfitsAggregator {
 
             $type = Type::find($sell->type_id);
 
+            logger("Processing sell transaction {$sell->transaction_id}");
             while ($sell->processed_quantity < $sell->quantity) {
                 $buy = CachedTransaction::buy()->unprocessed()->where('type_id', $sell->type_id)->where('date', '<', $sell->date)->earliest()->first();
 
                 if ($buy === null) {
+                    logger('No buy transactions left, finish processing');
                     $sell->processed_quantity = $sell->quantity;
                     break;
                 }
 
                 $quantityToProcess = min($buy->quantityToProcess, $sell->quantityToProcess);
+                logger("Quantity to process: {$quantityToProcess}");
 
                 $sell->processed_quantity += $quantityToProcess;
                 $buy->processed_quantity += $quantityToProcess;
@@ -54,9 +59,12 @@ class ProfitsAggregator {
 
                 $profitRecord->save();
                 $buy->save();
+
+                logger("Saved profit record {$profitRecord->id}. Quantity to process left: {$sell->quantityToProcess}");
             }
 
             $sell->save();
+            logger("Finished processing sell transaction {$sell->transaction_id}");
         }
     }
 
