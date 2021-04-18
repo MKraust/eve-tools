@@ -1,5 +1,5 @@
 <template>
-  <div ref="card" class="card card-custom gutter-b" :class="{ 'card-collapse': isCollapsed }">
+  <div ref="card" class="card card-custom gutter-b" :class="{ 'card-collapse': isCollapsed, 'card-stretch': stretched }" :id="cardID">
     <div class="card-header">
       <div class="card-title">
         <span v-if="icon" class="card-icon">
@@ -18,7 +18,11 @@
     </div>
     <template v-if="!isCollapsed">
       <div class="card-body">
-        <slot />
+        <div v-if="stretched" class="card-scroll">
+          <slot />
+        </div>
+
+        <slot v-else />
       </div>
       <div v-if="$slots.hasOwnProperty('footer')" class="card-footer">
         <slot name="footer" />
@@ -67,6 +71,17 @@ export default {
         return false;
       },
     },
+    stretched: {
+      type: Boolean,
+      default() {
+        return false;
+      },
+    },
+  },
+  mounted() {
+    if (this.stretched) {
+      KTLayoutStretchedCard.init(this.cardID);
+    }
   },
   data() {
     return {
@@ -77,6 +92,9 @@ export default {
     hasActions() {
       return this.actions.length > 0;
     },
+    cardID() {
+      return `card_${this._uid}`;
+    }
   },
   watch: {
     loading: {

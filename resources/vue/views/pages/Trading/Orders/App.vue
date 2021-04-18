@@ -1,14 +1,14 @@
 <template>
   <div class="container">
     <div class="row">
-      <div class="col-md-5">
-        <mk-card title="Intraday money flow" :loading="isLoading" class="mb-10">
-          <mk-chart :chart-data="intradayMoneyFlowData" :height="300" :ticks="24" type="bar" />
-        </mk-card>
-      </div>
+<!--      <div class="col-md-12">-->
+<!--        <mk-card title="Intraday money flow" :loading="isLoading" class="mb-10">-->
+<!--          <mk-chart :chart-data="intradayMoneyFlowData" :height="300" :ticks="24" type="bar" />-->
+<!--        </mk-card>-->
+<!--      </div>-->
 
-      <div class="col-md-7">
-        <mk-card title="Unlisted items">
+      <div class="col-md-6">
+        <mk-card title="Unlisted Items">
           <b-table :busy="isLoading" :fields="unlistedItemsColumns" :items="unlistedItems" sort-by="potential_daily_profit" :sort-desc="true" :responsive="true">
             <template #table-busy>
               <div class="text-center text-primary my-2">
@@ -34,8 +34,8 @@
         </mk-card>
       </div>
 
-      <div class="col-md-12">
-        <mk-card title="Outbidded orders">
+      <div class="col-md-6">
+        <mk-card title="Outbidded Orders">
           <div class="d-flex align-items-center mb-7">
             <div class="flex-grow-1">
               <input v-model="filterQuery" type="text" class="form-control" placeholder="Filter items..." />

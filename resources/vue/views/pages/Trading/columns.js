@@ -101,6 +101,7 @@ export const AVERAGE_DAILY_VOLUME = {
 export const POTENTIAL_DAILY_PROFIT = {
   key: 'potential_daily_profit',
   sortable: true,
+  label: 'Potential Profit',
   class: 'text-right text-nowrap',
   tdClass: (value, key, item) => {
     const classes = ['align-middle', 'monospace'];
