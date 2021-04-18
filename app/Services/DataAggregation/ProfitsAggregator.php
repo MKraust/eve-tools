@@ -23,10 +23,11 @@ class ProfitsAggregator {
         $unprocessedSellTransactionsCount = CachedTransaction::sell()->unprocessed()->count();
         logger("Unprocessed sell transactions: {$unprocessedSellTransactionsCount}");
 
-        for ($offset = 0; $offset < $unprocessedSellTransactionsCount; $offset += self::CHUNK_SIZE) {
-            logger("Processed transactions: {$offset}");
-            $sellTransactions = CachedTransaction::sell()->unprocessed()->earliest()->limit(self::CHUNK_SIZE)->offset($offset)->get();
+        $processedChunks = 0;
+        while (CachedTransaction::sell()->unprocessed()->count() > 0) {
+            $sellTransactions = CachedTransaction::sell()->unprocessed()->earliest()->limit(self::CHUNK_SIZE)->get();
             $this->_processSellTransactions($sellTransactions);
+            logger("Processed chunks: {$processedChunks}");
         }
     }
 
