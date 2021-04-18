@@ -65,6 +65,7 @@ class ProfitsAggregator {
 
             $sell->save();
             logger("Finished processing sell transaction {$sell->transaction_id}");
+            logMemory();
         }
     }
 
