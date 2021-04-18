@@ -26,6 +26,7 @@
             </template>
 
             <template #cell(actions)="data">
+              <mk-item-history-button :id="data.item.type_id" :title="data.item.name" :icon="data.item.icon" />
               <mk-money-flow-button :id="data.item.type_id" :name="data.item.name" />
               <mk-market-details-button :id="data.item.type_id" />
             </template>
