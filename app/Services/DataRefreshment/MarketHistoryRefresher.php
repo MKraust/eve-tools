@@ -138,12 +138,12 @@ class MarketHistoryRefresher {
      * @param int[] $typeIds
      */
     private function _clearCachedOrdersHistory(array $typeIds): void {
-        $chunks = array_chunk($typeIds, 500);
-        foreach ($chunks as $chunk) {
-            CachedOrdersHistory::where('region_id', $this->_regionId)->whereIn('type_id', $chunk)->delete();
-        }
-
-        CachedOrdersHistory::where('region_id', $this->_regionId)->where('date', '<', now()->modify('-65 day')->format('Y-m-d'))->delete();
+//        $chunks = array_chunk($typeIds, 500);
+//        foreach ($chunks as $chunk) {
+//            CachedOrdersHistory::where('region_id', $this->_regionId)->whereIn('type_id', $chunk)->delete();
+//        }
+//
+//        CachedOrdersHistory::where('region_id', $this->_regionId)->where('date', '<', now()->modify('-65 day')->format('Y-m-d'))->delete();
 
         $this->_marketHistoryUpdateData['progress']['is_old_cache_cleared'] = true;
         $this->_saveMarketHistoryUpdateData();
