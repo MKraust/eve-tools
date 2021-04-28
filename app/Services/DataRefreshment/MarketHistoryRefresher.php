@@ -71,7 +71,7 @@ class MarketHistoryRefresher {
                     ];
                 }
 
-                CachedOrdersHistory::insert($ordersHistoryData);
+                CachedOrdersHistory::insertOrIgnore($ordersHistoryData);
                 $this->_incrementProcessedTypesCount();
             }
 
