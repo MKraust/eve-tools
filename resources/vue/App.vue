@@ -18,10 +18,10 @@ export default {
     @import "~@fortawesome/fontawesome-free/css/all.css";
     @import "~line-awesome/dist/line-awesome/css/line-awesome.css";
     @import "~sweetalert2/src/sweetalert2.scss";
-    @import "assets/plugins/flaticon/flaticon.css";
-    @import "assets/plugins/flaticon2/flaticon.css";
-    @import "assets/plugins/keenthemes-icons/font/ki.css";
-    @import "assets/sass/style.scss";
+    @import "metronic/plugins/flaticon/flaticon.css";
+    @import "metronic/plugins/flaticon2/flaticon.css";
+    @import "metronic/plugins/keenthemes-icons/font/ki.css";
+    @import "metronic/sass/style.scss";
 
     .monospace {
       font-family: Consolas,Monaco, "Andale Mono", "Ubuntu Mono", monospace;

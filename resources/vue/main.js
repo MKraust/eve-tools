@@ -6,7 +6,7 @@ import './components';
 
 Vue.config.productionTip = false;
 
-import './metronic';
+import './metronic/index';
 
 // Vue 3rd party plugins
 import lodash from 'lodash';

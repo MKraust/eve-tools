@@ -1,5 +1,5 @@
 <template>
-  <mk-card title="Characters" :loading="loading" icon="fas fa-users" :actions="actions">
+  <mk-card title="Characters" icon="fas fa-users" :actions="actions">
     <div v-for="(character, idx) in characters" :key="character.id" class="d-flex align-items-center" :class="{ 'mb-10': idx < characters.length - 1 }">
       <div class="symbol symbol-50 symbol-light-white mr-5">
         <div class="symbol-label overflow-hidden">
