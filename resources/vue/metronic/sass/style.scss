@@ -71,6 +71,16 @@
 
 // 4: Plugins
 @import
+    "~perfect-scrollbar/css/perfect-scrollbar.css",
+    "~socicon/css/socicon.css",
+    "~@fortawesome/fontawesome-free/css/all.css",
+    "~line-awesome/dist/line-awesome/css/line-awesome.css",
+    "~sweetalert2/src/sweetalert2.scss",
+
+    "../plugins/flaticon/flaticon.css",
+    "../plugins/flaticon2/flaticon.css",
+    "../plugins/keenthemes-icons/font/ki.css",
+
     "vendors/plugins/formvalidation",
     "vendors/plugins/blockui",
     "vendors/plugins/bootstrap-datepicker",
