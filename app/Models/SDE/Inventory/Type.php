@@ -12,8 +12,6 @@ class Type extends Model
 {
     use HasFactory;
 
-    private const DELIVERY_COST_PER_M3 = 1500;
-
     protected $connection = 'sde';
     protected $table = 'invTypes';
     protected $primaryKey = 'typeID';
