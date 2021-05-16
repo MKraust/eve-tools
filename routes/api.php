@@ -57,6 +57,12 @@ Route::prefix('trading')->group(function () {
     Route::get('/unlisted',             [Controllers\Api\TradingController::class, 'getUnlistedItems']);
     Route::get('/history',              [Controllers\Api\TradingController::class, 'getItemHistory']);
 
+    Route::prefix('manual')->group(function () {
+        Route::prefix('purchase')->group(function () {
+            Route::post('/create', [Controllers\Api\TradingController::class, 'createManualPurchase']);
+        });
+    });
+
     Route::prefix('favorites')->group(function () {
         Route::get('/list',    [Controllers\Api\TradingController::class, 'getFavorites']);
         Route::post('/add',    [Controllers\Api\TradingController::class, 'addFavorite']);

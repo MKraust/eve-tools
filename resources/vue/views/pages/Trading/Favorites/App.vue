@@ -68,12 +68,13 @@
           </div>
         </template>
 
-        <template #cell(actions)="data">
-          <div class="btn btn-hover-light-warning btn-sm btn-icon" @click="toggleFavorite(data.item.type_id)">
+        <template #cell(actions)="{ item }">
+          <div class="btn btn-hover-light-warning btn-sm btn-icon" @click="toggleFavorite(item.type_id)">
             <i class="text-warning fas fa-star"></i>
           </div>
-          <mk-money-flow-button :id="data.item.type_id" :name="data.item.name" />
-          <mk-market-details-button :id="data.item.type_id" />
+          <mk-money-flow-button :id="item.type_id" :name="item.name" />
+          <mk-manual-transaction-button :id="item.type_id" :title="item.name" />
+          <mk-market-details-button :id="item.type_id" />
         </template>
       </b-table>
     </mk-card>

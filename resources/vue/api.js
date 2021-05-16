@@ -215,4 +215,13 @@ export default {
 
     return data;
   },
+
+  async createManualBuyTransaction(typeId, price, quantity, locationId) {
+    await axios.post(api('/trading/manual/purchase/create'), {
+      price,
+      quantity,
+      type_id: typeId,
+      location_id: locationId,
+    });
+  },
 };

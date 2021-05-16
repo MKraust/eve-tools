@@ -10,9 +10,9 @@ use App\Models\CachedTransaction;
 use App\Models\Character;
 use App\Models\DeliveredItem;
 use App\Models\Delivery;
+use App\Models\Manual\Transaction;
 use App\Models\SDE\Inventory\Type;
 use App\Services;
-use Illuminate\Filesystem\Cache;
 use Illuminate\Http\Request;
 
 class TradingController extends Controller
@@ -29,6 +29,26 @@ class TradingController extends Controller
         $this->_tradingRepository = new Services\TradingRepository;
 
         $this->_locationKeeper = $locationKeeper;
+    }
+
+    public function createManualPurchase(Request $request) {
+        $request->validate([
+            'type_id' => 'required|integer|exists:App\Models\SDE\Inventory\Type,typeID',
+            'location_id' => 'required|integer',
+            'price' => 'required|integer|min:1',
+            'quantity' => 'required|integer|min:1',
+        ]);
+
+        $transaction = new Transaction;
+        $transaction->is_buy = true;
+        $transaction->location_id = $request->location_id;
+        $transaction->quantity = $request->quantity;
+        $transaction->type_id = $request->type_id;
+        $transaction->unit_price = $request->price;
+
+        $transaction->save();
+
+        return ['status' => 'success'];
     }
 
     public function getProfits(Request $request) {
@@ -304,19 +324,27 @@ class TradingController extends Controller
                                                        ->buy()
                                                        ->unprocessed()
                                                        ->where('type_id', $request->type_id)
-                                                       ->orderBy('date', 'asc')
                                                        ->get();
 
-        return $unprocessedBuyTransactions->map(fn(CachedTransaction $transaction) => [
-            'type_id'        => $transaction->type->id,
-            'icon'           => $transaction->type->icon,
-            'name'           => $transaction->type->name,
-            'buy'            => $transaction->unit_price,
-            'quantity'       => $transaction->quantityToProcess,
-            'date'           => $transaction->date,
-            'margin'         => $transaction->type->getMargin($location, $transaction->unit_price),
-            'margin_percent' => $transaction->type->getMarginPercent($location, $transaction->unit_price),
-        ]);
+        $unprocessedManualBuyTransactions = Transaction::with(['type'])
+                                                       ->buy()
+                                                       ->unprocessed()
+                                                       ->where('type_id', $request->type_id)
+                                                       ->get();
+
+        return $unprocessedBuyTransactions
+            ->merge($unprocessedManualBuyTransactions)
+            ->sortBy(fn($transaction) => new \DateTime($transaction->date))
+            ->map(fn($transaction) => [
+                'type_id'        => $transaction->type->id,
+                'icon'           => $transaction->type->icon,
+                'name'           => $transaction->type->name,
+                'buy'            => $transaction->unit_price,
+                'quantity'       => $transaction->quantityToProcess,
+                'date'           => $transaction->date,
+                'margin'         => $transaction->type->getMargin($location, $transaction->unit_price),
+                'margin_percent' => $transaction->type->getMarginPercent($location, $transaction->unit_price),
+            ]);
     }
 
     private function _convertDeliveredItemToApi(DeliveredItem $item) {

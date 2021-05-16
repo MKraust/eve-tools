@@ -5,6 +5,7 @@ namespace App\Services\DataAggregation;
 use App\Models\AggregatedProfit;
 use App\Models\CachedTransaction;
 use App\Models\Character;
+use App\Models\Manual\Transaction;
 use App\Models\SDE\Inventory\Type;
 use App\Services\Locations;
 use Illuminate\Support\Collection;
@@ -42,7 +43,7 @@ class ProfitsAggregator {
 
             logger("Processing sell transaction {$sell->transaction_id}");
             while ($sell->processed_quantity < $sell->quantity) {
-                $buy = CachedTransaction::buy()->unprocessed()->where('type_id', $sell->type_id)->where('date', '<', $sell->date)->earliest()->first();
+                $buy = $this->_getEarliestBuyTransactionBeforeDate($sell->type_id, $sell->date);
 
                 if ($buy === null) {
                     logger('No buy transactions left, finish processing');
@@ -103,5 +104,20 @@ class ProfitsAggregator {
         $profitRecord->profit = $profit;
 
         return $profitRecord;
+    }
+
+    private function _getEarliestBuyTransactionBeforeDate(int $typeId, string $dateTo) {
+        $buy = CachedTransaction::buy()->unprocessed()->where('type_id', $typeId)->where('date', '<', $dateTo)->earliest()->first();
+        $manualBuy = Transaction::buy()->unprocessed()->where('type_id', $typeId)->where('date', '<', $dateTo)->earliest()->first();
+
+        if ($buy === null) {
+            return $manualBuy;
+        }
+
+        if ($manualBuy === null) {
+            return $buy;
+        }
+
+        return new \DateTime($buy->date) <= new \DateTime($manualBuy->date) ? $buy : $manualBuy;
     }
 }
