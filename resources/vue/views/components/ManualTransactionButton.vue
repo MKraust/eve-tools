@@ -17,11 +17,11 @@
 
       <b-form inline @keyup.enter="save">
         <b-input-group prepend="Price" size="sm" class="mr-2" style="width: 180px;">
-          <b-form-input v-model="price" type="number" size="sm" :min="0" autofocus />
+          <b-form-input v-model.number="price" type="number" size="sm" :min="0" autofocus />
         </b-input-group>
 
         <b-input-group prepend="Qty" size="sm" class="mr-2" style="width: 100px;">
-          <b-form-input v-model="quantity" type="number" size="sm" :min="0" />
+          <b-form-input v-model.number="quantity" type="number" size="sm" :min="0" />
         </b-input-group>
 
         <b-form-select v-model="locationId" size="sm" class="mr-2">
@@ -60,6 +60,9 @@ export default {
     buttonId() {
       return `history-button-${this.id}`;
     },
+    defaultLocationId() {
+      return this.locations[0].id;
+    },
   },
   methods: {
     toggleVisibility() {
@@ -73,6 +76,10 @@ export default {
       await this.$api.createManualBuyTransaction(this.id, this.price, this.quantity, this.locationId);
 
       this.toggleVisibility();
+
+      this.price = 0;
+      this.quantity = 0;
+      this.locationId = this.defaultLocationId;
     },
   },
 };
