@@ -71,7 +71,7 @@ class ProfitsAggregator {
         }
     }
 
-    private function _createProfitRecord(Type $type, Character $sellCharacter, CachedTransaction $buy, CachedTransaction $sell, int $quantityToProcess): AggregatedProfit {
+    private function _createProfitRecord(Type $type, Character $sellCharacter, $buy, CachedTransaction $sell, int $quantityToProcess): AggregatedProfit {
         $margin = ($sell->unit_price - $buy->unit_price) * $quantityToProcess;
 
         $buyLocation = $this->_locationsKeeper->getById($buy->location_id);
