@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Manual\Transaction;
 use App\Models\SDE\Inventory\Type;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -28,6 +29,10 @@ class AggregatedProfit extends Model
         'sell_transaction_id',
     ];
 
+    protected $appends = [
+        'buy_transaction',
+    ];
+
     protected $casts = [
         'date'  => 'datetime:Y-m-d H:i:s',
     ];
@@ -36,11 +41,19 @@ class AggregatedProfit extends Model
         return $this->belongsTo(Type::class, 'type_id', 'typeID');
     }
 
-    public function buyTransaction() {
+    public function cachedBuyTransaction() {
         return $this->belongsTo(CachedTransaction::class, 'buy_transaction_id', 'transaction_id');
+    }
+
+    public function manualBuyTransaction() {
+        return $this->belongsTo(Transaction::class, 'buy_transaction_id', 'transaction_id');
     }
 
     public function sellTransaction() {
         return $this->belongsTo(CachedTransaction::class, 'sell_transaction_id', 'transaction_id');
+    }
+
+    public function getBuyTransactionAttribute() {
+        return $this->attributes['buy_transaction_type'] === 'manual' ? $this->manualBuyTransaction : $this->cachedBuyTransaction;
     }
 }

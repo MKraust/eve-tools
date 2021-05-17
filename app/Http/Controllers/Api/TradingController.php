@@ -60,7 +60,7 @@ class TradingController extends Controller
         $perPage = $request->per_page;
         $page = $request->page;
 
-        $records = AggregatedProfit::with(['type', 'sellTransaction', 'buyTransaction'])
+        $records = AggregatedProfit::with(['type', 'sellTransaction', 'manualBuyTransaction', 'cachedBuyTransaction'])
                                    ->orderBy('date', 'desc')
                                    ->offset(($page - 1) * $perPage)
                                    ->limit($perPage)
