@@ -12,6 +12,8 @@ class CachedTransaction extends Model
 
     public $timestamps = false;
 
+    public $transactionType = 'cached';
+
     protected $connection = 'mysql';
 
     protected $fillable = [
@@ -55,5 +57,9 @@ class CachedTransaction extends Model
 
     public function getQuantityToProcessAttribute() {
         return $this->attributes['quantity'] - $this->attributes['processed_quantity'];
+    }
+
+    public function getTransactionIdAttribute() {
+        return $this->attributes['transaction_id'];
     }
 }

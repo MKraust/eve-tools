@@ -92,7 +92,8 @@ class ProfitsAggregator {
 
         $profitRecord = new AggregatedProfit;
         $profitRecord->sell_transaction_id = $sell->transaction_id;
-        $profitRecord->buy_transaction_id = $buy->transaction_id;
+        $profitRecord->buy_transaction_id = $buy->transactionId;
+        $profitRecord->buy_transaction_type = $buy->transactionType;
         $profitRecord->quantity = $quantityToProcess;
         $profitRecord->type_id = $sell->type_id;
         $profitRecord->date = $sell->date;

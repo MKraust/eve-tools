@@ -12,6 +12,8 @@ class Transaction extends Model
 
     public $timestamps = false;
 
+    public $transactionType = 'manual';
+
     protected $table = 'manual_transactions';
 
     protected $connection = 'mysql';
@@ -52,5 +54,9 @@ class Transaction extends Model
 
     public function getQuantityToProcessAttribute() {
         return $this->attributes['quantity'] - $this->attributes['processed_quantity'];
+    }
+
+    public function getTransactionIdAttribute() {
+        return $this->attributes['id'];
     }
 }
