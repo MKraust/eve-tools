@@ -46,7 +46,7 @@ class AggregatedProfit extends Model
     }
 
     public function manualBuyTransaction() {
-        return $this->belongsTo(Transaction::class, 'buy_transaction_id', 'transaction_id');
+        return $this->belongsTo(Transaction::class, 'buy_transaction_id', 'id');
     }
 
     public function sellTransaction() {
