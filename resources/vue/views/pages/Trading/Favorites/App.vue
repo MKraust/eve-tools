@@ -1,11 +1,19 @@
 <template>
-  <div class="container">
+  <b-container>
     <mk-card title="Favorites" :actions="cardActions">
-      <div class="d-flex align-items-center mb-7">
-        <div class="flex-grow-1">
-          <input v-model="filterQuery" type="text" class="form-control" placeholder="Filter items..." />
-        </div>
-      </div>
+      <b-row class="mb-7">
+        <b-col cols="12" md="6">
+          <b-input v-model="filterQuery" placeholder="Filter items..." />
+        </b-col>
+        <b-col cols="12" md="6">
+          <b-input 
+            v-model.number="minProfitForFastShopping" 
+            type="number" 
+            min="0"
+            placeholder="Fast shopping min profit" 
+          />
+        </b-col>
+      </b-row>
 
       <b-table
         :busy="isLoadingFavorites"
@@ -124,6 +132,7 @@ export default {
       onlyFastShopIgnored: false,
       fastShoppingLimits: {},
       throttledSaveFastShoppingLimitsLimits: this.$lodash.throttle(this.saveFastShoppingLimits, 2000),
+      minProfitForFastShopping: 8_000_000,
     }
   },
   computed: {
@@ -180,7 +189,7 @@ export default {
     },
     fastFillShoppingList() {
       this.favorites.forEach(f => {
-        if (f.prices.potential_daily_profit >= 3_000_000 || !f.prices.sell) {
+        if (f.prices.potential_daily_profit >= this.minProfitForFastShopping || !f.prices.sell) {
           const fastShoppingLimit = Number(this.fastShoppingLimits[f.type_id] || 0);
           const needToBuy = fastShoppingLimit - f.in_stock - f.in_delivery;
           const needToBuyPercent = fastShoppingLimit > 0 ? needToBuy / fastShoppingLimit * 100 : 0;
