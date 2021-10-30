@@ -150,7 +150,7 @@ class Type extends Model
         $totalCost = $this->getTotalCost($location, $buyPrice);
         $sellPrice ??= $this->getSellPrice($location);
 
-        return $sellPrice !== null && $totalCost !== null ? round($sellPrice * 0.9575 - $totalCost, 2) : null;
+        return $sellPrice !== null && $totalCost !== null ? round($sellPrice * 0.944 - $totalCost, 2) : null;
     }
 
     public function getBuyPrice() {
